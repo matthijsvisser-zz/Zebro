@@ -102,7 +102,7 @@ These criteria are a good indication of what makes a system swarm-robotic. But s
 
 Looking at these criteria we chose to define the problem into two sub-problems. One covers Autonomy, Large number and limited capabilities. And the other Distributed coordination. 
 
-There are multiple aspects that should be taken into account. First the project focus will be building a swarming module. The features of this module will be discussed later. What's important is that the module should be "plug and play". What is meant by this is that the only in and output will be a communication protocol and a power input. This way the module can later be used on different platforms later in the program.\\ Then To properly test the swarming module, a swarm of robots will be need to be developed.
+There are multiple aspects that should be taken into account. First the project focus will be building a swarming module. The features of this module will be discussed later. What's important is that the module should be "plug and play". What is meant by this is that the only in and output will be a communication protocol and a power input. This way the module can later be used on different platforms later in the program. To properly test the swarming module, a swarm of robots will be need to be developed.
 
 \section{Doelstelling}
 In samenwerking met de technische universiteit Delft en de Hogeschool van Amsterdam moet er een zwerm robots (zwerm) worden ontwikkeld die samen een taak uitvoeren. Zwermen is een breed begrip. Daarom wordt hieronder opgesomd, aan welke specificaties voldaan moet worden voordat er over zwermen gesproken mag worden. Tevens zal hieruit een duidelijk doel naar voren komen wat behaald moet worden wat betreft het laten samen werken van verschillende robots binnen een zwerm.
@@ -181,31 +181,30 @@ In this chapter the functional requirements for building a robot which can perfo
 
 
 
-
 \subsection{Must haves}
-\begin{itemize}
-\item Robots should be able to communicate with each other
-\item The communication needs to be wireless
-\item Every module should be connected to the power supply
-\item The robot must be able to propel themselves omnidirectional
-\item Can operate with multiple robots in a swarm
-\end{itemize}
+
+
+M1 - Modular system architecture - Modules developed during this project must be modular so they can be used in future projects.\\\\
+M2 - Units must be able to communicate with each other - The units in the swarm must be able to exchange information to properly  \\\\
+M3 - Relative localization to other units \\
+M4 - The communication needs to be wireless\\
+M5 - Scalable swarm population\\
+
 
 \subsection{Should haves}
-\begin{itemize}
-\item Is able to carry a payload
-\item Modular system architecture
-\end{itemize}
+
+S1 - Is able to carry a payload\\
+S2 - The robot platform must be modular\\
+M5 - The robot must be able to propel themselves omnidirectional\\
 
 \subsection{Could haves}
-\begin{itemize}
-\item Can move according to the principle of the ZebRo
-\item Ability to self- charging / recharging of energy
-\item Shows signs of intelligence
-\item Scalable swarm population
-\item Is aware when the robot is upside down
-\item The robots must be modular
-\end{itemize}
+
+C1 - Can move according to the principle of the ZebRo\\
+C2 - Ability to self- charging / recharging of energy\\
+C3 - Shows signs of intelligence\\
+C4 - Is aware when the robot is upside down\\
+
+
 
 \subsection{Won't haves}
 \begin{itemize}

@@ -6,8 +6,8 @@
 \usepackage{graphicx}
 \usepackage{color}
 \usepackage{float}
-\usepackage[dutch]{babel}
 \usepackage{eurosym}
+\usepackage{booktabs,tabularx}
  
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -55,6 +55,11 @@
 
 \newpage
 
+\listoffigures
+\newpage
+
+\listoftables
+\newpage
 \tableofcontents
 \newpage
 
@@ -66,74 +71,61 @@ Swarming can have alot of up sides compared to the "classical" approach. A few a
 
 
 
-\section{Context analysis} 
-The Delft university of technology started a program to research the applications of swarming. In this program multiple universities work together to make this research possible. The idea of this program is that each project group contributes a small bit to reach the end result, which will be a working swarm of robots. The technology developed should be modular, so it can be easily used on other platforms.\\The programs focus lies on researching the applications of swarming on Mars. Its preferable that the technologies developed also work on Mars, but in some cases other technologies can be used to cut the cost. For example, for a simple proximity sensor on earth, an ultrasonic sensor would do just fine. But in the Mars atmosphere the ultrasonic waves get heavily dampened to the point where the sensor just wont work\cite{soundonmars}. The cheapest sensor that would work on Mars would be a lidar\cite{lidarmars}. While the average ultrasonic sensor costs around 2 \euro the cheapest lidar costs atleast 100 \euro. In this project the aim is to build one unit for around 200\euro, just one lidar sensor would be half of the robots budget. To proof the concept of swarming the robots don't need to be "Mars proof", so costs will be cut where possible.\\
+\section{Context analysis}
+The Delft university of technology started a program to research the applications of swarming. In this program multiple universities work together to make this research possible. The idea of this program is that each project group contributes a small bit to reach the end result, which will be a working swarm of robots. The technology developed should be modular, so it can be easily used on other platforms.\\The programs focus lies on researching the applications of swarming on Mars. Its preferable that the technologies developed also work on Mars, but in some cases other technologies can be used to cut the cost. For example, for a simple proximity sensor on earth, an ultrasonic sensor would do just fine. But in the Mars atmosphere the ultrasonic waves get heavily dampened to the point where the sensor just wont work\cite{soundonmars}. The cheapest sensor that would work on Mars would be a lidar\cite{lidarmars}. While the average ultrasonic sensor costs around 2$\euro$ the cheapest lidar costs atleast 100$\euro$. In this project the aim is to build one unit for around 200$\euro$, just one lidar sensor would be half of the robots budget. To proof the concept of swarming the robots don't need to be "Mars proof", so costs will be cut where possible.\\
 
 \section{Problem definition}
 Swarming intelligent systems are typically made up of simple agents(robots) interacting locally with one another and their environment. The group of individuals acting in such manner is referred to as a swarm\cite{swarmintelligence}. For a group of robots to qualify as a swarm-robotics the following criteria have to be met:
 
 \begin{itemize}
-    \item Autonomy – It is required that the individuals that make up   the swarm-robotic system are autonomous robots. They are able to        physically      interact with the environment and affect it.
-    \item Large number – A large number of units is required
-    as well, so the cooperative behavior (and
-    swarm intelligence) may occur. The minimum number
-    is hard to define and justify. The swarm-robotic
-    system can be made of few homogeneous groups of
-    robots consisted of large number of units. Highly heterogeneous 
-    robot groups tend to fall outside swarm
-    robotics.
-    \item Limited capabilities – The robots in a swarm
-    should be relatively incapable or inefficien on their
-    own with respect to the task at hand.
-    Scalability and robustness – A swarm-robotic
-    system needs to be scalable and robust. Adding the
-    new units will improve the performance of the overall
-    system and on the other hand, loosing some units will
-    not cause the catastrophic failure.
-    \item Distributed coordination – The robots in a swarm
-    should only have local and limited sensing and communication
-    abilities. The coordination between the
-    robots is distributed. The use of a global channel for
-    the coordination would influence the autonomy of the
-    units.
+	\item Autonomy - It is required that the individuals that make up 	the swarm-robotic system are autonomous robots. They are able to 		physically 		interact with the environment and affect it.
+	\item Large number - A large number of units is required
+	as well, so the cooperative behavior (and
+	swarm intelligence) may occur. The minimum number
+	is hard to define and justify. The swarm-robotic
+	system can be made of few homogeneous groups of
+	robots consisted of large number of units. Highly heterogeneous
+	robot groups tend to fall outside swarm
+	robotics.
+	\item Limited capabilities - The robots in a swarm
+	should be relatively incapable or inefficien on their
+	own with respect to the task at hand.
+	\item Scalability and robustness - A swarm-robotic
+	system needs to be scalable and robust. Adding the
+	new units will improve the performance of the overall
+	system and on the other hand, loosing some units will
+	not cause the catastrophic failure.
+	\item Distributed coordination - The robots in a swarm
+	should only have local and limited sensing and communication
+	abilities. The coordination between the
+	robots is distributed. The use of a global channel for
+	the coordination would influence the autonomy of the
+	units.
 \end{itemize}
 
-These criteria are a good indication of what makes a system swarm-robotic. But should not be used to determine whether a system is swarm-robotic or not. This is because some criteria are still somewhat phage\cite{swarmintelligence}.
+These criteria are a good indication of what makes a system swarm-robotic. But should not be used to determine whether a system is swarm-robotic or not. This is because some criteria are still somewhat vague\cite{swarmintelligence}.Looking at these criteria we chose to define the problem into two sub-problems. This division is chosen because problem one will cover distributed coordination and scalability with what we call a "swarming module", which will provide communication and relative localization to the other units in the swarm. And problem two covers Autonomy, Large number and limited capabilities.  Problem two will cover the platform that will provide movement and some basic autonomous functions. The projects focus will be the swarming module. The swarming module has to be completely modular so it can easily be used on other robotic platforms in future projects. Because of this the commissioning party stresses that this has to be a finished product. Resources(time) should be focused on the swarming module. For the sake of demonstration, problem two (the robot platform) will also need to be developed. This platform will have to provide some basic autonomous functions like movement and obstacle avoidance. One important requirement is that it should be easily replicated, so a swarm of these platforms can be created.\\
 
-Looking at these criteria we chose to define the problem into two sub-problems. One covers Autonomy, Large number and limited capabilities. And the other Distributed coordination. 
+\subsection{Goal}
+As previously discussed the problem is now divided in two sub-problems with the focus on the swarming module. In this paragraph will be discussed what will be expected from the swarming module and the robot platform.
 
-There are multiple aspects that should be taken into account. First the project focus will be building a swarming module. The features of this module will be discussed later. What's important is that the module should be "plug and play". What is meant by this is that the only in and output will be a communication protocol and a power input. This way the module can later be used on different platforms later in the program.\\ Then To properly test the swarming module, a swarm of robots will be need to be developed.
-
-\section{Doelstelling}
-In samenwerking met de technische universiteit Delft en de Hogeschool van Amsterdam moet er een zwerm robots (zwerm) worden ontwikkeld die samen een taak uitvoeren. Zwermen is een breed begrip. Daarom wordt hieronder opgesomd, aan welke specificaties voldaan moet worden voordat er over zwermen gesproken mag worden. Tevens zal hieruit een duidelijk doel naar voren komen wat behaald moet worden wat betreft het laten samen werken van verschillende robots binnen een zwerm.
-
-Een groep robots moet aan de volgende eisen voldoen om onder de categorie zwermen te vallen:
+\subsubsection{Swarmingmodule}
+Distributed coordination is one of the swarming criteria. To achieve this, some form of (relative) localization is needed. This should keep units from moving to close or to far from each other. And could also be used to accomplish certain goals like;  mapping, assembly of structures or inspections \cite{networkedRS}. Communication is needed to share information about the environment and every units position. Requirements here are that the communication should not be depended on one host and should be scalable. This is so communication is not cut off when one of the units breaks down. The scale-ability is important so that units can be added or removed from the swarm \cite{multidomaincom}. Because this project is part of a running program the modules made should be modular so they can be used on future projects. Summed up, the swarming module has the following characteristics.
 
 \begin{itemize}
-
-\item Autonoom		-	Het is vereist dat de  individuele  robots  binnenin  een  zwerm   
-systeem autonoom zijn. Ze moeten tevens over een fysieke interactie beschikken om de omgeving te waarnemen en eventueel aan te passen \cite{swarmintelligence}.
-
-\item Een groot aantal	-	Een groot aantal is ook vereist om het samenwerkende gedrag
-te bereiken. Het minimale aantal robots is lastig te definiëren. Een zwerm kan al gecre\"eerd worden met een paar simpele robots\cite{swarmintelligence}.
-\item Gelimiteerd	-	De robots in een zwerm moeten individueel relatief incapabel
-of ineffici\"ent zijn. Als een individuele robot de gehele taak van
-de zwerm kan uitvoeren. Is in dit geval de inzet van de zwerm geheel nutteloos\cite{swarmintelligence}.
-
-\item Schaalbaar		-	Een   zwerm    robots moet   schaalbaar  en   robuust   zijn. Het
-toevoegen van nieuwe robots aan het gehele systeem moet de uitvoering van de taak over het geheel verbeteren. Tevens als er verschillende units binnen de zwerm verloren raakt mag dit niet tot catastrofale fouten lijden\cite{swarmintelligence}.
-
-\item Co\"ordinaten	-	De robots   binnen een zwerm  moeten over een  gelimiteerde
-communicatie en waarneming beschikken. De coördinaten tussen de verschillende robots gedistribueerd. Het gebruik van en globale communicatie kanaal voor de co\"ordinaten be\"invloed de autonomie van de verschillende units\cite{swarmintelligence}.
+\item (Relative) Localization
+\item Communication
+\item Scalable
+\item Modular
 \end{itemize}
 
-Het doel is om een zwerm robots te ontwikkelen die voldoen aan de bovenstaande criteria.
+\subsubsection{Robot platform}
+To properly demonstrate and test the swarming module, a robotic platform will be needed. This platform will need to meet the swarming criteria of autonomy, large numbers and limited capabilities. The autonomy of the robot should stay simple and robust, the key features are movement, obstacle avoidance and power supply. The robot has to be easily duplicated so multiple units can be produced for the swarm. Also it should be able to house the swarming module.
 
 \section{Research-question}
 
-The main question of this research is as following: \textit{"How can a minimum  of three robots operate in a swarm".} To give an answer to this question there are multiple subquestions to research first. 
+The main question of this research is as following: \textit{"How can communication and relative localization be achieved in a swarm or robots?".} To give an answer to this question there are multiple sub-questions to research first. 
  
-%In dit onderzoek wordt de volgende hoofdvraag onderzocht:"Hoe kunnen er minimaal drie robots in een zwerm opereren?". Om de hoofdvraag te kunnen beantwoorden zijn antwoorden nodig op een aantal deelvragen.
+
 
 \section{Sub-questions} 
 The following questions need to be answered to come to a good conclusion to our research:
@@ -145,7 +137,16 @@ The following questions need to be answered to come to a good conclusion to our 
         \item "What is the definition of swarming?"
         \item "How many robots are needed to create a swarm?"
         \item "How do the units communicate within the swarm?"
+        \item "How do robots in the swarm know their location?"
     \end{itemize}    
+    \item "Swarming communication"
+    \begin{itemize}
+        \item "What software protocol should be used?"
+        \item "What hardware protocol should be used?"
+        \item "What is de minimal required communication speed?"
+        \item "What hardware is needed to implement the communication?"
+    \end{itemize}
+        \item "Communication between modules"
     \begin{itemize}
         \item "What software protocol should be used?"
         \item "What hardware protocol should be used?"
@@ -164,136 +165,165 @@ The following questions need to be answered to come to a good conclusion to our 
         \item "Is it possible to implement a recharge point?"
         \item "How can the energy supply be handled safely?"
     \end{itemize}
+    \item "How will autonomous obstacle avoidance be achieved?"
+    \begin{itemize}
+   		 \item "What types of sensor technigues are there?"
+    \end{itemize}
 \end{itemize}
 \newpage
 
-\section{Specificaties}
-In dit document worden de functionele eisen omschreven voor het bouwen van een robot die in samenwerking met andere robots een taak kan uitvoeren, zwermen. De specificaties zijn opgedeeld in verschillende functies waarmee het doel bereikt kan worden. 
-Volgens de MoSCow -methode worden de te behalen specificaties op het gebied van zwermen geclassificeerd. De bijbehorende specificaties worden in dit hoofdstuk verder toegelicht. In het blokschema getoond in figuur \ref{fig:blockschematic}, zijn de verschillende modules aan elkaar verbonden. 
+\section{Specifications}
+In this chapter the functional requirements for building a robot which can perform a task in cooperation with other robots will be defined. The specifications are divided into several features. The specifications to be achieved for swarming will be classified according to the MoSCoW-method. The corresponding specifications are further illustrated in this chapter. In the block diagram shown in Figure  \ref{fig:blockschematic}, the various modules are connected to each other.
+
+
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\textwidth]{blockschematic}
-    \caption{Versimpelde weegave in een blokschema van de samenhang van de verschillende deelsystemen binnen de robot.}
+    \caption{simplified block diagram of the connection of the different subsystems within the robot }
     \label{fig:blockschematic}
 \end{figure}
 
 
 
 \subsection{Must haves}
-\begin{itemize}
-\item Robots moeten onderling kunnen communiceren
-\item De communicatie moet draadloos zijn
-\item Iedere module moet zijn eigen energievoorziening hebben
-\item De robot moet zichzelf omridirectioneel voort kunnen bewegen
-\item Kan met meerdere robots opereren in een zwerm
-\end{itemize}
+
+
+M1 - Modular system architecture - Modules developed during this project must be modular so they can be used in future projects.\\\\
+M2 - Units must be able to communicate with each other - The units in the swarm must be able to exchange information to properly funtion as a swarm. This is discussed in the problem defention\cite{multidomaincom}.  \\\\
+M3 - Relative localization to other units - Localization is needed for robots to properly function in a swarm. This is discussed in the problem defention\cite{multidomaincom}\\\\
+M4 - The communication needs to be wireless - The robots cant be restrained by wires, they need to be able to move freely trough their environment.\\\\
+M5 - Scalable swarm population - This is one of the criteria of swarming discussed in the problem definition\\\\
+
 
 \subsection{Should haves}
-\begin{itemize}
-\item In staat om een payload te vervoeren
-\item Modulaire opbouw van systeem
-\end{itemize}
+
+S1 - Is able to carry a payload - One criteria of swarming is that robots should be able to adjust their environment, a payload could be some kind of tool to make this possible\\\\
+S2 - The robot platform must be modular - It would be preferable if the robots developed during this project are modular so they can be used in further development.\\\\
+S3 - The robot must be able to propel themselves omnidirectional - For exploration based mission the robots should be able to move in different directions so the full area can be explored.\\
 
 \subsection{Could haves}
-\begin{itemize}
-\item Kan zich voortbewegen volgens het principe van de ZebRo
-\item Mogelijkheid tot zelfstandig opladen/bijladen van energievoorziening
-\item Toont een vorm van intelligentie
-\item Schaalbaar maken van de zwerm populatie
-\item Is er zich van bewust wanneer de robot zich ondersteboven bevind
-\item De robot kan zich voortbewegen volgens het principe van de robot
-\item De robots moeten modulair zijn
-\item De robots kunnen zich opladen in een oplaadstation
-\end{itemize}
+
+C1 - Can move according to the principle of the ZebRo - Research shows that the ZebRo walking principle is a proven concept to get across rough terrain.\\
+C2 - Ability to self- charging/ recharging of energy - Makes the robot capable of operating for a not determined time.\\
+C3 - Shows signs of intelligence - Could learn how to behave on specific (environment) situations\\
+C4 - Is aware when the robot is upside down - When the robot gets in a situation where it is unable to move, the orientation could be usefull to free itself. \\
+
+
 
 \subsection{Won't haves}
 \begin{itemize}
-\item Een master in het zwerm netwerk
+\item A master in the swarm network
 \end{itemize}
 
 \newpage
 
-\section{Deelspecificaties}
+\section{Sub-specifications}
 
 \begin{table}[H]
 \centering
-\caption{Sensoren}
-\label{Sensoren}
+\caption{Sensors}
+\label{Sensors}
 \begin{tabular}{|l|l|}
 \hline
-Module    & Sensoren \\ \hline
-Ingangen  & Communicatie met het systeem             \\ \hline
-Uitgangen & Communicatie met het systeem             \\ \hline
-Functies   & \begin{tabular}[c]{@{}l@{}}Meet de afstand tussen zichzelf en de omgeving\\ Moet de gemeten waarde communiceren naar de controller\end{tabular}            \\ \hline
+Module    & Sensors \\ \hline
+Input  & Communication with the system          \\ \hline
+Output & Communication with the system             \\ \hline
+Functions   & \begin{tabular}[c]{@{}l@{}}measuring the distance between itself and the environment\\ To communicate the measured value to the controller\end{tabular}            \\ \hline
 \end{tabular}
 \end{table}
 
-De sensoren aanwezig op de robot moeten awareness creëren van zijn omgeving zodat hij zich hierop kan anticiperen. Zie tabel \ref{Sensoren}\\
+The sensors on the robot must create awareness of its surroundings so that he can anticipate. See Table \ref{Sensors}\\
 
 \begin{table}[H]
 \centering
-\caption{Voeding (status)}
-\label{voeding}
+\caption{Power supply}
+\label{supply}
 \begin{tabular}{|l|l|}
 \hline
-Module    & Voeding (status) \\ \hline
-Ingangen  & Voeding            \\ \hline
-Uitgangen & Communicatie met het systeem             \\ \hline
-Functies   & \begin{tabular}[c]{@{}l@{}}Meet de spanning/stroom van de voeding\\ Moet de gemeten waarde communiceren naar de controller\end{tabular}            \\ \hline
+Module    & Power supply \\ \hline
+Input  & Power supply            \\ \hline
+Output & Communication with the system             \\ \hline
+Functions   & \begin{tabular}[c]{@{}l@{}}measuring the voltage/ current of the Power supply\\ To send the measured value to the controller\end{tabular}            \\ \hline
 \end{tabular}
 \end{table}
 
-Het is belangrijk om het accuniveau te meten om te voorkomen dat een robot uit de zwerm stil komt te staan. De gemeten waarde wordt gecommuniceerd naar de controller. Zie tabel \ref{voeding}\\
+
+It is important to measure the battery level to ensure that the robots will not be able malfunction. \\The measured value is send to the controller. See Table \ref{supply}\\
 
 \begin{table}[H]
 \centering
-\caption{Draadloze communicatie module}
-\label{communicatie}
+\caption{Wireless communication mudule}
+\label{communication}
 \begin{tabular}{|l|l|}
 \hline
-Module    & Draadloze communicatie module \\ \hline
-Ingangen  & \begin{tabular}[c]{@{}l@{}}Communicatie met het systeem\\ Communicatie met de andere robots in de zwerm          
+Module    & Wireless communication mudule \\ \hline
+Input  & \begin{tabular}[c]{@{}l@{}}Communication with the system\\ Communication with the other robots in the swarm          
 \end{tabular}   \\ \hline
-Uitgangen & \begin{tabular}[c]{@{}l@{}}Communicatie met het systeem\\ Communicatie met de andere robots in de zwerm          
+Output & \begin{tabular}[c]{@{}l@{}}Communication with the system\\ Communication with the other robots in the swarm         
 \end{tabular}   \\ \hline
-Functies   & \begin{tabular}[c]{@{}l@{}}brengt de communicatie tussen de zwerm modules tot stand\\ Verkrijgt informatie betreft de afstand tussen de verschillende robots\end{tabular}            \\ \hline
+Functions   & \begin{tabular}[c]{@{}l@{}}establishes the communication between the modules swarm \\ Obtains information regarding the distance between the different robots\end{tabular}            \\ \hline
 \end{tabular}
 \end{table}
 
-Om te communiceren tussen verschillende units moet er een communicatienetwerk worden opgesteld met \'e\'en gemeenschappelijk protocol. Daarnaast moet het protocol ook extra gegevens kunnen verzorgen zoals locatievoorziening. Zie tabel \ref{communicatie} \\
+
+To communicate between different units a communication network should be set up with a common protocol . In addition, the protocol must be able to provide additional information such as localization. See Table \ref{communication} \\
 
 \begin{table}[H]
 \centering
-\caption{Effectoren}
-\label{Effectoren}
+\caption{effectors}
+\label{Effectors}
 \begin{tabular}{|l|l|}
 \hline
-Module    & Effectoren \\ \hline
-Ingangen  & aansturing  \\ \hline
-Uitgangen & Mechanische kracht   \\ \hline
-Functies  & Drijft de robot aan en is in staat om bochten te maken op commando            \\ \hline
+Module    & Effectors \\ \hline
+Input  & motor drivers  \\ \hline
+Output & mechanical power   \\ \hline
+Functions  & Drives the robot , and is able to turn on command            \\ \hline
 \end{tabular}
 \end{table}
 
-De aandrijving moet, naast dat het werk op in de testomgeving, ook goed kunnen functioneren op mars. Zie tabel \ref{Effectoren} \\
+The operator must , in addition to the functioning in the testenvironment , also function well on Mars . See Table \ref{Effectors} \\
 
 \begin{table}[H]
 \centering
-\caption{Centraal besturingsysteem}
-\label{Centraal besturingsysteem}
+\caption{Central control unit}
+\label{control}
 \begin{tabular}{|l|l|}
 \hline
-Module    & Centraal besturingsysteem \\ \hline
-Ingangen  & Alle informatie vanuit het systeem  \\ \hline
-Uitgangen & Alle aansturing van de modules in de robot \\ \hline
-Functies  & Hier komt alle communicatie samen en regelt de in- en uitgangen            \\ \hline
+Module    & Central control unit \\ \hline
+Input  & All information from the system  \\ \hline
+Output & All control of the modules in the robot \\ \hline
+Functions  & All the communication comes together and controls the inputs and outputs            \\ \hline
 \end{tabular}
 \end{table}
 
-Het centraal besturingsysteem verzorgt alle communicatie tussen de verschillende modules die aanwezig zijn op de robot. Zie tabel \ref{Centraal besturingsysteem}
+The central control unit handles all communication between the various modules that are present on the robot. See Table \ref{control}
+
+\subsection{Conclusion}
+Since this project is still in the early stages of research the specifications are still limited and not fully substantiated. Parallel to writing this document a lot of research has been done into different implementations of localization and communication in swarming networks. This research can be found in the project folder. When the research is concluded precise specifications can be composed. 
 
 \newpage
+\subsection{Swarming Modules}
+
+In this chapter existing swarming modules will be researched and reviewed.
+
+\subsubsection{Nanotron}
+
+Nanotron is a German company that makes swarm modules. The swarm bee LE is their second swarming module. It communicates on 2.4 GHz radio signal with a speed of 155 kbps. Beside the communication it also contains a localisation module, temperature sensor, a RF amplifier, MEMS, and a micro-controller unit. The communication is trough UART and the API (Application Programming Interface) is controlled by special API commands. To implement self-made application the development board is needed to program the device. This device uses serial communication. 
+
+The localisation of Swarmbee has an accuracy of one to two meters. The localisation works better outdoor then indoor. For demonstration the modules should work indoor as well. \cite{etotaal}
+
+Nantron announced there newest module on 25 February 2016. This module has a localisation accuracy of +/- 10 cm. Which is an huge improvement compared to the second generation of the module. It also has an larger range within the different modules can be detected. It will be released soon, and the price will be the same as the second generation. So this would definitely be worth waiting for. \cite{nanotron}
+	
+\subsubsection{NXP Jennic} 
+
+Jennic has made a Wireless Microcontroller. Which could operate as a swarm module. Time of flight is implemented in this device, and communication is trough the 2.4Ghz Communication is realised with Zigbee Pro network. Since it is not specifically made for swarming some specification which are defined by Nanotron is not specified here. The accuracy of the localisation is not specified. Expectation is that it is the same as the Nanotron or worse. \cite{wirelessmicrocontroller}\\
+
+Other then these two modules, there are no specific swarm modules that could be found. But there are a lot of research that have made there own localisation in a swarm, and/or their own communication. 
+
+
+
+
 
 \section{Bibliografie}
 \bibliography{references}

@@ -39,7 +39,11 @@
     \centering
     \vfill
     {\Large
+<<<<<<< HEAD
     Swarming\\
+=======
+    Maarten\\
+>>>>>>> feature/WMN
    
     {\small Research document}\\
         
@@ -132,27 +136,32 @@ De keuze van de actuator hangt sterk samen met de effectoren. <3
 \subsubsection{Aandrijving}
 
 \section{Swarm Communication}
-Each member of the swarm population needs to communicate with the rest of the swarm. To give the members full freedom of movement the communication also needs to be wireless. It is important that the population size of the swarm is dynamic, because of the scalability of the swarm. As mentioned earlier a swarm does not have a master. So each member needs to
+There are several requirements to realise a robot swarm. Each member of the population needs to communicate with the rest of the swarm. To give the members full freedom of movement the communication also needs to be wireless. It is important that the population size of the swarm is dynamic, because of the scalability of the swarm. As mentioned earlier a swarm does not have a master. So each member needs to be capable to maintain the network. These networks also must be able to reroute around nodes that have been lost.
+
+To create an network with those characteristics a (wireless) mesh network ((W)MN) is a possible solution. A mesh network relies on communication nodes in which data is distributed. All of the communication nodes cooperate in the distribution of data in the network. Each node of the network is connected to one or more nearby in range node(s) and forwards data on behalf of the other nodes. \cite{meshnetworking} A example of an mesh network is illustrated in figure \ref{fig:WMN}. To ensure a realiable network, self-organization and topology control alogorithms are needed.\cite{WMN1} Mesh networks can use self-healing algorithms such as Shortest Path Bridging (SPB) to restore and reroute the connection around broken nodes/clients. Shortest path bridging calculates the most favorable connections to the clients with the lowest path costs. \cite{SPB} Other usefull algorithms are listed in \cite{position-based}. The most efficient algorithm for path bridging depends on the situation where the clients are operating in which is described in \cite{position-based}.
+
+A wireless mesh network (WMN) is a dynamically self-organized and configured network. \cite{WMN1} Each node or client in the network is able to create an ad hoc network to maintain the mesh connectivity, this is called client WMN's. These networks are able to reroute around nodes that have been lost. On large scale projects wireless mesh networks are costefficient because of the saving of wired connections.\cite{meshnetworking}
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{WMN}
+   \caption{An example of a wireless mesh network with 5 clients and an optional internet connection. The connections made in this example are random.}
+   \label{fig:WMN}
+\end{figure}
+
 
 
 
 There exist several techniques to accomplish this method 
-Examples
+Examples of possible protocols:
 
-To create an network with those characteristics a mesh network (MN) is needed. An mesh network relies on communication nodes in which data is distributed. All of the communication nodes cooperate in the distribution of data in the network. Each node of the network is connected to one or more nearby in range node(s) and forwards data on behalf of the other nodes. 
-
-A wireless mesh network (WMN) is a dynamically self-organized and configured network. Each node in the network is able to create an ad hoc network to maintain the mesh connectivity. These networks are able to reroute around nodes that have been lost. 
-
-%\begin{figure}[h]
-%    \centering
-%    \includegraphics[width=1\textwidth]{WMN}
-%    \caption{An example of a wireless mesh network with 5 clients and a internet connection. The %connections made in the example are random.}
-%    \label{fig:WMN}
-%\end{figure}
+% \begin{itemize}[noitemsep]
+%     \item IEEE 802.11
+%     \item ZigBee
+%     \item SwarmBee
+% \end{itemize}
 
 
-$https://en.wikipedia.org/wiki/Mesh_networking$
-$https://en.wikipedia.org/wiki/Wireless_ad_hoc_network$
 
 
 

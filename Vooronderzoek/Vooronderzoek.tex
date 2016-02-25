@@ -125,16 +125,116 @@ SPI or Serial Peripheral Interface is, like it names suggests, a serial interfac
 
 
 \newpage
-
-\section{Relative Distance}
-Building a swarm robots consisting of multiple units, location awareness may be required to ensure an more efficient operation. Implementing location awareness into a swarm of robots could result in better cooperation. For example: exploration based tasks can be executed on a much lower time scale. With location awareness the swarm can spread out evenly making sure that every part of the perimeter will be explored thoroughly. 
+\section{Localization}
+Building a swarm of robots, location awareness may be required to ensure an more efficient operation. Implementing location awareness into a swarm of robots could result in better cooperation. For example: exploration based tasks can be executed on a much lower time scale. With location awareness the swarm can spread out evenly making sure that every part of the perimeter will be explored thoroughly. 
 
 With location awareness it is also possible to divide the swarm into multiple groups. Because the location of every individual is available these individual groups can be formed very quickly by selecting the nearest unit. This also enables quick assists when an individual robot gets stuck or needs to execute a task that require more than one unit.
 
-Relative distance can be measured in various ways using various methods. The most common methods are \textit{"Received Signal Strength Indication"} and \textit{"Time Of Flight"} abbreviated as RSSI and TOF. 
+To determine position, not only distance is required, to determine relative position the angle is also required to determine from which angle the units are relative to yourself. However this can result in multiple solutions, the angle could be mirrored.
 
-\subsection{Received Signal Strength}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{drolletje.pdf}
+\caption{Stationary robot (yellow) cannot compute the relative position of the moving robot (green), since all distance measurements (dashed lines) are invariant to rotations around the stationary robot.\cite{Angle}}
+\label{Angle}
+\end{figure}
 
+Therefore, in order to leverage the previous trilateration procedure requires coordinating the motion of the robots in a manner that gives every robot a chance to move and ensures that when a robot is moving its neighbors remain stationary. This can also be achieved by the use of stationary anchors.\cite{Angle}
+
+A more efficient solution would be to retrieve the relative orientation opposite to each other. In combination with the relative distance every robot knows the exact relative position of all the other robots in range of the network.
+\newpage
+
+\subsection{Relative Distance}
+Relative distance can be measured using various methods. The most common methods are \textit{"Received Signal Strength Indication"} and \textit{"Time Of Flight"} abbreviated as RSSI and TOF. 
+
+\subsubsection{Received Signal Strength}
+A method to determine distance can be implemented using Received Signal Strength abbreviated as "RSSI". Typically RSSI is a measure of dBm, which is ten times the logarithm of the ratio of the power (P)
+at the receiving end and the reference power (Pref). Power at the receiving end is inversely proportional to the
+square of distance.\cite{RSSI} Hence RSSI could potentially be used as an indicator of the distance
+at which the sending unit (robot) is located from the receiving unit.\cite{RSSI}
+
+RSSI is defined as ten times the logarithm of the ratio of power of the received signal
+and a reference power (for example 1mW). It is known that power dissipates from its source
+as it moves further out. As mentioned earlier the relationship between power and distance is that power is inversely
+proportional to the square of the distance travelled. \cite{RSSI}
+
+In theory it seems as a suitable implementation for the purpose, determining relative distance between
+different units. However various test results have shown that RSSI is only reliable under certain circumstances.
+Test results have shown that if the orientation of the sending or receiving unit changes it becomes very unreliable.
+The graphs below show the reliability of RSSI when the direction is being altered.\cite{RSSI}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{North.pdf}
+\caption{Distance versus RSSI plot showing inverse non linear
+relationship.\cite{RSSI}}
+\label{North}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{West.pdf}
+\caption{Distance versus RSSI plot showing lack of
+reliability when tested in a different direction.\cite{RSSI}} 
+\label{West}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{East.pdf}
+\caption{Distance versus RSSI plot showing lack of
+reliability when tested in a different direction.\cite{RSSI}} 
+\label{East}
+\end{figure}
+\newpage
+
+
+Even though RSSI was very promising in many studies, through multi directional experiments it became clear that even under ideal conditions with weather and interference controlled, the RSSI data could not be relied upon. At times the data was correct showing the expected inverse square relation with distance and at other times it didn't.\cite{RSSI}
+
+
+\subsubsection{Time Of Flight}
+Another common method to determine relative distance is Time Of Flight abbreviated as "TOF". Time Of Flight describes a method that measures the time that an particular wave takes to travel a distance trough a medium. The wave can be acoustic, electromagnetic and light.
+
+For relative distance measurements Time Of Flight is often combined with Time Difference Over Arrival abbreviated as "TDOA". Combining these methods enables relative distance measurements to specific units/nodes. TDOA measures the time difference between the transmission and arrival of a wave. With the velocity of propagation times the travelled time de relative distance between two or more nodes can be determined. However TOF also features certain limitations being clock synchronization, noise, sampling and multipath channel effects.\cite{TOF} 
+
+\textit{Clock Synchronization}
+TOF ranging systems need to estimate the time of transmission and arrival and comparing this with a common time reference.\cite{TOF} If the different time references are not perfectly synchronized a time offset error occurs. With the faster the propagation speed, the greater the error in distance. 
+
+\textit{Sampling}
+Using Light or electromagnetic waves to determine the relative distance can add several limitation. Due to the high velocity propagation (being nearly equal to equal of the velocity propagation of light) sampling this signal requires very high clock rates to do so. It would take a 15GHz clock to achieve one centimetre resolution.\cite{Arduino}
+
+in the 1960's, Tektronix invented a sampling method with a oscilloscope that could measure signals in the GHz range without using high speed clocks. This method is called Sequential Equivalent Time Sampling abbreviated as "SETS". The SETS acquires one sample per trigger see figure \ref{SETS}. When a trigger is detected a sample is taken after a very short, but well defined delay. When the next trigger occurs a small time increment "Delta T" is added to this delay and the digitizer takes another sample. This process is repeated many times with "Delta T" added to each previous acquisition, until the time windows is filled.\cite{SETS} In figure \ref{SETS2} another example of an sinusoidal signal is displayed using the SETS method. 
+
+Using the SETS method enables the use of waveform with an velocity propagation nearly equal to equal to the speed of light. However implementing a advanced SETS circuit is required to reach accuracy of less than 1 meter indoors.\cite{TOF} However using waveforms with a high velocity propagation enables faster data transfers and a larger range.\cite{TOF}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{SETS.png}
+\caption{In sequential equivalent time sampling a singel sample is taken for each recognized trigger after a delay which is incremented after each cycle.\cite{SETS}} 
+\label{SETS}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{SETS2.png}
+\caption{Example equivalent time sampled signal.\cite{SETS}} 
+\label{SETS2}
+\end{figure}
+\newpage
+
+\subsection{Conclusion}
+Different studies have shown that Received Signal Strength can theoretically measure distance accurately. However RSSI seems to be very unreliable in many circumstances which leads to not being viable for distance measurements with moving robots. 
+
+Time Of Flight has been very promising, however using electromagnetic signals (For example RF, WI-FI or Bluetooth) the acceptable accuracy starts at from a minimum range of 1-2 meters which leads to unreliable to no useful information at all in the range of 1-2 meters. This minimum range could be narrowed using an Sequential Equivalent Time Sampling Circuit, however such a circuit is complex to develop. However using waveforms with a lower velocity propagation can lead to accurate close range measurements. In this case Time Of Flight suits better for the required use, being more accurate and reliable see figure \ref{RSSIvsTOF}.\cite{TOF}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{RSSIvsTOF.pdf}
+\caption{Accuracy RSSI vs TOF.\cite{TOF}} 
+\label{RSSIvsTOF}
+\end{figure}
+
+Determining relative distance does not lead to localization to do so a angle is required. 
 \newpage
 
 \section{Onderzoek}

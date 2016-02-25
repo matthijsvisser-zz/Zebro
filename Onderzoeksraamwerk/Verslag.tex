@@ -294,6 +294,27 @@ Functies  & Hier komt alle communicatie samen en regelt de in- en uitgangen     
 Het centraal besturingsysteem verzorgt alle communicatie tussen de verschillende modules die aanwezig zijn op de robot. Zie tabel \ref{Centraal besturingsysteem}
 
 \newpage
+\subsection{Swarming Modules}
+
+In this chapter existing swarming modules will be researched and reviewed.
+
+\subsubsection{Nanotron}
+
+Nanotron is a German company that makes swarm modules. The swarm bee LE is their second swarming module. It communicates on 2.4 GHz radio signal with a speed of 155 kbps. Beside the communication it also contains a localisation module, temperature sensor, a RF amplifier, MEMS, and a micro-controller unit. The communication is trough UART and the API (Application Programming Interface) is controlled by special API commands. To implement self-made application the development board is needed to program the device. This device uses serial communication. 
+
+The localisation of Swarmbee has an accuracy of one to two meters. The localisation works better outdoor then indoor. For demonstration the modules should work indoor as well. \ref{http://www.etotaal.nl/upload/swarn%20bee%20LE%20Embedded.pdf}
+
+Nantron announced there newest module on 25 February 2016. This module has a localisation accuracy of +/- 10 cm. Which is an huge improvement compared to the second generation of the module. It also has an larger range within the different modules can be detected. It will be released soon, and the price will be the same as the second generation. So this would definitely be worth waiting for. \ref{http://nanotron.com/EN/NE_newsmgr.php?id=47} 
+	
+\subsubsection{NXP Jennic} 
+
+Jennic has made a Wireless Microcontroller. Which could operate as a swarm module. Time of flight is implemented in this device, and communication is trough the 2.4Ghz Communication is realised with Zigbee Pro network. Since it is not specifically made for swarming some specification which are defined by Nanotron is not specified here. The accuracy of the localisation is not specified. Expectation is that it is the same as the Nanotron or worse. \ref{http://www.farnell.com/datasheets/425280.pdf}\\
+
+Other then these two modules, there are no specific swarm modules that could be found. But there are a lot of research that have made there own localisation in a swarm, and/or their own communication. 
+
+
+
+
 
 \section{Bibliografie}
 \bibliography{references}

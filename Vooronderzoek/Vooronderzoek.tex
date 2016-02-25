@@ -113,22 +113,29 @@ The way a robot moves is determined by its effector with his corresponding actua
 \item (Superconductor)
 \end{itemize}
 
-Each of these effectors have pro's and con's in different situations. Tyres are easily implemented, but there are various ways to implement these. The amount of tyres used will affect the handling of the robot. With a minimum two tyres, movement can already be realized. The downside is that driving with two wheels is not stable, only with algorithms that can balance the robot stable movement can be accomplished. It would be easier to implement more than two wheels so that the robot is more stable and movement is easier. 
+Each of these effectors have pro's and con's in different situations. Pneumatic tires are easily implemented, but there are various ways to implement these. The amount of wheels used will affect the handling of the robot. With a minimum two wheels, movement can already be realized. The downside is that driving with two wheels is not stable, only with algorithms that can balance the robot, stable movement can be accomplished. It would be easier to implement more than two wheels so that the robot is more stable and movement is easier. Handling with three wheels could be difficult since the robot cannot tilt if the robot makes a turn. With four wheels the robot is even more stable, but steering is much less efficient. Both wheels on opposite side need to rotate in an opposite direction. This way the robot can rote. Another option with four wheels is to steer the way a car steers. It will be more efficient but it is harder to turn 360 degrees. It is also much more complicated to implement since some sort of steering mechanism needs to be implemented. \ref {https://en.wikipedia.org/wiki/Tire} \\ 
 
+Legs can be more mobile than wheels. It is possible to ‘step’ over large objects. In addition legs can ‘walk’ on multiple surfaces, like sand or other uneven surfaces. A downside of using legs is that it is difficult to walk smoothly. Another downside is that turning the robot is more complicated. Small movements are not precise and some destinations cannot be reached since it cannot make certain angles.	\\
 
-  
-%hier gebleven met vertalen
-Elke van deze effectoren hebben voor en nadelen in verschillende situaties.\\Wielen zijn eenvoudig te implementeren, er kunnen verschillende aantallen wielen worden aangebracht. Het aantal wielen heeft wel invloed op het rijgedrag van de robot. Met twee wielen kan er worden gereden, mits de robot in balans wordt gehouden. Dit kan worden gedaan door middel van een zwenkwiel, of door een regelsysteem te bedenken dat de twee wielen de robot in balans houden. Dit laatste kost veel energie en is niet eenvoudig. Met drie wielen staat de robot al een stuk stabieler. Het nadeel hiervan is dat sturen soms moeizaam kan zijn. Met vier wielen is de robot nog stabieler en kan er op verschillende manieren worden gestuurd. De wielen kunnen tegengesteld worden aangedreven waardoor de robot draait. Dit kost wel meer energie dan nodig is aangezien er extra wrijving ontstaat. Een optie is de voorste wielen te laten draaien, waardoor de robot in de richting van de wielen zal voortbewegen. Zoals bij een auto het geval is. Dit is weer lastiger te implementeren aangezien er een soort van stuurmechanisme moet worden bedacht. 
+Caterpillar tracks are quite a sturdy manner to propel the robot. It can be used on many types of surfaces and is still very mobile. The tracks distribute the weight of the vehicle well so it will not be likely the vehicle will get stuck on soft surfaces. Moreover it is easy to turn the robot on the spot and it can be turned in any angle. The downside of the tracks is that it will cost a lot of energy to propel the robot since the tracks will have quite some friction with the surface. Another downside is that is mechanically complex to implement. It could also use up a lot more actuators than the other options will need. \ref{https://en.wikipedia.org/wiki/Continuous_track#Disadvantages} \\
+
+With an air-cushion it is possible to float above the surface. This makes movement almost frictionless. It doesn’t take much effort to move forward, but it cost a great amount of energy to keep the vehicle floating above the ground. Air-cushion propelled vehicles are not commonly used in small vehicles since it has less advantages with smaller vehicles. If an air-cushion is used also another type of propulsion like propellers are needed to drive the vehicle. Movements are not precise and cost a lot of energy. 
+
+Propellers can be implemented to drive the robot. But like the air-cushion it still needs another effector to drive the vehicle. Movement is not precise, and could cost a lot of energy. Movement can be made precise by implementing multiple propellers which can turn 360 degrees. This way the robot should be able to reach every spot in a room, but again this would need multiple actuators and effector, and is hard to implement. Another downside is that propellers behave differently on Mars, and may even not be usable. \ref{https://en.wikipedia.org/wiki/Propeller#Propeller_characteristics} 
+
+Superconductors are a fairly new way to move objects. It is not implemented in any form of transportation, but might will in the future. For this project superconductors are not researched since it is not developed enough and beyond the scope. 
+
 
 \subsubsection{Actuatoren}
 
-De keuze van de actuator hangt sterk samen met de effectoren. <3
+The choice of actuators correlates with the choice of effector. One cannot be specified without the other. 
+*STILL NEEDS WORK* 
+
 
 \subsubsection{Aandrijving}
-
+*STILL NEEDS WORK* 
 \section{Swarm Communication}
 Each member of the swarm population needs to communicate with the rest of the swarm. To give the members full freedom of movement the communication also needs to be wireless. It is important that the population size of the swarm is dynamic, because of the scalability of the swarm. As mentioned earlier a swarm does not have a master. So each member needs to
-
 
 
 There exist several techniques to accomplish this method 

@@ -66,74 +66,61 @@ Swarming can have alot of up sides compared to the "classical" approach. A few a
 
 
 
-\section{Context analysis} 
-The Delft university of technology started a program to research the applications of swarming. In this program multiple universities work together to make this research possible. The idea of this program is that each project group contributes a small bit to reach the end result, which will be a working swarm of robots. The technology developed should be modular, so it can be easily used on other platforms.\\The programs focus lies on researching the applications of swarming on Mars. Its preferable that the technologies developed also work on Mars, but in some cases other technologies can be used to cut the cost. For example, for a simple proximity sensor on earth, an ultrasonic sensor would do just fine. But in the Mars atmosphere the ultrasonic waves get heavily dampened to the point where the sensor just wont work\cite{soundonmars}. The cheapest sensor that would work on Mars would be a lidar\cite{lidarmars}. While the average ultrasonic sensor costs around 2 \euro the cheapest lidar costs atleast 100 \euro. In this project the aim is to build one unit for around 200\euro, just one lidar sensor would be half of the robots budget. To proof the concept of swarming the robots don't need to be "Mars proof", so costs will be cut where possible.\\
+\section{Context analysis}
+The Delft university of technology started a program to research the applications of swarming. In this program multiple universities work together to make this research possible. The idea of this program is that each project group contributes a small bit to reach the end result, which will be a working swarm of robots. The technology developed should be modular, so it can be easily used on other platforms.\\The programs focus lies on researching the applications of swarming on Mars. Its preferable that the technologies developed also work on Mars, but in some cases other technologies can be used to cut the cost. For example, for a simple proximity sensor on earth, an ultrasonic sensor would do just fine. But in the Mars atmosphere the ultrasonic waves get heavily dampened to the point where the sensor just wont work\cite{soundonmars}. The cheapest sensor that would work on Mars would be a lidar\cite{lidarmars}. While the average ultrasonic sensor costs around 2$\euro$ the cheapest lidar costs atleast 100$\euro$. In this project the aim is to build one unit for around 200$\euro$, just one lidar sensor would be half of the robots budget. To proof the concept of swarming the robots don't need to be "Mars proof", so costs will be cut where possible.\\
 
 \section{Problem definition}
 Swarming intelligent systems are typically made up of simple agents(robots) interacting locally with one another and their environment. The group of individuals acting in such manner is referred to as a swarm\cite{swarmintelligence}. For a group of robots to qualify as a swarm-robotics the following criteria have to be met:
 
 \begin{itemize}
-    \item Autonomy – It is required that the individuals that make up   the swarm-robotic system are autonomous robots. They are able to        physically      interact with the environment and affect it.
-    \item Large number – A large number of units is required
-    as well, so the cooperative behavior (and
-    swarm intelligence) may occur. The minimum number
-    is hard to define and justify. The swarm-robotic
-    system can be made of few homogeneous groups of
-    robots consisted of large number of units. Highly heterogeneous 
-    robot groups tend to fall outside swarm
-    robotics.
-    \item Limited capabilities – The robots in a swarm
-    should be relatively incapable or inefficien on their
-    own with respect to the task at hand.
-    Scalability and robustness – A swarm-robotic
-    system needs to be scalable and robust. Adding the
-    new units will improve the performance of the overall
-    system and on the other hand, loosing some units will
-    not cause the catastrophic failure.
-    \item Distributed coordination – The robots in a swarm
-    should only have local and limited sensing and communication
-    abilities. The coordination between the
-    robots is distributed. The use of a global channel for
-    the coordination would influence the autonomy of the
-    units.
+	\item Autonomy - It is required that the individuals that make up 	the swarm-robotic system are autonomous robots. They are able to 		physically 		interact with the environment and affect it.
+	\item Large number - A large number of units is required
+	as well, so the cooperative behavior (and
+	swarm intelligence) may occur. The minimum number
+	is hard to define and justify. The swarm-robotic
+	system can be made of few homogeneous groups of
+	robots consisted of large number of units. Highly heterogeneous
+	robot groups tend to fall outside swarm
+	robotics.
+	\item Limited capabilities - The robots in a swarm
+	should be relatively incapable or inefficien on their
+	own with respect to the task at hand.
+	\item Scalability and robustness - A swarm-robotic
+	system needs to be scalable and robust. Adding the
+	new units will improve the performance of the overall
+	system and on the other hand, loosing some units will
+	not cause the catastrophic failure.
+	\item Distributed coordination - The robots in a swarm
+	should only have local and limited sensing and communication
+	abilities. The coordination between the
+	robots is distributed. The use of a global channel for
+	the coordination would influence the autonomy of the
+	units.
 \end{itemize}
 
-These criteria are a good indication of what makes a system swarm-robotic. But should not be used to determine whether a system is swarm-robotic or not. This is because some criteria are still somewhat phage\cite{swarmintelligence}.
+These criteria are a good indication of what makes a system swarm-robotic. But should not be used to determine whether a system is swarm-robotic or not. This is because some criteria are still somewhat vague\cite{swarmintelligence}.Looking at these criteria we chose to define the problem into two sub-problems. This division is chosen because problem one will cover distributed coordination and scalability with what we call a "swarming module", which will provide communication and relative localization to the other units in the swarm. And problem two covers Autonomy, Large number and limited capabilities.  Problem two will cover the platform that will provide movement and some basic autonomous functions. The projects focus will be the swarming module. The swarming module has to be completely modular so it can easily be used on other robotic platforms in future projects. Because of this the commissioning party stresses that this has to be a finished product. Resources(time) should be focused on the swarming module. For the sake of demonstration, problem two (the robot platform) will also need to be developed. This platform will have to provide some basic autonomous functions like movement and obstacle avoidance. One important requirement is that it should be easily replicated, so a swarm of these platforms can be created.\\
 
-Looking at these criteria we chose to define the problem into two sub-problems. One covers Autonomy, Large number and limited capabilities. And the other Distributed coordination. 
+\subsection{Goal}
+As previously discussed the problem is now divided in two sub-problems with the focus on the swarming module. In this paragraph will be discussed what will be expected from the swarming module and the robot platform.
 
-There are multiple aspects that should be taken into account. First the project focus will be building a swarming module. The features of this module will be discussed later. What's important is that the module should be "plug and play". What is meant by this is that the only in and output will be a communication protocol and a power input. This way the module can later be used on different platforms later in the program.\\ Then To properly test the swarming module, a swarm of robots will be need to be developed.
-
-\section{Doelstelling}
-In samenwerking met de technische universiteit Delft en de Hogeschool van Amsterdam moet er een zwerm robots (zwerm) worden ontwikkeld die samen een taak uitvoeren. Zwermen is een breed begrip. Daarom wordt hieronder opgesomd, aan welke specificaties voldaan moet worden voordat er over zwermen gesproken mag worden. Tevens zal hieruit een duidelijk doel naar voren komen wat behaald moet worden wat betreft het laten samen werken van verschillende robots binnen een zwerm.
-
-Een groep robots moet aan de volgende eisen voldoen om onder de categorie zwermen te vallen:
+\subsubsection{Swarmingmodule}
+Distributed coordination is one of the swarming criteria. To achieve this, some form of (relative) localization is needed. This should keep units from moving to close or to far from each other. And could also be used to accomplish certain goals like;  mapping, assembly of structures or inspections \cite{networkedRS}. Communication is needed to share information about the environment and every units position. Requirements here are that the communication should not be depended on one host and should be scalable. This is so communication is not cut off when one of the units breaks down. The scale-ability is important so that units can be added or removed from the swarm \cite{multidomaincom}. Because this project is part of a running program the modules made should be modular so they can be used on future projects. Summed up, the swarming module has the following characteristics.
 
 \begin{itemize}
-
-\item Autonoom		-	Het is vereist dat de  individuele  robots  binnenin  een  zwerm   
-systeem autonoom zijn. Ze moeten tevens over een fysieke interactie beschikken om de omgeving te waarnemen en eventueel aan te passen \cite{swarmintelligence}.
-
-\item Een groot aantal	-	Een groot aantal is ook vereist om het samenwerkende gedrag
-te bereiken. Het minimale aantal robots is lastig te definiëren. Een zwerm kan al gecre\"eerd worden met een paar simpele robots\cite{swarmintelligence}.
-\item Gelimiteerd	-	De robots in een zwerm moeten individueel relatief incapabel
-of ineffici\"ent zijn. Als een individuele robot de gehele taak van
-de zwerm kan uitvoeren. Is in dit geval de inzet van de zwerm geheel nutteloos\cite{swarmintelligence}.
-
-\item Schaalbaar		-	Een   zwerm    robots moet   schaalbaar  en   robuust   zijn. Het
-toevoegen van nieuwe robots aan het gehele systeem moet de uitvoering van de taak over het geheel verbeteren. Tevens als er verschillende units binnen de zwerm verloren raakt mag dit niet tot catastrofale fouten lijden\cite{swarmintelligence}.
-
-\item Co\"ordinaten	-	De robots   binnen een zwerm  moeten over een  gelimiteerde
-communicatie en waarneming beschikken. De coördinaten tussen de verschillende robots gedistribueerd. Het gebruik van en globale communicatie kanaal voor de co\"ordinaten be\"invloed de autonomie van de verschillende units\cite{swarmintelligence}.
+\item (Relative) Localization
+\item Communication
+\item Scalable
+\item Modular
 \end{itemize}
 
-Het doel is om een zwerm robots te ontwikkelen die voldoen aan de bovenstaande criteria.
+\subsubsection{Robot platform}
+To properly demonstrate and test the swarming module, a robotic platform will be needed. This platform will need to meet the swarming criteria of autonomy, large numbers and limited capabilities. The autonomy of the robot should stay simple and robust, the key features are movement, obstacle avoidance and power supply. The robot has to be easily duplicated so multiple units can be produced for the swarm. Also it should be able to house the swarming module.
 
 \section{Research-question}
 
-The main question of this research is as following: \textit{"How can a minimum  of three robots operate in a swarm".} To give an answer to this question there are multiple subquestions to research first. 
+The main question of this research is as following: \textit{"How can communication and relative localization be achieved in a swarm or robots?".} To give an answer to this question there are multiple sub-questions to research first. 
  
-%In dit onderzoek wordt de volgende hoofdvraag onderzocht:"Hoe kunnen er minimaal drie robots in een zwerm opereren?". Om de hoofdvraag te kunnen beantwoorden zijn antwoorden nodig op een aantal deelvragen.
+
 
 \section{Sub-questions} 
 The following questions need to be answered to come to a good conclusion to our research:
@@ -145,7 +132,16 @@ The following questions need to be answered to come to a good conclusion to our 
         \item "What is the definition of swarming?"
         \item "How many robots are needed to create a swarm?"
         \item "How do the units communicate within the swarm?"
+        \item "How do robots in the swarm know their location?"
     \end{itemize}    
+    \item "Swarming communication"
+    \begin{itemize}
+        \item "What software protocol should be used?"
+        \item "What hardware protocol should be used?"
+        \item "What is de minimal required communication speed?"
+        \item "What hardware is needed to implement the communication?"
+    \end{itemize}
+        \item "Communication between modules"
     \begin{itemize}
         \item "What software protocol should be used?"
         \item "What hardware protocol should be used?"
@@ -163,6 +159,10 @@ The following questions need to be answered to come to a good conclusion to our 
         \item "How can the energy supply be managed?"
         \item "Is it possible to implement a recharge point?"
         \item "How can the energy supply be handled safely?"
+    \end{itemize}
+    \item "How will autonomous obstacle avoidance be achieved?"
+    \begin{itemize}
+   		 \item "What types of sensor technigues are there?"
     \end{itemize}
 \end{itemize}
 \newpage

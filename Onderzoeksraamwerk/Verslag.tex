@@ -185,17 +185,17 @@ In this chapter the functional requirements for building a robot which can perfo
 
 
 M1 - Modular system architecture - Modules developed during this project must be modular so they can be used in future projects.\\\\
-M2 - Units must be able to communicate with each other - The units in the swarm must be able to exchange information to properly  \\\\
-M3 - Relative localization to other units \\
-M4 - The communication needs to be wireless\\
-M5 - Scalable swarm population\\
+M2 - Units must be able to communicate with each other - The units in the swarm must be able to exchange information to properly funtion as a swarm. This is discussed in the problem defention\cite{multidomaincom}.  \\\\
+M3 - Relative localization to other units - Localization is needed for robots to properly function in a swarm. This is discussed in the problem defention\cite{multidomaincom}\\\\
+M4 - The communication needs to be wireless - The robots cant be restrained by wires, they need to be able to move freely trough their environment.\\\\
+M5 - Scalable swarm population - This is one of the criteria of swarming discussed in the problem definition\\\\
 
 
 \subsection{Should haves}
 
-S1 - Is able to carry a payload\\
-S2 - The robot platform must be modular\\
-M5 - The robot must be able to propel themselves omnidirectional\\
+S1 - Is able to carry a payload - One criteria of swarming is that robots should be able to adjust their environment, a payload could be some kind of tool to make this possible\\\\
+S2 - The robot platform must be modular - It would be preferable if the robots developed during this project are modular so they can be used in further development.\\\\
+S3 - The robot must be able to propel themselves omnidirectional - For exploration based mission the robots should be able to move in different directions so the full area can be explored.\\
 
 \subsection{Could haves}
 
@@ -293,6 +293,9 @@ Functions  & All the communication comes together and controls the inputs and ou
 \end{table}
 
 The central control unit handles all communication between the various modules that are present on the robot. See Table \ref{control}
+
+\subsection{Conclusion}
+Since this project is still in the early stages of research the specifications are still limited and not fully substantiated. Parallel to writing this document a lot of research has been done into different implementations of localization and communication in swarming networks. This research can be found in the project folder. When the research is concluded precise specifications can be composed. 
 
 \newpage
 

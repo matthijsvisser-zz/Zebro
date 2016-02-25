@@ -39,11 +39,9 @@
     \centering
     \vfill
     {\Large
-<<<<<<< HEAD
+
     Swarming\\
-=======
-    Maarten\\
->>>>>>> feature/WMN
+
    
     {\small Research document}\\
         
@@ -79,7 +77,7 @@ Building a modular robot consisting of subsystems, there must be a method to let
 Every subsystem features a micro-controller which must be capable of transmitting and receiving data.  
 
 \subsubsection{TWI}
-TWI staat voor two wire interface en lijkt sterk op het protocol $I^{2}C$ van Phillips. zoals de naam al doet vermoeden bestaat de bus uit 2 aansluitingen, één voor de data en één voor de clock \ref{I2C bus}
+TWI staat voor two wire interface en lijkt sterk op het protocol $I^{2}C$ van Phillips. zoals de naam al doet vermoeden bestaat de bus uit 2 aansluitingen, één voor de data en één voor de clock \cite{I2C bus}
 \subsubsection{SPI}
 \subsubsection{UART}
 \subsection{Software}
@@ -135,6 +133,7 @@ De keuze van de actuator hangt sterk samen met de effectoren. <3
 
 \subsubsection{Aandrijving}
 
+\newpage
 \section{Swarm Communication}
 There are several requirements to realise a robot swarm. Each member of the population needs to communicate with the rest of the swarm. To give the members full freedom of movement the communication also needs to be wireless. It is important that the population size of the swarm is dynamic, because of the scalability of the swarm. As mentioned earlier a swarm does not have a master. So each member needs to be capable to maintain the network. These networks also must be able to reroute around nodes that have been lost.
 
@@ -161,6 +160,7 @@ Examples of possible protocols:
 %     \item SwarmBee
 % \end{itemize}
 
+\newpage
 
 
 
@@ -200,9 +200,9 @@ Now the question is which of the different sensor techniques proposed, is the be
 Looking at these points it becomes clear that the lidar sensor wouldn't be the best choice. It doesn't really have any outstanding pros compared to the other two techniques and it's much more expensive. Currently the cheapest lidar sensor would cost about 100$\euro$. The ultrasonic and mechanical sensor wouldn't cost more than a few Euro's. As talked about before the mechanical sensor has a few drawbacks compared to the ultrasonic sensor. For these reasons the ultrasonic sensor seems the best choice. The only issue left to solve is how to sense the difference between obstacles which the robot has to avoid, and things the robot doesn't have to avoid, but still might be detected by the sensor. This will be discussed in the next paragraph.
 
 \subsubsection{Obstacle discrimination with an ultrasonic sensor}
-An ultrasonic sensor is usually used to detect if there is some obstacle in the way. In this case there is made no difference made between a obstacle that the robot can move over, or a obstacle that should be avoided. For example: a small slope or hill might be detected as an obstacle, but in truth the robot can move over it. The robots developed for this program will eventually be able to cross harsh terrain. In this case the proximity sensor will need to discriminate between these situations. Working with ultrasonic waves there are multiple domains to work with. These are time, frequency and amplitude. Time is used to determine the distance between the object and the sensor. The change in frequency and/or amplitude contains information about the shape of the object\ref{ultraobject}. 
+An ultrasonic sensor is usually used to detect if there is some obstacle in the way. In this case there is made no difference made between a obstacle that the robot can move over, or a obstacle that should be avoided. For example: a small slope or hill might be detected as an obstacle, but in truth the robot can move over it. The robots developed for this program will eventually be able to cross harsh terrain. In this case the proximity sensor will need to discriminate between these situations. Working with ultrasonic waves there are multiple domains to work with. These are time, frequency and amplitude. Time is used to determine the distance between the object and the sensor. The change in frequency and/or amplitude contains information about the shape of the object\cite{ultraobject}. 
 In the paper "Object recognition with ultrasonic sensor" is concluded 
-that looking at the amplitude over time contains enough information to discriminate between object\ref{ultraobject}. The example is given of an object with separated surfaces of 3,5cm, the echo from the second surface will be delayed by 0,2msec relative to the echo from the first surface. This delay can be easily detected with a microprocessor. The reason looking at frequency isn't the first choice is because of the higher hardware requirements it would require to properly sample the signal. 
+that looking at the amplitude over time contains enough information to discriminate between object\cite{ultraobject}. The example is given of an object with separated surfaces of 3,5cm, the echo from the second surface will be delayed by 0,2msec relative to the echo from the first surface. This delay can be easily detected with a microprocessor. The reason looking at frequency isn't the first choice is because of the higher hardware requirements it would require to properly sample the signal. 
 \\
 
 \newpage

@@ -6,8 +6,8 @@
 \usepackage{graphicx}
 \usepackage{color}
 \usepackage{float}
-\usepackage[dutch]{babel}
 \usepackage{eurosym}
+\usepackage{booktabs,tabularx}
  
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -55,6 +55,11 @@
 
 \newpage
 
+\listoffigures
+\newpage
+
+\listoftables
+\newpage
 \tableofcontents
 \newpage
 
@@ -199,10 +204,10 @@ M5 - The robot must be able to propel themselves omnidirectional\\
 
 \subsection{Could haves}
 
-C1 - Can move according to the principle of the ZebRo\\
-C2 - Ability to self- charging / recharging of energy\\
-C3 - Shows signs of intelligence\\
-C4 - Is aware when the robot is upside down\\
+C1 - Can move according to the principle of the ZebRo - Research shows that the ZebRo walking principle is a proven concept to get across rough terrain.\\
+C2 - Ability to self- charging/ recharging of energy - Makes the robot capable of operating for a not determined time.\\
+C3 - Shows signs of intelligence - Could learn how to behave on specific (environment) situations\\
+C4 - Is aware when the robot is upside down - When the robot gets in a situation where it is unable to move, the orientation could be usefull to free itself. \\
 
 
 
@@ -213,7 +218,7 @@ C4 - Is aware when the robot is upside down\\
 
 \newpage
 
-\section{sub-specifications}
+\section{Sub-specifications}
 
 \begin{table}[H]
 \centering
@@ -244,7 +249,7 @@ Functions   & \begin{tabular}[c]{@{}l@{}}measuring the voltage/ current of the P
 \end{table}
 
 
-It is important to measure the battery level to ensure that the robots will not be able to fall out. \\The measured value is send to the controller. See Table \ref{supply}\\
+It is important to measure the battery level to ensure that the robots will not be able malfunction. \\The measured value is send to the controller. See Table \ref{supply}\\
 
 \begin{table}[H]
 \centering

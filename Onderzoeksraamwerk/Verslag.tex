@@ -167,131 +167,133 @@ The following questions need to be answered to come to a good conclusion to our 
 \end{itemize}
 \newpage
 
-\section{Specificaties}
-In dit document worden de functionele eisen omschreven voor het bouwen van een robot die in samenwerking met andere robots een taak kan uitvoeren, zwermen. De specificaties zijn opgedeeld in verschillende functies waarmee het doel bereikt kan worden. 
-Volgens de MoSCow -methode worden de te behalen specificaties op het gebied van zwermen geclassificeerd. De bijbehorende specificaties worden in dit hoofdstuk verder toegelicht. In het blokschema getoond in figuur \ref{fig:blockschematic}, zijn de verschillende modules aan elkaar verbonden. 
+\section{Specifications}
+In this chapter the functional requirements for building a robot which can perform a task in cooperation with other robots will be defined. The specifications are divided into several features. The specifications to be achieved for swarming will be classified according to the MoSCoW-method. The corresponding specifications are further illustrated in this chapter. In the block diagram shown in Figure  \ref{fig:blockschematic}, the various modules are connected to each other.
+
+
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\textwidth]{blockschematic}
-    \caption{Versimpelde weegave in een blokschema van de samenhang van de verschillende deelsystemen binnen de robot.}
+    \caption{simplified block diagram of the connection of the different subsystems within the robot }
     \label{fig:blockschematic}
 \end{figure}
 
 
 
+
 \subsection{Must haves}
 \begin{itemize}
-\item Robots moeten onderling kunnen communiceren
-\item De communicatie moet draadloos zijn
-\item Iedere module moet zijn eigen energievoorziening hebben
-\item De robot moet zichzelf omridirectioneel voort kunnen bewegen
-\item Kan met meerdere robots opereren in een zwerm
+\item Robots should be able to communicate with each other
+\item The communication needs to be wireless
+\item Every module should be connected to the power supply
+\item The robot must be able to propel themselves omnidirectional
+\item Can operate with multiple robots in a swarm
 \end{itemize}
 
 \subsection{Should haves}
 \begin{itemize}
-\item In staat om een payload te vervoeren
-\item Modulaire opbouw van systeem
+\item Is able to carry a payload
+\item Modular system architecture
 \end{itemize}
 
 \subsection{Could haves}
 \begin{itemize}
-\item Kan zich voortbewegen volgens het principe van de ZebRo
-\item Mogelijkheid tot zelfstandig opladen/bijladen van energievoorziening
-\item Toont een vorm van intelligentie
-\item Schaalbaar maken van de zwerm populatie
-\item Is er zich van bewust wanneer de robot zich ondersteboven bevind
-\item De robot kan zich voortbewegen volgens het principe van de robot
-\item De robots moeten modulair zijn
-\item De robots kunnen zich opladen in een oplaadstation
+\item Can move according to the principle of the ZebRo
+\item Ability to self- charging / recharging of energy
+\item Shows signs of intelligence
+\item Scalable swarm population
+\item Is aware when the robot is upside down
+\item The robots must be modular
 \end{itemize}
 
 \subsection{Won't haves}
 \begin{itemize}
-\item Een master in het zwerm netwerk
+\item A master in the swarm network
 \end{itemize}
 
 \newpage
 
-\section{Deelspecificaties}
+\section{sub-specifications}
 
 \begin{table}[H]
 \centering
-\caption{Sensoren}
-\label{Sensoren}
+\caption{Sensors}
+\label{Sensors}
 \begin{tabular}{|l|l|}
 \hline
-Module    & Sensoren \\ \hline
-Ingangen  & Communicatie met het systeem             \\ \hline
-Uitgangen & Communicatie met het systeem             \\ \hline
-Functies   & \begin{tabular}[c]{@{}l@{}}Meet de afstand tussen zichzelf en de omgeving\\ Moet de gemeten waarde communiceren naar de controller\end{tabular}            \\ \hline
+Module    & Sensors \\ \hline
+Input  & Communication with the system          \\ \hline
+Output & Communication with the system             \\ \hline
+Functions   & \begin{tabular}[c]{@{}l@{}}measuring the distance between itself and the environment\\ To communicate the measured value to the controller\end{tabular}            \\ \hline
 \end{tabular}
 \end{table}
 
-De sensoren aanwezig op de robot moeten awareness creëren van zijn omgeving zodat hij zich hierop kan anticiperen. Zie tabel \ref{Sensoren}\\
+The sensors on the robot must create awareness of its surroundings so that he can anticipate. See Table \ref{Sensors}\\
 
 \begin{table}[H]
 \centering
-\caption{Voeding (status)}
-\label{voeding}
+\caption{Power supply}
+\label{supply}
 \begin{tabular}{|l|l|}
 \hline
-Module    & Voeding (status) \\ \hline
-Ingangen  & Voeding            \\ \hline
-Uitgangen & Communicatie met het systeem             \\ \hline
-Functies   & \begin{tabular}[c]{@{}l@{}}Meet de spanning/stroom van de voeding\\ Moet de gemeten waarde communiceren naar de controller\end{tabular}            \\ \hline
+Module    & Power supply \\ \hline
+Input  & Power supply            \\ \hline
+Output & Communication with the system             \\ \hline
+Functions   & \begin{tabular}[c]{@{}l@{}}measuring the voltage/ current of the Power supply\\ To send the measured value to the controller\end{tabular}            \\ \hline
 \end{tabular}
 \end{table}
 
-Het is belangrijk om het accuniveau te meten om te voorkomen dat een robot uit de zwerm stil komt te staan. De gemeten waarde wordt gecommuniceerd naar de controller. Zie tabel \ref{voeding}\\
+
+It is important to measure the battery level to ensure that the robots will not be able to fall out. \\The measured value is send to the controller. See Table \ref{supply}\\
 
 \begin{table}[H]
 \centering
-\caption{Draadloze communicatie module}
-\label{communicatie}
+\caption{Wireless communication mudule}
+\label{communication}
 \begin{tabular}{|l|l|}
 \hline
-Module    & Draadloze communicatie module \\ \hline
-Ingangen  & \begin{tabular}[c]{@{}l@{}}Communicatie met het systeem\\ Communicatie met de andere robots in de zwerm          
+Module    & Wireless communication mudule \\ \hline
+Input  & \begin{tabular}[c]{@{}l@{}}Communication with the system\\ Communication with the other robots in the swarm          
 \end{tabular}   \\ \hline
-Uitgangen & \begin{tabular}[c]{@{}l@{}}Communicatie met het systeem\\ Communicatie met de andere robots in de zwerm          
+Output & \begin{tabular}[c]{@{}l@{}}Communication with the system\\ Communication with the other robots in the swarm         
 \end{tabular}   \\ \hline
-Functies   & \begin{tabular}[c]{@{}l@{}}brengt de communicatie tussen de zwerm modules tot stand\\ Verkrijgt informatie betreft de afstand tussen de verschillende robots\end{tabular}            \\ \hline
+Functions   & \begin{tabular}[c]{@{}l@{}}establishes the communication between the modules swarm \\ Obtains information regarding the distance between the different robots\end{tabular}            \\ \hline
 \end{tabular}
 \end{table}
 
-Om te communiceren tussen verschillende units moet er een communicatienetwerk worden opgesteld met \'e\'en gemeenschappelijk protocol. Daarnaast moet het protocol ook extra gegevens kunnen verzorgen zoals locatievoorziening. Zie tabel \ref{communicatie} \\
+
+To communicate between different units a communication network should be set up with a common protocol . In addition, the protocol must be able to provide additional information such as localization. See Table \ref{communication} \\
 
 \begin{table}[H]
 \centering
-\caption{Effectoren}
-\label{Effectoren}
+\caption{effectors}
+\label{Effectors}
 \begin{tabular}{|l|l|}
 \hline
-Module    & Effectoren \\ \hline
-Ingangen  & aansturing  \\ \hline
-Uitgangen & Mechanische kracht   \\ \hline
-Functies  & Drijft de robot aan en is in staat om bochten te maken op commando            \\ \hline
+Module    & Effectors \\ \hline
+Input  & motor drivers  \\ \hline
+Output & mechanical power   \\ \hline
+Functions  & Drives the robot , and is able to turn on command            \\ \hline
 \end{tabular}
 \end{table}
 
-De aandrijving moet, naast dat het werk op in de testomgeving, ook goed kunnen functioneren op mars. Zie tabel \ref{Effectoren} \\
+The operator must , in addition to the functioning in the testenvironment , also function well on Mars . See Table \ref{Effectors} \\
 
 \begin{table}[H]
 \centering
-\caption{Centraal besturingsysteem}
-\label{Centraal besturingsysteem}
+\caption{Central control unit}
+\label{control}
 \begin{tabular}{|l|l|}
 \hline
-Module    & Centraal besturingsysteem \\ \hline
-Ingangen  & Alle informatie vanuit het systeem  \\ \hline
-Uitgangen & Alle aansturing van de modules in de robot \\ \hline
-Functies  & Hier komt alle communicatie samen en regelt de in- en uitgangen            \\ \hline
+Module    & Central control unit \\ \hline
+Input  & All information from the system  \\ \hline
+Output & All control of the modules in the robot \\ \hline
+Functions  & All the communication comes together and controls the inputs and outputs            \\ \hline
 \end{tabular}
 \end{table}
 
-Het centraal besturingsysteem verzorgt alle communicatie tussen de verschillende modules die aanwezig zijn op de robot. Zie tabel \ref{Centraal besturingsysteem}
+The central control unit handles all communication between the various modules that are present on the robot. See Table \ref{control}
 
 \newpage
 

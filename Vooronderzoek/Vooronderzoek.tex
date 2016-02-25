@@ -6,10 +6,17 @@
 \usepackage{graphicx}
 \usepackage{color}
 \usepackage{float}
-\usepackage[dutch]{babel}
 
 \usepackage{eurosym}
  
+\usepackage{fancyhdr}
+ 
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Amsterdam university of applied sciences}
+\lhead{Swarming: Research}
+\rfoot{Page \thepage}
+
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
@@ -40,12 +47,14 @@
     \centering
     \vfill
     {\Large
-    Zwermen\\
+
+    Swarming\\
+
    
-    {\small Onderzoeksraamwerk behorende bij het innovatielab project}\\
+    {\small Research document}\\
         
         \vskip2cm
-        {\small M. van Wilgenburg, W. Mukhtar, E. van Splunter, M. Siekerman, T. Zaal en M. Visser}\\
+        {\small M. van Wilgenburg, W. Mukhtar, E. van Splunter, M. Siekerman, T. Zaal and M. Visser}\\
     }    
     \vfill
 %    \includegraphics[width=1\textwidth]{WireS4}
@@ -54,6 +63,12 @@
     \vfill
 \end{titlepage}
 
+\newpage
+
+\listoffigures
+\newpage
+
+\listoftables
 \newpage
 
 \tableofcontents
@@ -70,8 +85,41 @@ Building a modular robot consisting of subsystems, there must be a method to let
 Every subsystem features a micro-controller which must be capable of transmitting and receiving data.  
 
 \subsubsection{TWI}
-TWI staat voor two wire interface en lijkt sterk op het protocol $I^{2}C$ van Phillips. zoals de naam al doet vermoeden bestaat de bus uit 2 aansluitingen, één voor de data en één voor de clock \ref{I2C bus}
+The name TWI stands for "Two wire interface" which strongly resembles Phillps' protocol $I^(2)C$. Like the name suggests the bus is build up using two wires, one is used for the clock signal and the other is used for the data signal. Each of these wires is connected to the powerline through a pull-up resistor so every subsystem connected to the line can pull the line down which other systems can see. TWI can be used as a multimaster system which means every subsystem can send it's data without being dependend on a single master.
+
+\begin{figure}[H]
+        \centering
+        \graphicspath{ {./images/} }
+        \includegraphics[scale=.6]{datacondities}
+        \caption{Data conditions}
+        \label{fig:Data conditions}
+\end{figure}
+In the above figure multiple data and clock combinations are shown, these combinations define the message start, sending a zero, a one and a stopbit. The system that wants to send information starts a message bij changing the datasignal from one to zero on a high clocksignal. All systems that are listening now know one of the systems is going to send a message. Data can be send by changing the dataline from zero to one or the other way around during a low clocksignal, the other systems will read this bit when the clocksignal becomes high again. Once the system is done sending its message it will let the other systems know by sending a stopbit.
+
+\begin{figure}[H]
+        \centering
+        \graphicspath{ {./images/} }
+        \includegraphics[scale=.6]{TWImessage}
+        \caption{Structure of a TWI message}
+        \label{fig:TWIstructure}
+\end{figure}
+In the above picture the structure of a message is shown. As explained before the message starts with a startbit after which a small header follows. The header contains information about who is going to be adressed by the message and if you want to read or write. After this the adressed system will respond with an acknowladge to make sure the information has come across. When the acknowladge is recieved the system will start sending data, followed by and acknowladge from the reciever after every recieved byte of data. when the system is done sending all of its data and recieved the last acknowladge it will send the stopbit which means all communication has ended.
+\\
+\\
+TWI has a few benefits, because it is a simple serial protocol it only uses two wires. this saves a lot of space in the hardware design. Also, it has the possibility to be used as a multimaster system.
+The speed of the communication depend on the frequency of the controller that will be used.
+
+
 \subsubsection{SPI}
+SPI or Serial Peripheral Interface is, like it names suggests, a serial interface. This interface can be connected in two ways, each having its own advantage. How this works will be explained using the following figure.
+% \begin{figure}[H]
+%         \centering
+%         \graphicspath{ {./images/} }
+%         \includegraphics[scale=.6]{SPI}
+%         \caption{SPI connections}
+%         \label{fig:SPIconnections}
+% \end{figure}
+
 \subsubsection{UART}
 \subsection{Software}
 
@@ -122,32 +170,39 @@ Elke van deze effectoren hebben voor en nadelen in verschillende situaties.\\Wie
 
 \subsubsection{Actuatoren}
 
-De keuze van de actuator hangt sterk samen met de effectoren. <3
+De keuze van de actuator hangt sterk samen met de effectoren.
 
 \subsubsection{Aandrijving}
 
+\newpage
 \section{Swarm Communication}
-Each member of the swarm population needs to communicate with the rest of the swarm. To give the members full freedom of movement the communication also needs to be wireless. It is important that the population size of the swarm is dynamic, because of the scalability of the swarm. As mentioned earlier a swarm does not have a master. So each member needs to
+There are several requirements to realise a robot swarm. Each member of the population needs to communicate with the rest of the swarm. To give the members full freedom of movement the communication also needs to be wireless. It is important that the population size of the swarm is dynamic, because of the scalability of the swarm. As mentioned earlier a swarm does not have a master. So each member needs to be capable to maintain the network. These networks also must be able to reroute around nodes that have been lost.
+
+To create an network with those characteristics a (wireless) mesh network ((W)MN) is a possible solution. A mesh network relies on communication nodes in which data is distributed. All of the communication nodes cooperate in the distribution of data in the network. Each node of the network is connected to one or more nearby in range node(s) and forwards data on behalf of the other nodes. \cite{meshnetworking} A example of an mesh network is illustrated in figure \ref{fig:WMN}. To ensure a realiable network, self-organization and topology control alogorithms are needed.\cite{WMN1} Mesh networks can use self-healing algorithms such as Shortest Path Bridging (SPB) to restore and reroute the connection around broken nodes/clients. Shortest path bridging calculates the most favorable connections to the clients with the lowest path costs. \cite{SPB} Other usefull algorithms are listed in \cite{position-based}. The most efficient algorithm for path bridging depends on the situation where the clients are operating in which is described in \cite{position-based}.
+
+A wireless mesh network (WMN) is a dynamically self-organized and configured network. \cite{WMN1} Each node or client in the network is able to create an ad hoc network to maintain the mesh connectivity, this is called client WMN's. These networks are able to reroute around nodes that have been lost. On large scale projects wireless mesh networks are costefficient because of the saving of wired connections.\cite{meshnetworking}
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{WMN}
+   \caption{An example of a wireless mesh network with 5 clients and an optional internet connection. The connections made in this example are random.}
+   \label{fig:WMN}
+\end{figure}
+
 
 
 
 There exist several techniques to accomplish this method 
-Examples
+Examples of possible protocols:
 
-To create an network with those characteristics a mesh network (MN) is needed. An mesh network relies on communication nodes in which data is distributed. All of the communication nodes cooperate in the distribution of data in the network. Each node of the network is connected to one or more nearby in range node(s) and forwards data on behalf of the other nodes. 
+% \begin{itemize}[noitemsep]
+%     \item IEEE 802.11
+%     \item ZigBee
+%     \item SwarmBee
+% \end{itemize}
 
-A wireless mesh network (WMN) is a dynamically self-organized and configured network. Each node in the network is able to create an ad hoc network to maintain the mesh connectivity. These networks are able to reroute around nodes that have been lost. 
+\newpage
 
-%\begin{figure}[h]
-%    \centering
-%    \includegraphics[width=1\textwidth]{WMN}
-%    \caption{An example of a wireless mesh network with 5 clients and a internet connection. The %connections made in the example are random.}
-%    \label{fig:WMN}
-%\end{figure}
-
-
-$https://en.wikipedia.org/wiki/Mesh_networking$
-$https://en.wikipedia.org/wiki/Wireless_ad_hoc_network$
 
 
 
@@ -186,9 +241,9 @@ Now the question is which of the different sensor techniques proposed, is the be
 Looking at these points it becomes clear that the lidar sensor wouldn't be the best choice. It doesn't really have any outstanding pros compared to the other two techniques and it's much more expensive. Currently the cheapest lidar sensor would cost about 100$\euro$. The ultrasonic and mechanical sensor wouldn't cost more than a few Euro's. As talked about before the mechanical sensor has a few drawbacks compared to the ultrasonic sensor. For these reasons the ultrasonic sensor seems the best choice. The only issue left to solve is how to sense the difference between obstacles which the robot has to avoid, and things the robot doesn't have to avoid, but still might be detected by the sensor. This will be discussed in the next paragraph.
 
 \subsubsection{Obstacle discrimination with an ultrasonic sensor}
-An ultrasonic sensor is usually used to detect if there is some obstacle in the way. In this case there is made no difference made between a obstacle that the robot can move over, or a obstacle that should be avoided. For example: a small slope or hill might be detected as an obstacle, but in truth the robot can move over it. The robots developed for this program will eventually be able to cross harsh terrain. In this case the proximity sensor will need to discriminate between these situations. Working with ultrasonic waves there are multiple domains to work with. These are time, frequency and amplitude. Time is used to determine the distance between the object and the sensor. The change in frequency and/or amplitude contains information about the shape of the object\ref{ultraobject}. 
+An ultrasonic sensor is usually used to detect if there is some obstacle in the way. In this case there is made no difference made between a obstacle that the robot can move over, or a obstacle that should be avoided. For example: a small slope or hill might be detected as an obstacle, but in truth the robot can move over it. The robots developed for this program will eventually be able to cross harsh terrain. In this case the proximity sensor will need to discriminate between these situations. Working with ultrasonic waves there are multiple domains to work with. These are time, frequency and amplitude. Time is used to determine the distance between the object and the sensor. The change in frequency and/or amplitude contains information about the shape of the object\cite{ultraobject}. 
 In the paper "Object recognition with ultrasonic sensor" is concluded 
-that looking at the amplitude over time contains enough information to discriminate between object\ref{ultraobject}. The example is given of an object with separated surfaces of 3,5cm, the echo from the second surface will be delayed by 0,2msec relative to the echo from the first surface. This delay can be easily detected with a microprocessor. The reason looking at frequency isn't the first choice is because of the higher hardware requirements it would require to properly sample the signal. 
+that looking at the amplitude over time contains enough information to discriminate between object\cite{ultraobject}. The example is given of an object with separated surfaces of 3,5cm, the echo from the second surface will be delayed by 0,2msec relative to the echo from the first surface. This delay can be easily detected with a microprocessor. The reason looking at frequency isn't the first choice is because of the higher hardware requirements it would require to properly sample the signal. 
 \\
 
 \newpage

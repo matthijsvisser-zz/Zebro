@@ -9,6 +9,14 @@
 
 \usepackage{eurosym}
  
+\usepackage{fancyhdr}
+ 
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Amsterdam university of applied sciences}
+\lhead{Swarming: Research}
+\rfoot{Page \thepage}
+
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
@@ -77,8 +85,41 @@ Building a modular robot consisting of subsystems, there must be a method to let
 Every subsystem features a micro-controller which must be capable of transmitting and receiving data.  
 
 \subsubsection{TWI}
-TWI staat voor two wire interface en lijkt sterk op het protocol $I^{2}C$ van Phillips. zoals de naam al doet vermoeden bestaat de bus uit 2 aansluitingen, één voor de data en één voor de clock \cite{I2C bus}
+The name TWI stands for "Two wire interface" which strongly resembles Phillps' protocol $I^(2)C$. Like the name suggests the bus is build up using two wires, one is used for the clock signal and the other is used for the data signal. Each of these wires is connected to the powerline through a pull-up resistor so every subsystem connected to the line can pull the line down which other systems can see. TWI can be used as a multimaster system which means every subsystem can send it's data without being dependend on a single master.
+
+\begin{figure}[H]
+        \centering
+        \graphicspath{ {./images/} }
+        \includegraphics[scale=.6]{datacondities}
+        \caption{Data conditions}
+        \label{fig:Data conditions}
+\end{figure}
+In the above figure multiple data and clock combinations are shown, these combinations define the message start, sending a zero, a one and a stopbit. The system that wants to send information starts a message bij changing the datasignal from one to zero on a high clocksignal. All systems that are listening now know one of the systems is going to send a message. Data can be send by changing the dataline from zero to one or the other way around during a low clocksignal, the other systems will read this bit when the clocksignal becomes high again. Once the system is done sending its message it will let the other systems know by sending a stopbit.
+
+\begin{figure}[H]
+        \centering
+        \graphicspath{ {./images/} }
+        \includegraphics[scale=.6]{TWImessage}
+        \caption{Structure of a TWI message}
+        \label{fig:TWIstructure}
+\end{figure}
+In the above picture the structure of a message is shown. As explained before the message starts with a startbit after which a small header follows. The header contains information about who is going to be adressed by the message and if you want to read or write. After this the adressed system will respond with an acknowladge to make sure the information has come across. When the acknowladge is recieved the system will start sending data, followed by and acknowladge from the reciever after every recieved byte of data. when the system is done sending all of its data and recieved the last acknowladge it will send the stopbit which means all communication has ended.
+\\
+\\
+TWI has a few benefits, because it is a simple serial protocol it only uses two wires. this saves a lot of space in the hardware design. Also, it has the possibility to be used as a multimaster system.
+The speed of the communication depend on the frequency of the controller that will be used.
+
+
 \subsubsection{SPI}
+SPI or Serial Peripheral Interface is, like it names suggests, a serial interface. This interface can be connected in two ways, each having its own advantage. How this works will be explained using the following figure.
+% \begin{figure}[H]
+%         \centering
+%         \graphicspath{ {./images/} }
+%         \includegraphics[scale=.6]{SPI}
+%         \caption{SPI connections}
+%         \label{fig:SPIconnections}
+% \end{figure}
+
 \subsubsection{UART}
 \subsection{Software}
 
@@ -129,7 +170,7 @@ Elke van deze effectoren hebben voor en nadelen in verschillende situaties.\\Wie
 
 \subsubsection{Actuatoren}
 
-De keuze van de actuator hangt sterk samen met de effectoren. <3
+De keuze van de actuator hangt sterk samen met de effectoren.
 
 \subsubsection{Aandrijving}
 

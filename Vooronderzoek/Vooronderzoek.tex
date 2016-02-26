@@ -275,12 +275,17 @@ De keuze van de actuator hangt sterk samen met de effectoren.
 \subsubsection{Aandrijving}
 
 \newpage
-\section{Swarm Communication}
+\subsection{Swarm Communication}
 There are several requirements to realise a robot swarm. Each member of the population needs to communicate with the rest of the swarm. To give the members full freedom of movement the communication also needs to be wireless. It is important that the population size of the swarm is dynamic, because of the scalability of the swarm. As mentioned earlier a swarm does not have a master. So each member needs to be capable to maintain the network. These networks also must be able to reroute around nodes that have been lost.
 
 To create an network with those characteristics a (wireless) mesh network ((W)MN) is a possible solution. A mesh network relies on communication nodes in which data is distributed. All of the communication nodes cooperate in the distribution of data in the network. Each node of the network is connected to one or more nearby in range node(s) and forwards data on behalf of the other nodes. \cite{meshnetworking} A example of an mesh network is illustrated in figure \ref{fig:WMN}. To ensure a realiable network, self-organization and topology control alogorithms are needed.\cite{WMN1} Mesh networks can use self-healing algorithms such as Shortest Path Bridging (SPB) to restore and reroute the connection around broken nodes/clients. Shortest path bridging calculates the most favorable connections to the clients with the lowest path costs. \cite{SPB} Other usefull algorithms are listed in \cite{position-based}. The most efficient algorithm for path bridging depends on the situation where the clients are operating in which is described in \cite{position-based}.
 
-A wireless mesh network (WMN) is a dynamically self-organized and configured network. \cite{WMN1} Each node or client in the network is able to create an ad hoc network to maintain the mesh connectivity, this is called client WMN's. These networks are able to reroute around nodes that have been lost. On large scale projects wireless mesh networks are costefficient because of the saving of wired connections.\cite{meshnetworking}
+A wireless mesh network (WMN) is a dynamically self-organized and configured network. \cite{WMN1} Despite the practical benefits of wireless networks, today's wireless networks still cannot offer the same level of sustained bandwith as their wired brethren. The bandwidth is for instance affected by interference from adjacent hops on the same and neighboring paths. Another con is that the data rate falls quickly when increasing the distance between transmitter and receiver, which doesn't apply to wired networks. The 
+
+
+Nevertheless, the client mobility weigh out the cons. 
+
+Each node or client in the network is able to create an ad hoc network to maintain the mesh connectivity, this is called client WMN's. These networks are able to reroute around nodes that have been lost. On large scale projects wireless mesh networks are costefficient because of the saving of wired connections.\cite{meshnetworking}
 
 \begin{figure}[H]
    \centering
@@ -305,7 +310,7 @@ Examples of possible protocols:
 
 
 
-
+\subsection{Sensors}
 For close range obstacle avoidance, the robots will need some kind of proximity sensing technique. The sensor needs to differentiate between different "treats" for the robot to function properly. For example; when the sensor detects a small hill, which the robot can move over it should not trigger the robot to move away from it. But when it detects a big obstacle it should trigger the robot to move away. This is important because the robots will eventually be expected to move across rough terrain (like Mars). In the next paragraphs some different proximity sensor techniques will be discussed. Price is also a important factor while comparing these techniques. Multiple robots must be made on a tight budget, so costs should be cut where possible.\\
 
 
@@ -348,7 +353,7 @@ that looking at the amplitude over time contains enough information to discrimin
 
 \newpage
 
-\section{Bibliografie}
+\section{Bibliography}
 \bibliography{references}
 \bibliographystyle{IEEEtran}
 

@@ -130,9 +130,7 @@ Building a swarm of robots, location awareness may be required to ensure an more
 
 With location awareness it is also possible to divide the swarm into multiple groups. Because the location of every individual is available these individual groups can be formed very quickly by selecting the nearest unit. This also enables quick assists when an individual robot gets stuck or needs to execute a task that require more than one unit.
 
-For the mapping the positions of all robots in the swarm a localization technique needs to be implemented. The robots can use information as
-relative position and relative orientation of their neighbors to interpret and fuse the information collected by other robots. 
-With relative position the units can define the distance relative to each other. When all robots in the swarm knows the distance opposite to each other a mapping of the current formation can be created. However this can result in multiple solutions because there are no orientations involved. This means that the map could be mirrored. As seen in in Fig \ref{Angle}
+For mapping the various positions of all robots in a swarm a localization technique needs to be implemented. The robots can use information as relative position and relative orientation of their neighbours to interpret and fuse the information collected by other robots. With relative position the units can define the distance relative to each other. When all robots in the swarm are aware of the distance opposite to each other a map of the current formation can be created. However this can result in multiple solutions because there are no orientations involved. This means that the map could be mirrored. As seen in in Fig \ref{Angle}
 
 
 \begin{figure}[H]
@@ -143,7 +141,7 @@ With relative position the units can define the distance relative to each other.
 \end{figure}
 
 For the robots to know in what direction the measured distance is applicable to, they can analyze the change in distance after a robot has moved a specific direction. In order to leverage the previous trilateration procedure requires coordinating the motion of the robots in a manner that gives every robot a chance to move and ensures that when a robot is moving its neighbours remain stationary. \cite{Angle}
-This can be seen in fig \ref{Angle} 
+This can be seen in figure \ref{Range} 
 
 \begin{figure}[H]
 \centering
@@ -152,7 +150,7 @@ This can be seen in fig \ref{Angle}
 \label{Range}
 \end{figure}
 
-This can also be achieved by the use of stationary beacons. When a minimum of three beacons is placed on the field to be measured the location of the robots in the field can be measured, this is called triangulation. Triangulation is the process of determining the location of a point by measuring angles to it from known points. This is illustrated in fig \ref{triangulation}.
+This can also be achieved by the use of stationary beacons. When a minimum of three beacons is placed on the field location of the robots within this field can be measured, this is called triangulation. Triangulation is the process of determining the location of a point by measuring angles to it from known points. This is illustrated in figure \ref{triangulation}.
 
 \begin{figure}[H]
 \centering
@@ -170,8 +168,7 @@ A more efficient solution is to retrieve the relative orientation opposite to ea
 \label{orientation}
 \end{figure}
 
-As seen in fig \ref{orientation} each robot has a common reference direction, the direction relative to this reference is called the relative orientation of the robot and can be visualized as shown in fig . With the known distance ‘d’, the mapping of the swarm can be completed.
-
+As seen in figure \ref{orientation} each robot has a common reference direction, the direction relative to this reference is called the relative orientation of the robot and can be visualized as shown in figure \ref{orientation}. With the known distance ‘d’, the mapping of the swarm can be completed.
 \newpage
 
 \subsection{Relative Distance}
@@ -264,7 +261,7 @@ Time Of Flight has been very promising, however using electromagnetic signals (F
 \label{RSSIvsTOF}
 \end{figure}
 
-Determining relative distance does not lead to localization to do so a angle is required. 
+Determining relative distance does not lead to localization to do so a angle is required to be continued... 
 \newpage
 
 \section{Onderzoek}

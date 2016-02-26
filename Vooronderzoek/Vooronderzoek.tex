@@ -278,14 +278,7 @@ De keuze van de actuator hangt sterk samen met de effectoren.
 \subsection{Swarm Communication}
 There are several requirements to realise a robot swarm. Each member of the population needs to communicate with the rest of the swarm. To give the members full freedom of movement the communication also needs to be wireless. It is important that the population size of the swarm is dynamic, because of the scalability of the swarm. As mentioned earlier a swarm does not have a master. So each member needs to be capable to maintain the network. These networks also must be able to reroute around nodes that have been lost.
 
-To create an network with those characteristics a (wireless) mesh network ((W)MN) is a possible solution. A mesh network relies on communication nodes in which data is distributed. All of the communication nodes cooperate in the distribution of data in the network. Each node of the network is connected to one or more nearby in range node(s) and forwards data on behalf of the other nodes. \cite{meshnetworking} A example of an mesh network is illustrated in figure \ref{fig:WMN}. To ensure a realiable network, self-organization and topology control alogorithms are needed.\cite{WMN1} Mesh networks can use self-healing algorithms such as Shortest Path Bridging (SPB) to restore and reroute the connection around broken nodes/clients. Shortest path bridging calculates the most favorable connections to the clients with the lowest path costs. \cite{SPB} Other usefull algorithms are listed in \cite{position-based}. The most efficient algorithm for path bridging depends on the situation where the clients are operating in which is described in \cite{position-based}.
-
-A wireless mesh network (WMN) is a dynamically self-organized and configured network. \cite{WMN1} Despite the practical benefits of wireless networks, today's wireless networks still cannot offer the same level of sustained bandwith as their wired brethren. The bandwidth is for instance affected by interference from adjacent hops on the same and neighboring paths. Another con is that the data rate falls quickly when increasing the distance between transmitter and receiver, which doesn't apply to wired networks. The 
-
-
-Nevertheless, the client mobility weigh out the cons. 
-
-Each node or client in the network is able to create an ad hoc network to maintain the mesh connectivity, this is called client WMN's. These networks are able to reroute around nodes that have been lost. On large scale projects wireless mesh networks are costefficient because of the saving of wired connections.\cite{meshnetworking}
+To create an network with the characteristics described in the previous section a (wireless) mesh network ((W)MN) is a possible solution. A mesh network relies on communication nodes in which data is distributed. Such a network uses multi-hopping to transport data.\cite{multi-hopwirelessnetworks} All of the communication nodes cooperate in the distribution of data in the network. Each node of the network is connected to one or more nearby in range node(s) and forwards data on behalf of the other nodes. \cite{meshnetworking} An example of an mesh network is illustrated in figure \ref{fig:WMN}. It is possible but not necessary to connect one or more clients of a mesh network to the internet. Thus the client connected to the internet functions as a gateway for the other clients in the network. \cite{wirelessmeshnetworksopportunitiesandchallenges}
 
 \begin{figure}[H]
    \centering
@@ -294,17 +287,86 @@ Each node or client in the network is able to create an ad hoc network to mainta
    \label{fig:WMN}
 \end{figure}
 
+To ensure a realiable network, self-organization and topology control algorithms are needed.\cite{WMN1} Possibly important and usefull (wireless) network characteristics are \cite{position-based}:
+\begin{itemize}
+\setlength\itemsep{0em}
+    \item Low construction costs
+    \item Energy efficient (power aware)
+    \item Cost aware
+    \item Robust - Able to withstand client or connection
+    \item Guaranteed delivery
+\end{itemize}
+
+Mesh networks can use self-healing algorithms such as Shortest Path Bridging (SPB) to restore and reroute the connection around broken nodes/clients. Shortest path bridging calculates the most favorable connections to the clients with the lowest path costs. \cite{SPB} Other usefull algorithms such as shortest path, greedy, shortest cost path, cost aware, power aware, are listed in \cite{position-based} with their characteristics. In this research only the most interesting algorithms will be discussed. The distance between neighboring nodes can be estimated on the basis of signal strengths or time delays in direct communications. The exact positions can for example be estimated by using positioning systems such as GPS (Gereral positioning system). \cite{locationsystemsforubiquitouscomputing} 
+
+The scalibility of each algorithm means the posibility to adjust the scale of the network by adding or removing clients to the network. According to the research done in \cite{geographicalrouting}\cite{scalablelocation} routing algorithms without geographic locating (precize localisation) are not scalable and won't work well in large networks. 
+
+A realiable network has a routing algorithm/protocol that includes distributed operating, loop freedom, demand-based operation and sleep period operation. Loop freedom means that the protocol is able to detect loops in the network and eliminates those. For example, data could be floating around in the network. Sleep period operating means that the clients that are not needed go into a 'sleep mode' when it's temporarily inactive.\cite{position-based}
+
+There are several strategys to distribute a package of data in a network. The following enumeration show three strategy's:
+\begin{itemize}
+\setlength\itemsep{0em}
+    \item single-path
+    \item multipath
+    \item flooding
+\end{itemize}
+
+The single-path strategy is an example of the shortest path route protocol. In the single-path strategy only one packet of data in distributed in the network at a time. Which is desireable for the network capacity which is barely affected. Although the capacity is not affected, it is possible that a package is received later, because of an missing or inactive node in the path. \cite{position-based}
+
+The other strategy, multipath, sends out multiple packets of data trough recognizable paths. Flooding strategy litterly floods the network with data packages. In case of wireless networks, the single-path strategy is preferred because of the power and bandwidth limitations in wireless networks. \cite{position-based}
+
+The shortest path route protocol uses information such as the hopcount and distance between clients to calculate the shortest route. Hopcount stands for the amount of clients that are passed by. The shortest cost path route protocol also takes account for the energy required for each routing task. The goal of this protocol is to minimize the total energy cost. According to \cite{position-based} it is not desireable or if possible to avoid to memorize routes or past traffic in mobile ad hoc networks. This is because of the mobility of clients in the network and constantly changing infrastructure.
 
 
+In figure \ref{fig:greedyrouting} a greedy routing scheme is displayed. The node S contains the data package and D is the destination of the package. 
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{greedyrouting}
+   \caption{Greedy round scheme found in \cite{position-based}. "S selects M in MFR path SMUVD, G in greedy path SGHI that
+fails to deliver, A in direction-based-path SAUWVD, P in power path
+SPMUWVD, N in NFP/NC path SNGHI that fails to deliver."}
+   \label{fig:greedyrouting}
+\end{figure}
+
+The principle of greedy routing is that it is trying to get closer to the destination based on local information. Thus the data package is forwarded to the client/node which is the most suitable from a local point of view. \cite{geographicrouting} "Greedy schemes have a performance close to performance of optimal shortest path (weighted) algorithm for dense graphs, but have low delivery rates for sparse graphs. Schemes that guarantee delivery may have high communication overhead for sparse graphs." \cite{position-based} The most efficient algorithm for path bridging depends on the situation where the clients are operating in which is described in \cite{position-based}.
+
+
+
+A wireless mesh network (WMN) is a dynamically self-organized and configured network. \cite{WMN1} As described earlier the swarm network is dynamic in size and mutual distance. Because of the size and mobility of the swarm it is not practical to use wired connections between de members of the swarm. Therefore a wireless connection between the members is necessary.
+
+Despite the practical benefits of wireless networks, today's wireless networks still cannot offer the same level of sustained bandwith as their wired brethren. The bandwidth is for instance affected by interference from adjacent hops on the same and neighboring paths. \cite{architectureandalgorithmsmultichannelwirelessmeshnetwork} One of the most important drawback is that each client needs to be in transmitting and receiving range to atleast one of the other clients to be connected to the network. \cite{wirelessmeshnetworksopportunitiesandchallenges} Another con is that the data rate falls quickly when increasing the distance between transmitter and receiver, which doesn't or barely apply to wired networks. \cite{architectureandalgorithmsmultichannelwirelessmeshnetwork} The complexity of an WMN network is also a main drawback. It is relatively easy to design a WMN, but it is difficult to achieve an optimum performance while ensuring security and robustness.\cite{wirelessmeshnetworksopportunitiesandchallenges} 
+
+
+Nevertheless, the client mobility weigh out the cons described earlier. So solutions must be found to overcome these drawbacks
+
+Each node or client in the network is able to create an ad hoc network to maintain the mesh connectivity, this is called "client WMN's". These networks are able to reroute around nodes that have been lost. On large scale projects wireless mesh networks are costefficient because of the saving of wired connections.\cite{meshnetworking} 
+
+
+
+Wireless local area networks (WLANs) or IEEE 802.11 or popularly known as Wi-Fi.\cite{wirelessmeshnetworksopportunitiesandchallenges}
 
 There exist several techniques to accomplish this method 
 Examples of possible protocols:
 
-% \begin{itemize}[noitemsep]
-%     \item IEEE 802.11
-%     \item ZigBee
-%     \item SwarmBee
-% \end{itemize}
+\begin{itemize}
+\setlength\itemsep{0em}
+    \item IEEE 802.11
+    \item ZigBee
+    \item SwarmBee
+\end{itemize}
+
+\subsubsection{Conclusion}
+In this section an substudy in swarm communication is made. The results of the substudy have resulted in recommendations for the implementation of the swarming module. An enumeration of the recommendations are given below:
+\begin{itemize}
+\setlength\itemsep{0em}
+    \item The connection must be wireless due to the mobility of swarm members.
+    \item Scaling on large-scale projects is not possible without using geographic locating (precize locating). \cite{geographicalrouting}\cite{scalablelocation}. 
+    \item The network must be reliable, so it must use self-organization and topology control algorithms \cite{WMN1}
+\end{itemize}
+
+
+
 
 \newpage
 

@@ -130,18 +130,48 @@ Building a swarm of robots, location awareness may be required to ensure an more
 
 With location awareness it is also possible to divide the swarm into multiple groups. Because the location of every individual is available these individual groups can be formed very quickly by selecting the nearest unit. This also enables quick assists when an individual robot gets stuck or needs to execute a task that require more than one unit.
 
-To determine position, not only distance is required, to determine relative position the angle is also required to determine from which angle the units are relative to yourself. However this can result in multiple solutions, the angle could be mirrored.
+For the mapping the positions of all robots in the swarm a localization technique needs to be implemented. The robots can use information as
+relative position and relative orientation of their neighbors to interpret and fuse the information collected by other robots. 
+With relative position the units can define the distance relative to each other. When all robots in the swarm knows the distance opposite to each other a mapping of the current formation can be created. However this can result in multiple solutions because there are no orientations involved. This means that the map could be mirrored. As seen in in Fig \ref{Angle}
+
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.9\textwidth]{drolletje.pdf}
+\includegraphics[width=0.5\textwidth]{drolletje.pdf}
 \caption{Stationary robot (yellow) cannot compute the relative position of the moving robot (green), since all distance measurements (dashed lines) are invariant to rotations around the stationary robot.\cite{Angle}}
 \label{Angle}
 \end{figure}
 
-Therefore, in order to leverage the previous trilateration procedure requires coordinating the motion of the robots in a manner that gives every robot a chance to move and ensures that when a robot is moving its neighbors remain stationary. This can also be achieved by the use of stationary anchors.\cite{Angle}
+For the robots to know in what direction the measured distance is applicable to, they can analyze the change in distance after a robot has moved a specific direction. In order to leverage the previous trilateration procedure requires coordinating the motion of the robots in a manner that gives every robot a chance to move and ensures that when a robot is moving its neighbours remain stationary. \cite{Angle}
+This can be seen in fig \ref{Angle} 
 
-A more efficient solution would be to retrieve the relative orientation opposite to each other. In combination with the relative distance every robot knows the exact relative position of all the other robots in range of the network.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.3\textwidth]{range.pdf}
+\caption{Moving robot (yellow) can analize the direction of the moving robot (green), as a result of the movement (arrows) of the yellow robot, the relative distance has changed.}
+\label{Range}
+\end{figure}
+
+This can also be achieved by the use of stationary beacons. When a minimum of three beacons is placed on the field to be measured the location of the robots in the field can be measured, this is called triangulation. Triangulation is the process of determining the location of a point by measuring angles to it from known points. This is illustrated in fig \ref{triangulation}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{triangulation.pdf}
+\caption{Triangulation setup in a 2D field. R denotes the robot. B1, B2, and B3 are the beacons.$ \alpha_1$, $\alpha_2$, and $\alpha_3$ are the angle measurements respectively for B1, B2, and B3, relatively to the robot reference orientation $\phi$. \cite{triangulation}}
+\label{triangulation}
+\end{figure}
+
+A more efficient solution is to retrieve the relative orientation opposite to each other. In combination with the relative distance every robot knows the exact relative position of all the other robots in range of the network.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{orientation.pdf}
+\caption{relative localization system using relative distance and orientation}
+\label{orientation}
+\end{figure}
+
+As seen in fig \ref{orientation} each robot has a common reference direction, the direction relative to this reference is called the relative orientation of the robot and can be visualized as shown in fig . With the known distance ‘d’, the mapping of the swarm can be completed.
+
 \newpage
 
 \subsection{Relative Distance}

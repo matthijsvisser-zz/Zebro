@@ -107,12 +107,39 @@ SPI or Serial Peripheral Interface is, like it names suggests, a serial interfac
 \begin{figure}[H]
         \centering
         \graphicspath{ {./images/} }
-        \includegraphics[scale=.6]{SPI}
+        \includegraphics[scale=.4]{SPI}
         \caption{SPI connections}
         \label{fig:SPIconnections}
 \end{figure}
-
-\subsubsection{UART}
+SPI works by selecting its slaves using its slave select. Slave select is a single bit used to define which slave the master will be talking to. When the master has selected its slave it will be able to shift its data from its shift register into the shift register of the slave using the MOSI output. MOSI mean master out slave in, so if the master asks data from the slave it will be send using the MISO, master in slave out. Knowing this there are two ways to connect the slaves, putting them in series or parallel to eachother. 
+\begin{figure}[H]
+        \centering
+        \graphicspath{ {./images/} }
+        \includegraphics[scale=.4]{SPIserie}
+        \caption{SPI connected in series}
+        \label{fig:SPIseries}
+\end{figure}
+When put in series only one slave select will be used to select all the slaves. Each slave will send its data to the next slave through the MISO line. The disadvantage of this method is when you want to address the last slave in line it has togo through all the slaves, meaning it will costs a lot of extra clockticks to put it through. Another disadvantage of this method is you can not add extra slaves to an excisting series of slaves because the path needs to be closed else the slaves will not be able to send their data to the master.
+\begin{figure}[H]
+        \centering
+        \graphicspath{ {./images/} }
+        \includegraphics[scale=.4]{SPIparallel}
+        \caption{SPI connected parallel}
+        \label{fig:SPIparallel}
+\end{figure}
+The second way to connect the slaves is parallel, this means the master can address all the slaves individually, which will make it faster. The downside of this is you will need a different slave select for every slave. Which means this takes up more outputs from the controller and more space on the circuit boards.
+Another downside of SPI is that it can not be used as a multimaster system this downside means it is not viable for the project.
+\subsubsection{U(S)ART}
+The third serial communucation typically used on microcontrollers is U(S)ART. This protocol has two variaties, the universal asynchronous reciever/transmitter and the synchronous. The difference between the two is that the synchronous uses an extra line to send a clock signal. In asynchronous mode the devices synchronice with a startbit at the beginning of the message.
+Both of the protocols have a TX and a RX line, the transmit and recieve line. Like the name says these are the lines to transcieve the data. Each device connected has two registers, one for recieving data and one for sending. These registers are eight to ten bits long, eight or nine data bits and one or no parity bit. The parity bit can be used as a check to see if the data was recieved correctly by checking if the amount of ones is even or odd. The message is ended with one or two stop bits. So a typical U(S)ART frame looks like the figure below.
+\begin{figure}[H]
+        \centering
+        \graphicspath{ {./images/} }
+        \includegraphics[scale=.4]{UARTframe}
+        \caption{Typical U(S)ART frame}
+        \label{fig:UARTframe}
+\end{figure}
+Depending on the software protocol used it is possible to have a multimaster system using one U(S)ART connection on every device. Every message should get a header in which the addressed divece is selected.
 \subsection{Software}
 
 
@@ -173,12 +200,12 @@ To create an network with those characteristics a (wireless) mesh network ((W)MN
 
 A wireless mesh network (WMN) is a dynamically self-organized and configured network. \cite{WMN1} Each node or client in the network is able to create an ad hoc network to maintain the mesh connectivity, this is called client WMN's. These networks are able to reroute around nodes that have been lost. On large scale projects wireless mesh networks are costefficient because of the saving of wired connections.\cite{meshnetworking}
 
-\begin{figure}[H]
-   \centering
-   \includegraphics[width=1\textwidth]{WMN}
-   \caption{An example of a wireless mesh network with 5 clients and an optional internet connection. The connections made in this example are random.}
-   \label{fig:WMN}
-\end{figure}
+%\begin{figure}[H]
+%  \centering
+%   \includegraphics[width=1\textwidth]{WMN}
+%   \caption{An example of a wireless mesh network with 5 clients and an optional internet connection. The connections made in this example are random.}
+%   \label{fig:WMN}
+%\end{figure}
 
 
 

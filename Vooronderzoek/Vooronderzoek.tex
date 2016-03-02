@@ -278,7 +278,25 @@ De keuze van de actuator hangt sterk samen met de effectoren.
 \subsection{Swarm Communication}
 There are several requirements to realise a robot swarm. Each member of the population needs to communicate with the rest of the swarm. To give the members full freedom of movement the communication also needs to be wireless. It is important that the population size of the swarm is dynamic, because of the scalability of the swarm. As mentioned earlier a swarm does not have a master. So each member needs to be capable to maintain the network. These networks also must be able to reroute around nodes that have been lost.
 
+In figure \ref{fig:STAR}, \ref{fig:RING}, \ref{fig:BUS} and \ref{fig:WMN}
+
 To create an network with the characteristics described in the previous section a (wireless) mesh network ((W)MN) is a possible solution. A mesh network relies on communication nodes in which data is distributed. Such a network uses multi-hopping to transport data.\cite{multi-hopwirelessnetworks} All of the communication nodes cooperate in the distribution of data in the network. Each node of the network is connected to one or more nearby in range node(s) and forwards data on behalf of the other nodes. \cite{meshnetworking} An example of an mesh network is illustrated in figure \ref{fig:WMN}. It is possible but not necessary to connect one or more clients of a mesh network to the internet. Thus the client connected to the internet functions as a gateway for the other clients in the network. \cite{wirelessmeshnetworksopportunitiesandchallenges}
+
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[angle=90,width=\linewidth]{STAR}
+  \caption{A star network topology, devices are connected to a central device (in this case device 1.)}\label{fig:STAR}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[angle=90,width=\linewidth]{BUS}
+  \caption{A bus topology, every device is on a common link.}\label{fig:BUS}
+\endminipage\hfill
+\minipage{0.32\textwidth}%
+  \includegraphics[angle=90,width=\linewidth]{RING}
+  \caption{A ring topology, each device is connected to the next nearest device.}\label{fig:RING}
+\endminipage
+\end{figure}
+
 
 \begin{figure}[H]
    \centering
@@ -384,7 +402,7 @@ The following wireless protocols are defined as short-range (a range of 10-100m)
 \end{itemize}
 
 \textbf{IEEE 802.15.1 Bluetooth}
-Bluetooth is designed for short-range communication which uses wireless radio systems. The main purpose of Bluetooth is to create a wireless connection between computer peripherals such as; keyboards and mice. These applications are also known as wireless personal area networks (WPAN). \cite{comparitivestudywirelessprotocols} 
+Bluetooth is designed for short-range communication which uses wireless radio systems. The main purpose of Bluetooth is to create a wireless connection between computer peripherals such as; keyboards and mice. These applications are also known as wireless personal area networks (WPAN). \cite{comparitivestudywirelessprotocols} A Bluetooth network is an ad hoc networ, which means that the network is formed spontaneously.\cite{tcipbook}
 
 Bluetooth uses the industrial scientific and medical (or short: ISM) band for receiving en transmission data. The ISM band ranges from 2,400 to 2,4835 GHz in the Netherlands. \cite{frequencyandsnetherlands} Frequency hopping spread spectrum (FHSS) is used to spread out the power over the full bandwidth. After the transmission of each packet, Bluetooth will hop/change to another channel. The ISM band consists of 79 channels with 1MHz each. Changingin frequencies also helps to avoid collision with other networks. But it is still possible that a collision takes place. When a collision happens, the data is resend on another channel untill the transmittion is succesfull.
 
@@ -397,7 +415,7 @@ Bluetooth uses the industrial scientific and medical (or short: ISM) band for re
 
 Bluetooth consists of two network topologies: a piconet and scatternet. The piconet has one or more slaves serving one master \cite{bluetoothpiconet}. In a piconet the master synchronizes the master's clock and shares his bluetooth device adress at the first connection. The data packet is called a frequency-hopsynchronization packet (FHS packet). The data send in the FHS packet is used to calculate the sequence of frequency hops that all devices in the piconet will follow. Each client in the networks tracks the native- and masters clock, so it will know on which frequency the client needs to transmit or receive.
 
-Each piconet has one master which has an unique Bluetooth device adress and clock. Because of the frequency hopping, it is possible to have more than one piconets in one area. 
+Each piconet has one master which has an unique Bluetooth device adress and clock. A Bluetooth piconet cannot be large. A piconet consists of 8 clients in which one is the 'primary' (master).\cite{tcipbook} Because of the frequency hopping, it is possible to have more than one piconets in one area. 
 
 A scatternet consists of two or more piconets. It is possible for a client to participate in more than one piconets, but it can only be a master of one network.
 
@@ -490,6 +508,8 @@ In this section an substudy in swarm communication is made. The results of the s
     \item The network must be reliable, so it must use self-organization and topology control algorithms \cite{WMN1}
 \end{itemize}
 
+
+Unicasting, multi-casting and broadcasting
 
 
 

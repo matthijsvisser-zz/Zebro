@@ -81,6 +81,16 @@
 \tableofcontents
 \newpage
 
+\section{What do we consider as swarming?}
+Swarming is a really wide concept and can be achieved in many forms. In this section we will define what we will consider as swarming during this project. Many choices made here will be up for discussion, but some choices have to be made so the project can be successfully specified. For example, no clear minimal number of units is specified for a group of robots to be called a swarm. When specification have to be exact and testable this becomes a problem. The following subjects will be discussed: number of robots and scalability, precision of localisation. Its important to keep in mind that the choices made in this section, are mostly educated guesses. These guesses will later be confirmed by testing.
+
+\subsection{Situational sketch}
+To make some reliable assumptions we will first sketch a situation. We propose a test situation where a swarm of eight robots need to explore a room as efficient as possible. They will need to find a certain object and when the object is found by one of the units, the others will have to come to the objects location. For the robots to search efficiently they will need some type of "close range" relative localisation, so they can spread evenly across the room without bumping into each other. Speed is also an important factor when considering the frequency of distance measurements. For this sketch we chose an average speed of 3,6km/h or 1m/s, this a bit slower than average walking speed and seems realistic for smaller robots. 
+
+\subsection{Precision of localization}
+An obvious answer for the question "How precise does the localisation need to be?" would be "As precise as possible!". However with swarming robots it might not need to be precise at all. This depends mostly on what the swarm needs to accomplish. For the situation we proposed the localisation needs to be precise at closer range but can be less accurate when further away. We choose to define "close range" as 0 to 3 meters, and "long range" as 3 to 20 meters.  The big difference between the two is the margin of error that is allowed. Close range localisation has a smaller margin of error because the robots will move very close to each other 
+
+
 
 \section{Protocol}
 \subsection{Hardware}

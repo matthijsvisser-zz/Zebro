@@ -293,7 +293,7 @@ The following subsections are
 
 
 \subsubsection{Network topology}
-There exist several topologies to form a network. Figure \ref{fig:STAR}, \ref{fig:RING}, \ref{fig:BUS} and \ref{fig:WMN} illustrate four network topologies as an example. Each topology has it's own benefits and cons which are discussed in this section.
+Several topologies exist to form a network. Figure \ref{fig:STAR}, \ref{fig:RING}, \ref{fig:BUS} and \ref{fig:WMN} illustrate four network topologies as an example. Each topology has it's own benefits and cons which are discussed in this section.
 
 \begin{figure}[H]
 \minipage{0.32\textwidth}
@@ -311,10 +311,11 @@ There exist several topologies to form a network. Figure \ref{fig:STAR}, \ref{fi
 \end{figure}
 
 \textbf{Star network}\\
-The star network in figure \ref{fig:STAR} uses the device marked as '1' as an central switch to reach out to other devices.\cite{starwiki} A central device is not desirable in a swarm network, so the star topology is not suitable. In a star network, the central device is the single point of faillure, which will stop the network from working if it fails.
+The star network in figure \ref{fig:STAR} uses the device marked as '1' as an central switch to reach out to other devices.\cite{starwiki} When the central device fails the network will stop working. This means that the star topology is not suitable as a swarm network.
+
 
 \textbf{Ring network}\\
-A ring network, which is displayed in figure \ref{fig:RING} is always connected to two other devices. This means that there are atleast three devices in a ring network. The data distributions is unidirectional, with the traffic travelling clockwise or anticlockwise around the ring. \cite{ringwiki} This topology has it's limitations when one or more devices become isolated due to a device faillure or cable break. This problem can be solved by using a dual ring, which makes the network redundant. Because of the network topology, in which n nodes are connected serially, the communication delay is proportional to the number n devices in the network. The bandwidth is also shared between all the devices. \cite{ringwiki} It is possible to create a swarm network with a ring network but it is far from ideal.
+Devices in a ring network ar always connected to two other devices as displayed in figure \ref{fig:RING}. This means that there are atleast three devices in a ring network. The data distributions is unidirectional, with the traffic travelling clockwise or anticlockwise around the ring. \cite{ringwiki} This topology has it's limitations when one or more devices become isolated due to a device faillure or cable break. This problem can be solved by using a dual ring, which makes the network redundant. Because of the network topology, in which n nodes are connected serially, the communication delay is proportional to the number n devices in the network. The bandwidth is also shared between all the devices. \cite{ringwiki} It is possible to create a swarm network with a ring network but it is far from ideal.
 
 \textbf{Bus network}\\
 In a bus network the devices are connected to a linear half-duplex link. \cite{bustopology} A bus network has the advantage that it is easy to connect devices to and it works well in small networks. A disadvantage when using a bus for swarming is that the entire network shutsdown when there is a break in the main connection. This makes the network not dynamic.

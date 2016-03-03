@@ -276,13 +276,26 @@ De keuze van de actuator hangt sterk samen met de effectoren.
 
 \newpage
 \subsection{Swarm Communication}
-There are several requirements to realise a robot swarm. Each member of the population needs to communicate with the rest of the swarm. To give the members full freedom of movement the communication also needs to be wireless. It is important that the population size of the swarm is dynamic, because of the scalability of the swarm. As mentioned earlier a swarm does not have a master. So each member needs to be capable to maintain the network. These networks also must be able to reroute around nodes that have been lost.
+There are several requirements to realise a robot swarm. Each member of the population needs to communicate with the rest of the swarm. To give the members full freedom of movement it is also usefull to make the communication wireless. It is important that the population size of the swarm is dynamic, because of the scalability of the swarm. As mentioned earlier a swarm does not have a master. So each member needs to be capable to maintain the network. These networks also must be able to reroute around nodes that have been lost. \cite{Swarmwiki}\cite{swarmintelligence}
 
-In figure \ref{fig:STAR}, \ref{fig:RING}, \ref{fig:BUS} and \ref{fig:WMN}
+The following subsections are 
+\begin{itemize}
+\setlength\itemsep{0em}
+    \item Network topology
+    \item Network realibility and robustness
+    \item Routing protocol
+    \item Data distribution
+    \item Wireless mesh network
+    \item Wireless network implementations
+    \item Conclusion
+\end{itemize}
 
-To create an network with the characteristics described in the previous section a (wireless) mesh network ((W)MN) is a possible solution. A mesh network relies on communication nodes in which data is distributed. Such a network uses multi-hopping to transport data.\cite{multi-hopwirelessnetworks} All of the communication nodes cooperate in the distribution of data in the network. Each node of the network is connected to one or more nearby in range node(s) and forwards data on behalf of the other nodes. \cite{meshnetworking} An example of an mesh network is illustrated in figure \ref{fig:WMN}. It is possible but not necessary to connect one or more clients of a mesh network to the internet. Thus the client connected to the internet functions as a gateway for the other clients in the network. \cite{wirelessmeshnetworksopportunitiesandchallenges}
 
-\begin{figure}[!htb]
+
+\subsubsection{Network topology}
+There exist several topologies to form a network. Figure \ref{fig:STAR}, \ref{fig:RING}, \ref{fig:BUS} and \ref{fig:WMN} illustrate four network topologies as an example. Each topology has it's own benefits and cons which are discussed in this section.
+
+\begin{figure}[H]
 \minipage{0.32\textwidth}
   \includegraphics[angle=90,width=\linewidth]{STAR}
   \caption{A star network topology, devices are connected to a central device (in this case device 1.)}\label{fig:STAR}
@@ -297,6 +310,17 @@ To create an network with the characteristics described in the previous section 
 \endminipage
 \end{figure}
 
+\textbf{Star network}\\
+The star network in figure \ref{fig:STAR} uses the device marked as '1' as an central switch to reach out to other devices.\cite{starwiki} A central device is not desirable in a swarm network, so the star topology is not suitable.
+
+\textbf{Ring network}\\
+A ring network, which is displayed in figure \ref{fig:RING} is always connected to two other devices. This means that there are atleast three devices in a ring network. The data distributions is unidirectional, with the traffic travelling clockwise or anticlockwise around the ring. \cite{ringwiki} This topology has it's limitations when one or more devices become isolated due to a device faillure or cable break. This problem can be solved by using a dual ring, which makes the network redundant. Because of the network topology, in which n nodes are connected serially, the communication delay is proportional to the number n devices in the network. The bandwidth is also shared between all the devices. \cite{ringwiki} It is possible to create a swarm network with a ring network but it is far from ideal.
+
+\textbf{Bus network}\\
+In a bus network the devices are connected to a linear half-duplex link. \cite{bustopology} A bus network has the advantage that it is easy to connect devices to and it works well in small networks. A disadvantage when using a bus for swarming is that the entire network shutsdown when there is a break in the main connection. This makes the network not dynamic.
+
+\textbf{Mesh network}\\
+To create an network with the characteristics described in the previous section a (wireless) mesh network ((W)MN) is a possible solution. A mesh network relies on communication nodes in which data is distributed. Such a network uses multi-hopping to transport data.\cite{multi-hopwirelessnetworks} All of the communication nodes cooperate in the distribution of data in the network. Each node of the network is connected to one or more nearby in range node(s) and forwards data on behalf of the other nodes. \cite{meshnetworking} An example of a mesh network is illustrated in figure \ref{fig:WMN}. It is possible but not necessary to connect one or more clients of a mesh network to the internet. Thus the client connected to the internet functions as a gateway for the other clients in the network. \cite{wirelessmeshnetworksopportunitiesandchallenges}
 
 \begin{figure}[H]
    \centering
@@ -305,6 +329,10 @@ To create an network with the characteristics described in the previous section 
    \label{fig:WMN}
 \end{figure}
 
+\textbf{Comparison and conclusion}\\
+When the network topology's are compared with each other, the mesh network satisfies the desired requirements. Although it is harder to implement due to mutual connections, it has the best data coverage. In this situation, a mesh network would be the best choice.
+
+\subsubsection{Network realibility}
 To ensure a realiable network, self-organization and topology control algorithms are needed.\cite{WMN1} Possibly important and usefull (wireless) network characteristics are \cite{position-based}:
 \begin{itemize}
 \setlength\itemsep{0em}
@@ -315,12 +343,22 @@ To ensure a realiable network, self-organization and topology control algorithms
     \item Guaranteed delivery
 \end{itemize}
 
-Mesh networks can use self-healing algorithms such as Shortest Path Bridging (SPB) to restore and reroute the connection around broken nodes/clients. Shortest path bridging calculates the most favorable connections to the clients with the lowest path costs. \cite{SPB} Other usefull algorithms such as shortest path, greedy, shortest cost path, cost aware, power aware, are listed in \cite{position-based} with their characteristics. In this research only the most interesting algorithms will be discussed. The distance between neighboring nodes can be estimated on the basis of signal strengths or time delays in direct communications. The exact positions can for example be estimated by using positioning systems such as GPS (Gereral positioning system). \cite{locationsystemsforubiquitouscomputing} 
+Mesh networks can use self-healing algorithms such as Shortest Path Bridging (SPB) to restore and reroute the connection around broken nodes/clients. Shortest path bridging calculates the most favorable connections to the clients with the lowest path costs. \cite{SPB} Other usefull algorithms such as shortest path, greedy, shortest cost path, cost aware, power aware, are listed in \cite{position-based} with their characteristics. In this research only the most suitable algorithms will be discussed. 
+
+The distance between neighboring nodes can be estimated on the basis of signal strengths or time delays in direct communications. The exact positions can for example be estimated by using positioning systems such as GPS (Gereral positioning system). \cite{locationsystemsforubiquitouscomputing} 
+
+
+
+
+The shortest path route protocol uses information such as the hopcount and distance between clients to calculate the shortest route. Hopcount stands for the amount of clients that are passed by. The shortest cost path route protocol also takes account for the energy required for each routing task. The goal of this protocol is to minimize the total energy cost. According to \cite{position-based} it is not desireable or if possible to avoid to memorize routes or past traffic in mobile ad hoc networks. This is because of the mobility of clients in the network and constantly changing infrastructure.
+
 
 The scalibility of each algorithm means the posibility to adjust the scale of the network by adding or removing clients to the network. According to the research done in \cite{geographicalrouting}\cite{scalablelocation} routing algorithms without geographic locating (precize localisation) are not scalable and won't work well in large networks. 
 
 A realiable network has a routing algorithm/protocol that includes distributed operating, loop freedom, demand-based operation and sleep period operation. Loop freedom means that the protocol is able to detect loops in the network and eliminates those. For example, data could be floating around in the network. Sleep period operating means that the clients that are not needed go into a 'sleep mode' when it's temporarily inactive.\cite{position-based}
 
+
+\subsubsection{Data distribution}
 There are several strategys to distribute a package of data in a network. The following enumeration show three strategy's:
 \begin{itemize}
 \setlength\itemsep{0em}
@@ -333,7 +371,6 @@ The single-path strategy is an example of the shortest path route protocol. In t
 
 The other strategy, multipath, sends out multiple packets of data trough recognizable paths. Flooding strategy litterly floods the network with data packages. In case of wireless networks, the single-path strategy is preferred because of the power and bandwidth limitations in wireless networks. \cite{position-based}
 
-The shortest path route protocol uses information such as the hopcount and distance between clients to calculate the shortest route. Hopcount stands for the amount of clients that are passed by. The shortest cost path route protocol also takes account for the energy required for each routing task. The goal of this protocol is to minimize the total energy cost. According to \cite{position-based} it is not desireable or if possible to avoid to memorize routes or past traffic in mobile ad hoc networks. This is because of the mobility of clients in the network and constantly changing infrastructure.
 
 
 In figure \ref{fig:greedyrouting} a greedy routing scheme is displayed. The node S contains the data package and D is the destination of the package. 
@@ -350,19 +387,25 @@ SPMUWVD, N in NFP/NC path SNGHI that fails to deliver."}
 The principle of greedy routing is that it is trying to get closer to the destination based on local information. Thus the data package is forwarded to the client/node which is the most suitable from a local point of view. \cite{geographicrouting} "Greedy schemes have a performance close to performance of optimal shortest path (weighted) algorithm for dense graphs, but have low delivery rates for sparse graphs. Schemes that guarantee delivery may have high communication overhead for sparse graphs." \cite{position-based} The most efficient algorithm for path bridging depends on the situation where the clients are operating in which is described in \cite{position-based}.
 
 
-
+\subsubsection{Wireless mesh network}
 A mesh network (MN) is a dynamically self-organized and configured network. \cite{WMN1} As described earlier the swarm network is dynamic in size and mutual distance. Because of the size and mobility of the swarm it is not practical to use wired connections between de members of the swarm. So a wireless mesh network (WMN) is needed. Therefore a wireless connection between the members is necessary.
-
-
 
 Despite the practical benefits of wireless networks, today's wireless networks still cannot offer the same level of sustained bandwith as their wired brethren. The bandwidth is for instance affected by interference from adjacent hops on the same and neighboring paths. \cite{architectureandalgorithmsmultichannelwirelessmeshnetwork} One of the most important drawbacks is that each client needs to be in transmitting and receiving range to atleast one of the other clients to be connected to the network. \cite{wirelessmeshnetworksopportunitiesandchallenges} Another con is that the data rate falls quickly when increasing the distance between transmitter and receiver, which doesn't or barely apply to wired networks. \cite{architectureandalgorithmsmultichannelwirelessmeshnetwork} The complexity of an WMN network is also a main drawback. It is relatively easy to design a WMN, but it is difficult to achieve an optimum performance while ensuring security and robustness.\cite{wirelessmeshnetworksopportunitiesandchallenges} 
 
+Each node or client in the network is able to create an ad hoc network to maintain the mesh connectivity, this is called "client WMN's". These networks are able to reroute around nodes that have been lost. On large scale projects wireless mesh networks are costefficient because of the saving of wired connections.\cite{meshnetworking} 
 
 Nevertheless, the client mobility weigh out the cons described earlier. So solutions must be found to overcome these drawbacks
 
-Each node or client in the network is able to create an ad hoc network to maintain the mesh connectivity, this is called "client WMN's". These networks are able to reroute around nodes that have been lost. On large scale projects wireless mesh networks are costefficient because of the saving of wired connections.\cite{meshnetworking} 
 
 
+
+Adaptive robust tree (ART)
+
+
+Meshed adaptive robust tree (MART)
+
+
+\subsubsection{Wireless network protocols}
 
 
 
@@ -382,12 +425,6 @@ Standards for wireless mesh networks:\cite{emergingstandarsforwirelessmeshtechno
 \end{table}
 
 
-Adaptive robust tree (ART)
-
-
-Meshed adaptive robust tree (MART)
-
-
 
 There exist several techniques to accomplish this method 
 Examples of possible protocols:
@@ -401,8 +438,8 @@ The following wireless protocols are defined as short-range (a range of 10-100m)
     \item SwarmBee
 \end{itemize}
 
-\textbf{IEEE 802.15.1 Bluetooth}
-Bluetooth is designed for short-range communication which uses wireless radio systems. The main purpose of Bluetooth is to create a wireless connection between computer peripherals such as; keyboards and mice. These applications are also known as wireless personal area networks (WPAN). \cite{comparitivestudywirelessprotocols} A Bluetooth network is an ad hoc networ, which means that the network is formed spontaneously.\cite{tcipbook}
+\textbf{IEEE 802.15.1 Bluetooth}\\
+Bluetooth is designed for short-range communication which uses wireless radio systems. The main purpose of Bluetooth is to create a wireless connection between computer peripherals such as; keyboards and mice. These applications are also known as wireless personal area networks (WPAN). \cite{comparitivestudywirelessprotocols} Bluetooth is an ad hoc network, which means that the network is formed spontaneously.\cite{tcipbook}
 
 Bluetooth uses the industrial scientific and medical (or short: ISM) band for receiving en transmission data. The ISM band ranges from 2,400 to 2,4835 GHz in the Netherlands. \cite{frequencyandsnetherlands} Frequency hopping spread spectrum (FHSS) is used to spread out the power over the full bandwidth. After the transmission of each packet, Bluetooth will hop/change to another channel. The ISM band consists of 79 channels with 1MHz each. Changingin frequencies also helps to avoid collision with other networks. But it is still possible that a collision takes place. When a collision happens, the data is resend on another channel untill the transmittion is succesfull.
 
@@ -419,7 +456,7 @@ Each piconet has one master which has an unique Bluetooth device adress and cloc
 
 A scatternet consists of two or more piconets. It is possible for a client to participate in more than one piconets, but it can only be a master of one network.
 
-\textbf{IEEE 802.15.3 Ultra-wideband}
+\textbf{IEEE 802.15.3 Ultra-wideband}\\
 Ultra-wideband is designed for short-range high-speed wireless communication. The bandwidth of UWB is over 100Mbps and can reach speeds up to 480 Mbps \cite{comparitivestudywirelessprotocols}. The frequency band of UWB ranges from 3.1 to 10.6 GHz \cite{ultrawidebandwirelesscommunications}.
 
 Because of the 'ultra wide' band UWB has benefits over other technologys. The benefits of UWB are \cite{ultrawidebandwirelesscommunications}: 
@@ -432,17 +469,17 @@ Because of the 'ultra wide' band UWB has benefits over other technologys. The be
 \end{itemize}
  With UWB it is possible to get high data rates in ranges of 20 to 50 meters. Because of the wide bandwidth of UWB, the material penetration losses are relatively low. Because of the absence of sending a carrier, the transceiver build can be relatively simple. \cite{ultrawidebandwirelesscommunications}
 
-\textbf{IEEE 802.15.4 ZigBee}
+\textbf{IEEE 802.15.4 ZigBee}\\
 Zigbee is usually used in personal operating spaces (POS) of about 10 meters. However, there are devices based on Zigbee that can reach up to 1500 meters of span when the target is in line of sight \cite{zigbeewiki}. It is designed for simple devices that consume minimal power and operate in a personal operating space. These applications are also known as low-rate wireless personal area networks (LR-WPAN). \cite{comparitivestudywirelessprotocols} Zigbee uses the ISM 900 MHz or 2,4 GHz band to communicate, just like Bluetooth and WiFi. Zigbee uses direct sequence spread spectrum (DSSS) with 16 channels and 2 MHz bandwith
 
 There are proven implementations of networks with ZigBee. It is possible to create a reliable self-organized mesh network which is able to use multi-hopping \cite{comparitivestudywirelessprotocols}.
 
 Zigbee is known for the low power consumption which results in long battery lifetime \cite{performanceevaluationlowratewirelesspan}. There are two types of devices in a LR-WPAN network: A full-functioning device and a reduced-functioning device. Full-functioning devices can be used as a 'Master' or coordinator or as a client. These devices can talk to eachother or to reduced-functioning devices. A RFD is used for simple transmit tasks such as switches or simple inout/output operations. Just like Bluetooth, the coordinator or master, will setup the network.
 
-\textbf{IEEE 802.11 WiFi}
+\textbf{IEEE 802.11 WiFi}\\
 Wireless local area networks (WLANs) or IEEE 802.11 is popularly known as Wi-Fi (Wireless Fidelity) \cite{wirelessmeshnetworksopportunitiesandchallenges}. With a Wi-Fi connection it is possible for the clients to connect to the internet with broadband speeds. Consumer WiFi usually uses one or two ISM frequency bands: 2,4 and 5 GHz. However there are also Wi-Fi standards which use the 3,6 and 60 GHz band. The 3,6 band is used by the IEEE 802.11y-2008 standard. and the 60 GHz band for the IEEE 802.11ad protocol. Wi-Fi uses direct sequence spread spectrum (DSSS) with complementary code keying (CDK) with 14 possible channels.
 
-\textbf{Summerization}
+\textbf{Summerization}\\
 To summerize the given information from the protocols table \ref{sumtableprotocols} is made.
 
 Network size

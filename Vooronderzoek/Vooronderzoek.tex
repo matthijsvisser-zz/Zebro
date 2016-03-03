@@ -311,7 +311,7 @@ There exist several topologies to form a network. Figure \ref{fig:STAR}, \ref{fi
 \end{figure}
 
 \textbf{Star network}\\
-The star network in figure \ref{fig:STAR} uses the device marked as '1' as an central switch to reach out to other devices.\cite{starwiki} A central device is not desirable in a swarm network, so the star topology is not suitable.
+The star network in figure \ref{fig:STAR} uses the device marked as '1' as an central switch to reach out to other devices.\cite{starwiki} A central device is not desirable in a swarm network, so the star topology is not suitable. In a star network, the central device is the single point of faillure, which will stop the network from working if it fails.
 
 \textbf{Ring network}\\
 A ring network, which is displayed in figure \ref{fig:RING} is always connected to two other devices. This means that there are atleast three devices in a ring network. The data distributions is unidirectional, with the traffic travelling clockwise or anticlockwise around the ring. \cite{ringwiki} This topology has it's limitations when one or more devices become isolated due to a device faillure or cable break. This problem can be solved by using a dual ring, which makes the network redundant. Because of the network topology, in which n nodes are connected serially, the communication delay is proportional to the number n devices in the network. The bandwidth is also shared between all the devices. \cite{ringwiki} It is possible to create a swarm network with a ring network but it is far from ideal.
@@ -397,12 +397,33 @@ Each node or client in the network is able to create an ad hoc network to mainta
 Nevertheless, the client mobility weigh out the cons described earlier. So solutions must be found to overcome these drawbacks
 
 
+\subsubsection{Meshed architecture}
+
+Methods to adress meshed networks are:
+\begin{itemize}
+\setlength\itemsep{0em}
+    \item Adaptive robust tree (ART)
+    \item Meshed adaptive robust tree (MART)
+\end{itemize}
+Adaptive robust tree is a meshed tree routing approach to address the nodes. Each node is adaptively addressed during the tree formation. Because of this method the tree is free of single point failures (SPOF). This means that there is always a redundant path if a node fails. Each node keeps track of an ART table (ARTT), to map it's branches. In this table the adresses of the connected branches are stored.
+
+ART knows three phases; the initialization, operation and recovery phase. In the initialization phase the tree is formed. The tree formation starts at the root and grows by adding nodes to the tree. The nodes get an adress assigned, when all nodes are joined. Thereafter, the number of nodes are counted in the tree as shown in figure \ref{fig:treenumbers}.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{treenumbers}
+   \caption{An example of a wireless mesh network with 5 clients and an optional internet connection. The connections made in this example are random.}
+   \label{fig:treenumbers}
+\end{figure}
 
 
-Adaptive robust tree (ART)
 
-
-Meshed adaptive robust tree (MART)
+The following phase is the operation phase, where small amount of nodes are still able to join, but when the change becomes to big, the network goes in to initialization mode again. When a part of the tree becomes broken, the recovery phase becomes active for the affected part.
+\begin{itemize}
+\setlength\itemsep{0em}
+    \item i
+    \item Meshed adaptive robust tree (MART)
+\end{itemize}
 
 
 \subsubsection{Wireless network protocols}

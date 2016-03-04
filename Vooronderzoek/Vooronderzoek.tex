@@ -401,13 +401,16 @@ Nevertheless, the client mobility weigh out the cons described earlier. So solut
 
 \subsubsection{Meshed architecture}
 
+
 Methods to adress meshed networks are:
 \begin{itemize}
 \setlength\itemsep{0em}
     \item Adaptive robust tree (ART)
     \item Meshed adaptive robust tree (MART)
 \end{itemize}
-Adaptive robust tree is a meshed tree routing approach to address the nodes. Each node is adaptively addressed during the tree formation. Because of this method the tree is free of single point failures (SPOF). This means that there is always a redundant path if a node fails. Each node keeps track of an ART table (ARTT), to map it's branches. In this table the adresses of the connected branches are stored.
+
+\textbf{Adaptive robust tree (ART)}\\
+Adaptive robust tree is a meshed tree routing approach to address the nodes. Each node is adaptively addressed during the tree formation. It is desireable that the tree is free of single point failures (SPOF). This means that there is always a redundant path if a node fails, but that's not always possible in non-mesh networks. Each node keeps track of an ART table (ARTT), to map it's branches. In this table the adresses of the connected branches are stored.
 
 ART knows three phases; the initialization, operation and recovery phase. In the initialization phase the tree is formed. The tree formation starts at the root and grows by adding nodes to the tree. The nodes get an adress assigned, when all nodes are joined. Thereafter, the number of nodes are counted in the tree as shown in figure \ref{fig:treenumbers}.
 
@@ -418,7 +421,10 @@ ART knows three phases; the initialization, operation and recovery phase. In the
    \label{fig:treenumbers}
 \end{figure}
 
+The following phase is the operation phase, where small amount of nodes are still able to join, but when the change becomes to big, the network goes in to initialization mode again. When a part of the tree becomes broken, the recovery phase becomes active for the affected part.
 
+\textbf{Meshed adaptive robust tree}\\
+With an ART tree it is possible to create a MART (Meshed adaptive robust tree). Figure \ref{fig:meshtree} illustrates a MART, in this figure there are already connections added that make a mesh network. From the point of view from every node in the network, there still is a tree form. In this mesh network, each node has a redundant path if a connection is broken, so it is SPOF free.
 
 \begin{figure}[H]
    \centering
@@ -427,14 +433,11 @@ ART knows three phases; the initialization, operation and recovery phase. In the
    \label{fig:meshtree}
 \end{figure}
 
+With a MART, it is possibile to reroute a connection to reduce the path cost in comparison with ART. Most of the time, the transission from ART to MART, removes some SPOFs.
 
+\textbf{Mesh wireless personal area networks}\\
+A mesh wireless personal area networks
 
-The following phase is the operation phase, where small amount of nodes are still able to join, but when the change becomes to big, the network goes in to initialization mode again. When a part of the tree becomes broken, the recovery phase becomes active for the affected part.
-\begin{itemize}
-\setlength\itemsep{0em}
-    \item i
-    \item Meshed adaptive robust tree (MART)
-\end{itemize}
 
 
 \subsubsection{Wireless network protocols}
@@ -515,6 +518,7 @@ Wireless local area networks (WLANs) or IEEE 802.11 is popularly known as Wi-Fi 
 To summerize the given information from the protocols table \ref{sumtableprotocols} is made.
 
 Network size
+The networkssize of each of the protocols is expendable. A Bluetooth piconet for example can be part of a scatternet, which overlooks serveral other piconets. However, it is desireable that there are direct limitations in the network size
 
 Transmission time
 

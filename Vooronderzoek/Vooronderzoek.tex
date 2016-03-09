@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \usepackage{color}
 \usepackage{float}
+\usepackage{gensymb}
 
 \usepackage{eurosym}
  
@@ -85,11 +86,39 @@
 Swarming is a really wide concept and can be achieved in many forms. In this section we will define what we will consider as swarming during this project. Many choices made here will be up for discussion, but some choices have to be made so the project can be successfully specified. For example, no clear minimal number of units is specified for a group of robots to be called a swarm. When specification have to be exact and testable this becomes a problem. The following subjects will be discussed: number of robots and scalability, precision of localisation. Its important to keep in mind that the choices made in this section, are mostly educated guesses. These guesses will later be confirmed by testing.
 
 \subsection{Situational sketch}
-To make some reliable assumptions we will first sketch a situation. We propose a test situation where a swarm of eight robots need to explore a room as efficient as possible. They will need to find a certain object and when the object is found by one of the units, the others will have to come to the objects location. For the robots to search efficiently they will need some type of "close range" relative localisation, so they can spread evenly across the room without bumping into each other. Speed is also an important factor when considering the frequency of distance measurements. For this sketch we chose an average speed of 3,6km/h or 1m/s, this a bit slower than average walking speed and seems realistic for smaller robots. 
+To make some reliable assumptions we will first sketch a situation. We propose a test situation where a swarm of eight robots need to explore a room as efficient as possible. They will need to find a certain object and when the object is found by one of the units, the others will have to come to the objects location. For the robots to search efficiently they will need some type of "close range" relative localisation, so they can spread evenly across the room without bumping into each other. Speed is also an important factor when considering the frequency of distance measurements. For this sketch we chose an average speed of 3,6km/h or 1m/s, this a bit slower than average walking speed and seems realistic for smaller robots. The robots should keep a minimal distance of 20mm between the two outer points of the platforms to guarantee them not bumping into each other, we call this distance "the collision safety distance".
 
 \subsection{Precision of localization}
-An obvious answer for the question "How precise does the localisation need to be?" would be "As precise as possible!". However with swarming robots it might not need to be precise at all. This depends mostly on what the swarm needs to accomplish. For the situation we proposed the localisation needs to be precise at closer range but can be less accurate when further away. We choose to define "close range" as 0 to 3 meters, and "long range" as 3 to 20 meters.  The big difference between the two is the margin of error that is allowed. Close range localisation has a smaller margin of error because the robots will need to be able to move precisely, to perform certain tasks without bumping into each other. To determine the precision needed, size of the robots matter.  The project group of the Zebro light set out to make a robot with maximum dimensions of  300x 200 x 60 mm \cite{zebrolight}. When the sensor is placed in the middle of this platform the minimum precision in terms of distance will be 200mm. This will enable the robots to move close to each other without the danger of collision.
+An obvious answer for the question "How precise does the localisation need to be?" would be "As precise as possible!". However with swarming robots it might not need to be precise at all. This depends mostly on what the swarm needs to accomplish. For the situation we proposed the localisation needs to be precise at closer range but can be less accurate when further away. We choose to define "close range" as 0 to 3 meters, and "long range" as 3 to 25 meters (further if possible).  The big difference between the two is the margin of error that is allowed. \\
 
+Close range localisation has a smaller margin of error because the robots will need to be able to move precisely, to perform certain tasks without bumping into each other. To determine the precision needed, size of the robots matter.  The project group of the Zebro light set out to make a robot with maximum dimensions of  300x 200 x 60 mm \cite{zebrolight}. When the swarming module is placed in the middle of this platform the the absolute minimum distance between the two modules will be 200mm from middle point till middle point. Considering that some deviations might occur the minimal measuring distance or "dead zone" is chosen to be 150mm. The worst case scenario is shown in figure \ref{smrange} the maximum deviation is calculated with by dividing the collision safety distance (20mm) by the distance between the swarming modules (220mm). This results in a maximum deviation of 9\% in the close range distance measurement. The relative angle to another swarming module is needed to successfully implement localisation. At close range the localisation will mostly by used so the robots don't collide, or to implement swarming behaviour like trail following as discussed in the problem definition. Limited information about the relative angle would be enough to perform these tasks. We propose angle measurement at close range to have a resolution of 45\degree. In field testing will have to validate these assumptions.\\
+
+\begin{figure}[H]
+        \centering
+        \graphicspath{ {./images/} }
+        \includegraphics[scale=.3]{smrange.pdf}
+        \caption{Worst case scenario for two Zebro light robots at close range}
+        \label{fig:smrange}
+\end{figure}
+
+
+Long range localisation will only be used to keep members of certain groups in the swarm together. When the units are working together on a task, they will be using the close range localisation. A situation might occur where a members of a group of members of the swarm will have to complete a task outside of the range of the close range localisation. When they are done and they want to return to the swarm the long range localisation will be used. As discussed earlier the long range localisation will start at three meters. But it has to get the unit in close range. Therefore the minimal measuring distance will be chosen at two meters. The distance measurement will need to be precise enough to detect when it reaches the overlap between 2 and 3 meters. This maximum deviation for this to be true is 1 meter. Long range localisation will actually be a long range distance measurement. The relative angle between modules will not be needed. When an unit needs to return to the rest of the swarm a algorithm can be developed that finds it way back by looking at the changing distance. \\\\
+Summed up the specifications of localisation are:
+
+
+\begin{table}[H]
+\centering
+\caption{Specifications of localisation}
+\label{localisationtab}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Range}    & \textbf{Deadzone distance} & \textbf{Deviation (distance)} & Angle Resololution \\ \hline
+Close (0 - 3 m)   & 0,015 meters               & +/- 9\%                       & 45\%               \\ \hline
+Long (3 - 25 m +) & 2 meters                   & +/- 1 meter                   & -                  \\ \hline
+\end{tabular}%
+}
+\end{table}
 
 \section{Protocol}
 \subsection{Hardware}

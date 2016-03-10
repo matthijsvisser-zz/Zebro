@@ -511,8 +511,66 @@ There are proven implementations of networks with ZigBee. It is possible to crea
 
 Zigbee is known for the low power consumption which results in long battery lifetime \cite{performanceevaluationlowratewirelesspan}. There are two types of devices in a LR-WPAN network: A full-functioning device and a reduced-functioning device. Full-functioning devices can be used as a 'Master' or coordinator or as a client. These devices can talk to eachother or to reduced-functioning devices. A RFD is used for simple transmit tasks such as switches or simple inout/output operations. Just like Bluetooth, the coordinator or master, will setup the network.
 
-\textbf{IEEE 802.11 WiFi}\\
-Wireless local area networks (WLANs) or IEEE 802.11 is popularly known as Wi-Fi (Wireless Fidelity) \cite{wirelessmeshnetworksopportunitiesandchallenges}. With a Wi-Fi connection it is possible for the clients to connect to the internet with broadband speeds. Consumer WiFi usually uses one or two ISM frequency bands: 2,4 and 5 GHz. However there are also Wi-Fi standards which use the 3,6 and 60 GHz band. The 3,6 band is used by the IEEE 802.11y-2008 standard. and the 60 GHz band for the IEEE 802.11ad protocol. Wi-Fi uses direct sequence spread spectrum (DSSS) with complementary code keying (CDK) with 14 possible channels.
+\textbf{IEEE 802.11 Wi-Fi}\\
+Wireless local area networks (WLANs) or IEEE 802.11 is popularly known as Wi-Fi (Wireless Fidelity) \cite{wirelessmeshnetworksopportunitiesandchallenges}. With a Wi-Fi connection it is possible for the clients to connect to the internet with broadband speeds. Consumer WiFi usually uses one or two ISM frequency bands: 2,4 and 5 GHz. However there are also Wi-Fi standards which use the 3,6 and 60 GHz band. The 3,6 GHz band is used by the IEEE 802.11y-2008 standard. and the 60 GHz band for the IEEE 802.11ad protocol. The 802.11 standard defines two services: the basic set (BSS) and the extended service set (ESS). The basic service set without an acces point is an ad hoc network and only consists of accespoints. 
+
+
+Wi-Fi uses direct sequence spread spectrum (DSSS) with complementary code keying (CDK) with 14 possible channels on the 2,4 GHz band. Each channel has a bandwidth of 22 MHz, see figure \ref{fig:wifichannels}. 
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{wifichannels}
+   \caption{Illustration of the Wi-Fi channels on the 2,4 GHz band. \cite{wifichannels}}
+   \label{fig:wifichannels}
+\end{figure}
+
+Wi-Fi doesn't use frequency hopping to avoid data collisions. This forms a problem when there are hidden nodes in the network. A hidden node is illustrated in figure \ref{fig:hiddennode}. The circles indicate the transmission range of each node. In figure \ref{fig:hiddennode} 'A' is not in the transmission range of 'C', which makes 'A' invisible to 'C'. In this situation node A and C are not aware of eachother. Therefore one of the nodes can think that it is the only active node in the network.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{hiddennodeproblem}
+   \caption{Illustrates the hidden node problem with three nodes.}
+   \label{fig:hiddennode}
+\end{figure}
+
+In the following situation there will be a collision of information:
+\begin{itemize}
+\setlength\itemsep{0em}
+\item Node 'A' sends data to node 'B'.
+\item Simultaniously node 'C' is also sending information to node 'B'.
+\end{itemize}
+
+Using handshake frames can be a solution to prevent a collision from happening when there is a hidden node. With 802.11, the used handshakes frames are CTS (clear to send) and RTS (request to send). The solution is given in figure \ref{fig:rtscts}. Where node 'A' send an RTS to 'B' and 'B' responds with an CTS to node 'A' and 'C'. Node 'C' didn't send an RTS, so the node knows that it needs to wait. The waiting duration of data transmission is contained in the CTS message which is send by node 'B'. \cite{tcipbook}
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=.75\textwidth]{rtscts}
+   \caption{Gives an example of the hidden node problem given in \ref{fig:hiddennode}}
+   \label{fig:rtscts}
+\end{figure}
+
+As mentioned before, using handshake frames can be a solution to prevent a data collision from happening in case of a hidden node. However, in a exposed node problem, this method will cause data transmission inefficiency. \cite{tcipbook} Figure \ref{fig:exposedstation} illustrates the exposed node problem. In figure \ref{fig:rtscts2} the following situation is illustrated:
+
+\begin{itemize}
+\setlength\itemsep{0em}
+\item Node 'A' wants to send information to the node 'B'.
+\item Node 'C' also wants to send information to node 'D'.
+\item Because node 'C' receives an RTS, it doesn't get permission to send an RTS itself.
+\end{itemize}
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{exposedstation}
+   \caption{The exposed node problem with four nodes and two nodes who want to send information.}
+   \label{fig:exposedstation}
+\end{figure}
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=.75\textwidth]{rtscts2}
+   \caption{Gives an example of the exposed node problem given in \ref{fig:exposednode}}
+   \label{fig:rtts2}
+\end{figure}
 
 \textbf{Summerization}\\
 To summerize the given information from the protocols table \ref{sumtableprotocols} is made.
@@ -520,9 +578,22 @@ To summerize the given information from the protocols table \ref{sumtableprotoco
 Network size
 The networkssize of each of the protocols is expendable. A Bluetooth piconet for example can be part of a scatternet, which overlooks serveral other piconets. However, it is desireable that there are direct limitations in the network size
 
-Transmission time
 
-Protocol complexity
+
+
+\textbf{Transmission time}\\
+The transmission latency between nodes can be calculated with equation \ref{eq:transmissiontime}.\cite{comparitivestudywirelessprotocols} The data size ($N_{data}$), the maximum payload size ($N_{maxPld}$), the overhead size ($N_{ovhd}$), the bit time ($T_{bit}$) and the propagation time ($T_{prop}$) between devices form the transmission latency ($T_{tx}$). 
+
+\begin{equation}
+    T_{tx}=(N_{data} + \Bigg(\frac{N_{data}}{N_{maxPld}} N_{ovhd} \Bigg) T_{bit} + T_{prop})
+    \label{eq:transmissiontime}
+\end{equation}
+
+When the data payload size increases the transmission time increases as shown in \cite{comparitivestudywirelessprotocols}. In comparison to the other protocols, UWB has the lowest bit time which results in the fastest tranmission time followed by Wi-Fi. Where ZigBee followed by Bluetooth have the slowest tranmission time.
+
+\textbf{Protocol complexity}\\
+The protocol complexity can be compared by the number of primitives and events in a set situation. When there are more primitives or events in a certain protocol, it indicates the complexity. \cite{comparitivestudywirelessprotocols} As indicated in figure \ref{fig:protocolcomplexity} Bluetooth is by far the most complex protocol compared to the other protocols.
+
 \begin{figure}[H]
    \centering
    \includegraphics[width=1\textwidth]{protocolcomplexity}
@@ -531,9 +602,27 @@ Protocol complexity
 \end{figure}
 
 
+Each of the discussed protocols has it's own complexity. The reasearch done in \cite{comparitivestudywirelessprotocols} compares them in data coding efficiency versus the data size. The data coding efficiency is based on the data and message size. The average ratio between the data and message size is the data coding efficiency percentage. 
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{datacodingefficieny}
+   \caption{Comparision of the data coding efficiency for each protocol, found in \cite{comparitivestudywirelessprotocols}.}
+   \label{fig:protocolefficiency}
+\end{figure}
+
+Figure \ref{fig:protocolefficiency} illustrates the data coding efficiency for each protocol. Bluetooth for example has the best data coding efficiency when using a small amount of bytes (around 339 bytes). Wi-FI and UWB on the otherhand are more efficient for large data sizes. Where Zigbee saturates on 80 percent efficiency when the data size increases.
 
 
-Power consumption
+
+
+
+
+\textbf{Power consumption}\\
+The power consumption of each protocol depends on the used hardware. To make a valid comparison, the paper \cite{comparitivestudywirelessprotocols} made a selection of average hardware. The comparison in figure \ref{fig:protocolenergy} gives an indication of the average power consumption of each protocol. Bluetooth and ZigBee both consume about 100mW where the power consumption of UWB and Wi-Fi is about 700mW. Figure \ref{fig:protocolefficiency} gives the normalized energy consumption of each protocol. The normalized energy is given in mJ/Mb. The normalized energy consumption indicates that ZigBee and Bluetooth both use more energy to transceive the same amount of information. UWB is the most efficient protocol to transceive information.
+
+
+
 \begin{figure}[H]
    \centering
    \includegraphics[width=1\textwidth]{images/protocolenergy.png}
@@ -581,9 +670,14 @@ In this section an substudy in swarm communication is made. The results of the s
     \item The network must be reliable, so it must use self-organization and topology control algorithms \cite{WMN1}
 \end{itemize}
 
-
+Nog onderzoeken:
 Unicasting, multi-casting and broadcasting
 
+Boek communicatie systemen blz:
+827-834
+845-849
+450-453
+438-443
 
 
 \newpage

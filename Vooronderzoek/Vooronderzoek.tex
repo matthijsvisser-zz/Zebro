@@ -212,65 +212,123 @@ Building a swarm of robots, location awareness may be required to ensure an more
 
 With location awareness it is also possible to divide the swarm into multiple groups. Because the location of every individual is available these individual groups can be formed very quickly by selecting the nearest unit. This also enables quick assists when an individual robot gets stuck or needs to execute a task that require more than one unit.
 
-For mapping the various positions of all robots in a swarm a localization technique needs to be implemented. The robots can use information as relative position and relative orientation of their neighbours to interpret and fuse the information collected by other robots. With relative position the units can define the distance relative to each other. When all robots in the swarm are aware of the distance opposite to each other a map of the current formation can be created. However this can result in multiple solutions because there are no orientations involved. This means that the map could be mirrored. As seen in in Fig \ref{Angle}
+For mapping the various positions of all robots in a swarm a localization technique needs to be implemented. The robots can use information as relative position and relative orientation of their neighbours and fuse the information collected by other robots to interpret the relative location. With relative position the units can define the distance relative to each other. When all robots in the swarm are aware of the distance opposite to each other, a map of the current formation can be created. However this can result in multiple solutions because there are no orientations involved. 
 
+\subsection{Angle determination}
+Determining relative orientation opposite to each other can be done in various ways. some methods involve larger limitations than others. In general angular measurements are done using the goniometric equations.
+
+\subsubsection{Goniometric angle determination}
+The goniometric system shows how the different angles of a triangle within a circle can be calculated. Determining angles of a triangle within a circle using goniometric formulas mirroring can occur this happens because of the following relation between the angles see figure \ref{circle}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.5\textwidth]{drolletje.pdf}
-\caption{Stationary robot (yellow) cannot compute the relative position of the moving robot (green), since all distance measurements (dashed lines) are invariant to rotations around the stationary robot.\cite{Angle}}
-\label{Angle}
+\includegraphics[width=0.7\textwidth]{Cirkel.pdf}
+\caption{Unit circle where points P and Q are mirrored on the X-axes}
+\label{circle}
+\end{figure}
+
+\begin{equation}
+Because\ Xp = Xq,\ cos(-\alpha) = cos(\alpha)\ applies
+\end{equation}
+
+\begin{equation}
+Because\ Yq = -Yp,\ sin(-\alpha) = -sin(\alpha)\ applies
+\end{equation}
+
+This mirroring phenomenon is something that needs to be resolved. Mirroring of the angle means that the robot(s) that is being detected could be in two different direction relative to the interpreter. Figure \ref{detectie} shows how the different robots determine the relative distance to each other. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[angle=90,width=0.7\textwidth]{Detectie.pdf}
+\caption{Relative location interpretation}
+\label{detectie}
+\end{figure}
+
+In figure \ref{detectie} a scenario is given where the relative distance between the different nodes (N1, N2 \& N3) is known but their position within the circle is unknown. Because the relative direction (angle) from the interpreters (different nodes) needs to be determined. According to the goniometric equations the direction (angle) within a circle could be mirrored as shown in equation 1 and 2. This could lead to two different interpretations one being the reality as shown in figure \ref{detectie} and one shown in figure \ref{mirror} (where N1 is the interpreter). 
+
+\begin{figure}[H]
+\centering
+\includegraphics[angle=90,width=0.7\textwidth]{Mirror.pdf}
+\caption{N1 Mirrored interpretation}
+\label{mirror}
 \end{figure}
 
 For the robots to know in what direction the measured distance is applicable to, they can analyze the change in distance after a robot has moved a specific direction. In order to leverage the previous trilateration procedure requires coordinating the motion of the robots in a manner that gives every robot a chance to move and ensures that when a robot is moving its neighbours remain stationary. \cite{Angle}
-This can be seen in figure \ref{Range} 
+
+This method is very impractical because several robots need to abort their current task to move around. This method takes a lot of time to complete and therefore angular updates cannot be done very often. For previous research in this specific field, determining oriantation with movement see.\cite{delft}
+
+This can also be achieved by the use of stationary beacons. When a minimum of three beacons is placed on the field the location of the robots within this field can be measured, this is called triangulation. Triangulation is the process of determining the location of a point by measuring angles to it from known points. This is illustrated in figure \ref{driehoek}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.3\textwidth]{range.pdf}
-\caption{Moving robot (yellow) can analize the direction of the moving robot (green), as a result of the movement (arrows) of the yellow robot, the relative distance has changed.}
-\label{Range}
+\includegraphics[angle=90,width=0.7\textwidth]{driehoek.pdf}
+\caption{Triangulation using three stationary beacons}
+\label{driehoek}
 \end{figure}
 
-This can also be achieved by the use of stationary beacons. When a minimum of three beacons is placed on the field location of the robots within this field can be measured, this is called triangulation. Triangulation is the process of determining the location of a point by measuring angles to it from known points. This is illustrated in figure \ref{triangulation}.
+Using three stationary beacons the exact position of every node within this field can be calculated. This can be done by using the cosine rule shown in the equations below. 
+\begin{equation}
+A^2 = B^2 + C^2 - 2\cdot B\cdot C\cdot cos(\alpha)
+\end{equation}
+
+\begin{equation}
+B^2 = C^2 + A^2 - 2\cdot C\cdot A\cdot cos(\beta)
+\end{equation}
+
+\begin{equation}
+C^2 = A^2 + B^2 - 2\cdot A\cdot B\cdot cos(\gamma)
+\end{equation}
+
+With the cosine rule exact location of the different nodes can be determined. While using three stationary beacons mirroring cannot occur any more. Because if one beacon measures a distance to a node that is greater than the mutual-distance to another beacon the node is no longer located within the triangulation field.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{triangulation.pdf}
-\caption{Triangulation setup in a 2D field. R denotes the robot. B1, B2, and B3 are the beacons.$ \alpha_1$, $\alpha_2$, and $\alpha_3$ are the angle measurements respectively for B1, B2, and B3, relatively to the robot reference orientation $\phi$. \cite{triangulation}}
-\label{triangulation}
+\includegraphics[width=0.6\textwidth]{triangulatie.pdf}
+\caption{Determining the angle with three stationary beacons}
+\label{triangulatie}
 \end{figure}
+
+In figure \ref{triangulatie} the distances from the beacons to node 1 (N1) are being determined. With these distances the different angles can be calculated this is done in the equation below.
+
+\begin{equation}
+A^2 = B^2 + C^2 - 2\cdot B\cdot C\cdot cos(\alpha)
+\end{equation}
+
+\begin{equation}
+\label{eq:hoek}
+cos(\alpha) = \frac{(B^2 + C^2 - A^2)}{(2\cdot B\cdot C)}
+\end{equation}
+
+\begin{equation}
+\label{eq:hoek}
+\frac{(12^2 + 8,26^2 - 7,41^2)}{(2\cdot12\cdot8,26)} = 0,7935
+\end{equation}
+
+\begin{equation}
+cos^{-1}(0,7935) = 37,48\degree
+\end{equation}
 
 A more efficient solution is to retrieve the relative orientation opposite to each other. In combination with the relative distance every robot knows the exact relative position of all the other robots in range of the network.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{orientation.pdf}
+\includegraphics[angle=90, width=0.6\textwidth]{orientation.pdf}
 \caption{relative localization system using relative distance and orientation}
 \label{orientation}
 \end{figure}
 
-As seen in figure \ref{orientation} each robot has a common reference direction, the direction relative to this reference is called the relative orientation of the robot and can be visualized as shown in figure \ref{orientation}. With the known distance ‘d’, the mapping of the swarm can be completed.
+As seen in figure \ref{orientation} each node has a common reference direction (X,Y), the direction relative to this reference is called the relative orientation of the robot and can be visualized as shown in figure \ref{orientation}. With the known distances, the mapping of the swarm can be completed.
 \newpage
 
 \subsection{Relative Distance}
 Relative distance can be measured using various methods. The most common methods are \textit{"Received Signal Strength Indication"} and \textit{"Time Of Flight"} abbreviated as RSSI and TOF. 
 
 \subsubsection{Received Signal Strength}
-A method to determine distance can be implemented using Received Signal Strength abbreviated as "RSSI". Typically RSSI is a measure of dBm, which is ten times the logarithm of the ratio of the power (P)
-at the receiving end and the reference power (Pref). Power at the receiving end is inversely proportional to the
-square of distance.\cite{RSSI} Hence RSSI could potentially be used as an indicator of the distance
-at which the sending unit (robot) is located from the receiving unit.\cite{RSSI}
+A method to determine distance can be implemented using Received Signal Strength abbreviated as "RSSI". Typically RSSI is a measure of dBm, which is ten times the logarithm of the ratio of the power (P) at the receiving end and the reference power (Pref). Power at the receiving end is inversely proportional to the square of distance.\cite{RSSI} Hence RSSI could potentially be used as an indicator of the distance at which the sending unit (robot) is located from the receiving unit.\cite{RSSI}
 
-RSSI is defined as ten times the logarithm of the ratio of power of the received signal
-and a reference power (for example 1mW). It is known that power dissipates from its source
-as it moves further out. As mentioned earlier the relationship between power and distance is that power is inversely
-proportional to the square of the distance travelled. \cite{RSSI}
+RSSI is defined as ten times the logarithm of the ratio of power of the received signal and a reference power (for example 1mW). It is known that power dissipates from its source as it moves further out. As mentioned earlier the relationship between power and distance is that power is inversely proportional to the square of the distance travelled. \cite{RSSI}
 
-In theory it seems as a suitable implementation for the purpose, determining relative distance between
-different units. However various test results have shown that RSSI is only reliable under certain circumstances.
-Test results have shown that if the orientation of the sending or receiving unit changes it becomes very unreliable.
-The graphs below show the reliability of RSSI when the direction is being altered.\cite{RSSI}
+In theory it seems as a suitable implementation for the purpose, determining relative distance between different units. However various test results have shown that RSSI is only reliable under certain circumstances. Test results have shown that if the orientation of the sending or receiving unit changes it becomes very unreliable. The graphs below show the reliability of RSSI when the direction is being altered.\cite{RSSI}
 
 \begin{figure}[H]
 \centering

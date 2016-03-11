@@ -82,6 +82,78 @@
 \tableofcontents
 \newpage
 
+\section{What do we consider swarming?}
+Swarming is a wide concept and can be achieved in many forms. In this section will be defined what we consider swarming during this project. Many choices made here will be up for discussion, but these choices have to be made so the project can be successfully specified. For example, no clear minimal number of units is specified for a group of robots to be called a swarm. When specification have to be exact and testable this becomes a problem. The following subjects will be discussed: number of robots and scalability, precision of localisation. Its important to keep in mind that the choices made in this section, mostly consist of educated guesses. These guesses will later be confirmed by testing.
+
+\subsection{Situational sketch}
+To be able to make any assumptions we will first sketch a situation. We propose a test situation where a swarm of eight robots need to explore a room as efficient as possible. They will need to find a certain object and when the object is found by one of the units, the others will have to come to the objects location. For the robots to search efficiently they will need some type of "close range" relative localisation, so they can spread evenly across the room without bumping into each other. Speed is also an important factor when considering the frequency of distance measurements. For this sketch we chose an average speed of 3,6km/h or 1m/s, this a bit slower than average walking speed and seems realistic for smaller robots. The robots are programmed to keep a distance of 5cm from each others outer boundaries. And should keep a absolute minimal distance of 2cm.
+
+\subsection{Precision of localization}
+An obvious answer for the question "How precise does the localisation need to be?" would be "As precise as possible!". However with swarming robots it might not need to be precise at all. This depends mostly on what the swarm needs to accomplish. For the situation we proposed the localisation needs to be precise at closer range but can be less accurate when further away. We choose to define "close range" as 0 to 3 meters, and "long range" as 3 to 25 meters (further if possible).  The big difference between the two is the margin of error that is allowed. \\
+
+Close range localisation has a smaller margin of error because the robots will need to be able to move precisely, to perform certain tasks without bumping into each other. To determine the precision needed, size of the robots matter.  The project group of the Zebro light set out to make a robot with maximum dimensions of  300x 200 x 60 mm \cite{zebrolight}. When the swarming module is placed in the middle of this platform the the absolute minimum distance between the two modules will be 20cm from middle point till middle point. Considering that some deviations might occur the minimal measuring distance or "dead zone" is chosen to be 15cm. The worst case scenario is shown in figure \ref{fig:smrange} the maximum deviation is calculated with by dividing the absolute minimal distance (2cm) by the distance between the swarming modules (22cm). This results in a maximum deviation of 9\% in the close range distance measurement. The relative angle to another swarming module is needed to successfully implement localisation. At close range the localisation will mostly by used so the robots don't collide, or to implement swarming behaviour like trail following as discussed in the problem definition. Limited information about the relative angle would be enough to perform these tasks. We propose angle measurement at close range to have a resolution of 45\degree. In field testing will have to validate these assumptions. The speed of the robots determine the frequency at which the close range localisation should take place. The robots in this sketch move at a maximum speed of 1 m/s, the worst case scenario is that the robots will approach each other head-on. This makes their combined speed 2 m/s. The robots have been programmed to keep a minimal distance of 5cm from each other. Dividing the minimal distance by the combined speed will result in 40Hz which is the minimal required sampling speed. \\
+
+\begin{figure}[H]
+        \centering
+        \graphicspath{ {./images/} }
+        \includegraphics[scale=.3]{smrange.pdf}
+        \caption{Worst case scenario for two Zebro light robots at close range}
+        \label{fig:smrange}
+\end{figure}
+
+
+Long range localisation will only be used to keep members of certain groups in the swarm together. When the units are working together on a task, they will be using the close range localisation. A situation might occur where a members of a group of members of the swarm will have to complete a task outside of the range of the close range localisation. When they are done and they want to return to the swarm the long range localisation will be used. As discussed earlier the long range localisation will start at three meters. But it has to get the unit in close range. Therefore the minimal measuring distance will be chosen at two meters. The distance measurement will need to be precise enough to detect when it reaches the overlap between 2 and 3 meters. This maximum deviation for this to be true is 1 meter. Long range localisation will actually be a long range distance measurement. The relative angle between modules will not be needed. When an unit needs to return to the rest of the swarm a algorithm can be developed that finds it way back by looking at the changing distance. When the robot is trying to determine the right direction, the update frequency is important. At far range we would assume that a robot has to move one meter to determine if its getting closer or not. With the robot moving at 1 m/s the minimal update frequency is 1Hz. \\\\
+Summed up the specifications of localisation are:
+
+
+% Please add the following required packages to your document preamble:
+% \usepackage{graphicx}
+\begin{table}[h]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|}
+\hline
+                     & \textbf{Close range (0 - 3 m)} & \textbf{Long range (3 - 25m)} \\ \hline
+Deadzone distance    & 0,015 meters                   & 2 meters                      \\ \hline
+Deviation (distance) & +/- 9\%                         & +/- 1 meter                   \\ \hline
+Angle Resolution     & 45\%                            & -                             \\ \hline
+Update frequency     & 40Hz                           & 1Hz                           \\ \hline
+\end{tabular}%
+}
+\caption{Localisation specification}
+\label{smrange}
+\end{table}
+
+
+
+\subsection{Number of units of the Swarm}
+As discussed before in the problem definition, its hard to put an exact number on what number of units it required to form a swarm. We mentioned "a high number of units" and that a minimum number of units is hard to justify. We will look at what the preferable amount of units would be to demonstrate the swarming module. Also we will look at a minimum amount and a maximum. Important to remember is that the swarm must always be scalable, so no static number of units will be defined.\\\\Robots in a swarm have limited capabilities on their own, thus they need to work together to perform a complicated task. When one unit breaks down the others should still be able to complete the task. With this is mind the absolute minimum units required for a swarm is chosen to be 3. When one breaks down the other two can still complete the task faster/better than one could do on its own. It would be preferable to make the total swarm endlessly scalable. When developing the swarming module no maximum number should be defined to the swarm. Hardware limitations will later determine a maximum. However a maximum of units can be calculated, that one unit has to be able to detect at close range. The detection surface can be viewed as a circle around of unit with a radius of 3 meters. The radius for the  circle is also calculated for the area where robots will avoid each other. This is done by taking the furthest point seen from the center of the robot and then adding 0,05m (the range where robots will avoid each other), this circle is shown in figure \ref{fig:smrange}. The maximum amount of robots in this range can then be calculated using a simple tool, the result is shown in figure \ref{fig:ccircle}. The end result is a maximum of 130 robots.
+
+\begin{figure}[H]
+        \centering
+        \graphicspath{ {./images/} }
+        \includegraphics[scale=.6]{ccircle.png}
+        \caption{Maximum amount of robots within the close range radius, the maximum amount results in 130.}
+        \label{fig:ccircle}
+\end{figure}
+
+
+
+ For the sake of demonstration we would like to recreate the "feel" of a swarm. This means a higher number of units is required. We chose this number to be between 6 and 12 units depending on the time and budget. 
+
+\begin{table}[h]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+ & \textbf{minimum} & \textbf{maximum} & \textbf{maximum (close range)} & \textbf{Preferred (demonstration)} \\ \hline
+Number of Units & \multicolumn{1}{c|}{3} & \multicolumn{1}{c|}{$\infty$} & \multicolumn{1}{c|}{130} & \multicolumn{1}{c|}{6 to 12} \\ \hline
+\end{tabular}%
+}
+\caption{Specifications number of units}
+\label{specunits}
+\end{table}
+
 
 \section{Protocol}
 \subsection{Hardware}
@@ -94,6 +166,8 @@ Every subsystem features a micro-controller which must be capable of transmittin
 
 \subsubsection{TWI}
 The name TWI stands for "Two wire interface" which strongly resembles Phillps' protocol $I^(2)C$. Like the name suggests the bus is build up using two wires, one is used for the clock signal and the other is used for the data signal. Each of these wires is connected to the powerline through a pull-up resistor so every subsystem connected to the line can pull the line down which other systems can see. TWI can be used as a multimaster system which means every subsystem can send it's data without being dependend on a single master.
+
+
 
 \begin{figure}[H]
         \centering

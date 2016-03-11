@@ -311,7 +311,7 @@ Several topologies exist to form a network. Figure \ref{fig:STAR}, \ref{fig:RING
 \end{figure}
 
 \textbf{Star network}\\
-The star network in figure \ref{fig:STAR} uses the device marked as '1' as an central switch to reach out to other devices.\cite{starwiki} When the central device fails the network will stop working. This means that the star topology is not suitable as a swarm network.
+The star network in figure \ref{fig:STAR} uses the device marked as '1' as an central switch to reach out to other devices.\cite{starwiki} When the central device fails the network will stop working. However, when one of the other nodes fail the network is not completely disabled. Because of the central device, all of the information must pass this node. This could result in speed limitations.Mainly because of the central device, the star topology is not suitable as a swarm network. \cite{combook}
 
 
 \textbf{Ring network}\\
@@ -322,7 +322,18 @@ In a bus network the devices are connected to a linear half-duplex link. \cite{b
 This makes the network not dynamic.
 
 \textbf{Mesh network}\\
-To create an network with the characteristics described in the previous section a (wireless) mesh network ((W)MN) is a possible solution. A mesh network relies on communication nodes in which data is distributed. Such a network uses multi-hopping to transport data.\cite{multi-hopwirelessnetworks} All of the communication nodes cooperate in the distribution of data in the network. Each node of the network is connected to one or more nearby in range node(s) and forwards data on behalf of the other nodes. \cite{meshnetworking} An example of a mesh network is illustrated in figure \ref{fig:WMN}. It is possible but not necessary to connect one or more clients of a mesh network to the internet. Thus the client connected to the internet functions as a gateway for the other clients in the network. \cite{wirelessmeshnetworksopportunitiesandchallenges}
+To create an network with the characteristics described in the previous section a (wireless) mesh network ((W)MN) is a possible solution. A mesh network relies on communication nodes in which data is distributed. Such a network uses multi-hopping to transport data.\cite{multi-hopwirelessnetworks} All of the communication nodes cooperate in the distribution of data in the network. Each node of the network is connected to one or more nearby in range node(s) and forwards data on behalf of the other nodes. \cite{meshnetworking} 
+
+There are two types of mesh networks: fully connected and partly connected mesh networks. In a fully connected network each node is directly connected to each other node in the network. This type of network is completely redundant because of the alternative connections when one of them fails. The number of needed connections can be calculated with equation \ref{eq:amountofnodes}\cite{combook}. Where 'n' is the amount of nodes and 'c' stands for the needed amount of connections. A fully connected mesh network becomes impractical when the amount of nodes increases.
+
+\begin{equation}
+c=\frac{n(n-1)}{2}
+\label{eq:amountofnodes}
+\end{equation}
+
+An partly connected network is still mostly redundant, but has less connections in comparison with a fully connected network. An example of a partly connected mesh network is illustrated in figure \ref{fig:WMN}. \cite{combook} 
+
+It is possible but not necessary to connect one or more clients of a mesh network to the internet. Thus the client connected to the internet functions as a gateway for the other clients in the network. \cite{wirelessmeshnetworksopportunitiesandchallenges}
 
 \begin{figure}[H]
    \centering
@@ -439,42 +450,24 @@ With a MART, it is possibile to reroute a connection to reduce the path cost in 
 A mesh wireless personal area networks
 
 
-
 \subsubsection{Wireless network protocols}
+As stated earlier, the communication in the network needs to be wireless. This makes the network flexible in scaling, gives the nodes full freedom of movement and saves physical connections which could be cost efficient.
 
-
-
-Standards for wireless mesh networks:\cite{emergingstandarsforwirelessmeshtechnology}
-
-\begin{table}[H]
-\centering
-\caption{Types of mesh networks and related marketing alliances \cite{emergingstandarsforwirelessmeshtechnology}.}
-\label{meshstandard}
-\begin{tabular}{|l|l|}
-    \hline
-    \textbf{Name}         & \textbf{Corresponding standard} \\ \hline
-    WMAN mesh (WiMAX)     & IEEE 802.16a                    \\ \hline
-    WLAN mesh (WiFi)      & IEEE 802.11s                    \\ \hline
-    LR-WPAN mesh (ZigBee) & IEEE 802.15.5                   \\ \hline
-\end{tabular}
-\end{table}
-
-
-
-There exist several techniques to accomplish this method 
-Examples of possible protocols:
-The following wireless protocols are defined as short-range (a range of 10-100m) communication protocols:
+The following wireless protocols or technologys are defined as short-range (a range of 10-100m) communication protocols \cite{emergingstandarsforwirelessmeshtechnology} \cite{combook}:
 \begin{itemize}
 \setlength\itemsep{0em}
-    \item IEEE 802.11 a/b/g/ac (WiFi) \cite{IEEE80211timeline}
+    \item IEEE 802.11 a/b/g/ac (Wi-Fi) \cite{IEEE80211timeline}
     \item IEEE 802.15.1 (Bluetooth)
-    \item IEEE 802.15.4 (ZigBee)
+    \item IEEE 802.15.4/5 (ZigBee)
     \item IEEE 802.15.3 (Ultra-wideband)
-    \item SwarmBee
+    \item IEEE 802.16 a (WiMAX)
+    \item IR (Infrared)
 \end{itemize}
+ There are however exceptions, some of the technologys have been evolved and are able to transmit further than 100 meters.
+
 
 \textbf{IEEE 802.15.1 Bluetooth}\\
-Bluetooth is designed for short-range communication which uses wireless radio systems. The main purpose of Bluetooth is to create a wireless connection between computer peripherals such as; keyboards and mice. These applications are also known as wireless personal area networks (WPAN). \cite{comparitivestudywirelessprotocols} Bluetooth is an ad hoc network, which means that the network is formed spontaneously.\cite{tcipbook}
+Bluetooth is designed for short-range communication which uses wireless radio systems. Bluetooth is mostly used for personal-area networks (PAN). \cite{combook} The main purpose of Bluetooth is to create a wireless connection between for example computer peripherals such as; keyboards and mice. These applications are also known as wireless personal area networks (WPAN). \cite{comparitivestudywirelessprotocols} Bluetooth is an ad hoc network, which means that the network is formed spontaneously.\cite{tcipbook}
 
 Bluetooth uses the industrial scientific and medical (or short: ISM) band for receiving en transmission data. The ISM band ranges from 2,400 to 2,4835 GHz in the Netherlands. \cite{frequencyandsnetherlands} Frequency hopping spread spectrum (FHSS) is used to spread out the power over the full bandwidth. After the transmission of each packet, Bluetooth will hop/change to another channel. The ISM band consists of 79 channels with 1MHz each. Changingin frequencies also helps to avoid collision with other networks. But it is still possible that a collision takes place. When a collision happens, the data is resend on another channel untill the transmittion is succesfull.
 
@@ -492,9 +485,9 @@ Each piconet has one master which has an unique Bluetooth device adress and cloc
 A scatternet consists of two or more piconets. It is possible for a client to participate in more than one piconets, but it can only be a master of one network.
 
 \textbf{IEEE 802.15.3 Ultra-wideband}\\
-Ultra-wideband is designed for short-range high-speed wireless communication. The bandwidth of UWB is over 100Mbps and can reach speeds up to 480 Mbps \cite{comparitivestudywirelessprotocols}. The frequency band of UWB ranges from 3.1 to 10.6 GHz \cite{ultrawidebandwirelesscommunications}.
+Ultra-wideband is designed for short-range high-speed wireless communication. The bandwidth of UWB is over 100Mbps and can reach speeds up to 480 Mbps \cite{comparitivestudywirelessprotocols}. The frequency band of UWB ranges from 3.1 to 10.6 GHz \cite{ultrawidebandwirelesscommunications}. Although the spectrum is large in comparison with other protocols the signal level is very low so it doesn't interfere with other signals. UWB is an baseband or carrierless communication method.
 
-Because of the 'ultra wide' band UWB has benefits over other technologys. The benefits of UWB are \cite{ultrawidebandwirelesscommunications}: 
+Because of the 'ultra wide' band UWB has benefits over other technologys. The benefits of UWB are \cite{ultrawidebandwirelesscommunications}\cite{combook}: 
 \begin{itemize}
 \setlength\itemsep{0em}
     \item High data rates
@@ -502,20 +495,20 @@ Because of the 'ultra wide' band UWB has benefits over other technologys. The be
     \item Low-cost tranceivers
     \item Low transmit power and low interference
 \end{itemize}
- With UWB it is possible to get high data rates in ranges of 20 to 50 meters. Because of the wide bandwidth of UWB, the material penetration losses are relatively low. Because of the absence of sending a carrier, the transceiver build can be relatively simple. \cite{ultrawidebandwirelesscommunications}
+ With UWB it is possible to get high data rates in ranges of 20 to 50 meters. Because of the wide bandwidth of UWB, the material penetration losses are relatively low. Because of the absence of sending a carrier, the transceiver build can be relatively simple. \cite{ultrawidebandwirelesscommunications} The disadvantage is however, the transmitpower must be low for commerical use. This results in a low transmitting range about 30 meters according to \cite{combook}.
 
 \textbf{IEEE 802.15.4 ZigBee}\\
-Zigbee is usually used in personal operating spaces (POS) of about 10 meters. However, there are devices based on Zigbee that can reach up to 1500 meters of span when the target is in line of sight \cite{zigbeewiki}. It is designed for simple devices that consume minimal power and operate in a personal operating space. These applications are also known as low-rate wireless personal area networks (LR-WPAN). \cite{comparitivestudywirelessprotocols} Zigbee uses the ISM 900 MHz or 2,4 GHz band to communicate, just like Bluetooth and WiFi. Zigbee uses direct sequence spread spectrum (DSSS) with 16 channels and 2 MHz bandwith
+Zigbee is usually used in personal operating spaces (POS) or personal-area networks (PAN) of about 10 meters. \cite{combook} However, there are devices based on Zigbee that can reach up to 1500 meters of span when the target is in line of sight \cite{zigbeewiki}. It is designed for simple devices that consume minimal power and operate in a personal operating space. Applications as sensors. These applications are also known as low-rate wireless personal area networks (LR-WPAN). \cite{comparitivestudywirelessprotocols} Zigbee uses the ISM 900 MHz or, just like Bluetooth and WiFi, the 2,4 GHz ISM band to communicate. Zigbee uses direct sequence spread spectrum (DSSS) with 16 channels and 2 MHz bandwith.
 
 There are proven implementations of networks with ZigBee. It is possible to create a reliable self-organized mesh network which is able to use multi-hopping \cite{comparitivestudywirelessprotocols}.
 
 Zigbee is known for the low power consumption which results in long battery lifetime \cite{performanceevaluationlowratewirelesspan}. There are two types of devices in a LR-WPAN network: A full-functioning device and a reduced-functioning device. Full-functioning devices can be used as a 'Master' or coordinator or as a client. These devices can talk to eachother or to reduced-functioning devices. A RFD is used for simple transmit tasks such as switches or simple inout/output operations. Just like Bluetooth, the coordinator or master, will setup the network.
 
 \textbf{IEEE 802.11 Wi-Fi}\\
-Wireless local area networks (WLANs) or IEEE 802.11 is popularly known as Wi-Fi (Wireless Fidelity) \cite{wirelessmeshnetworksopportunitiesandchallenges}. With a Wi-Fi connection it is possible for the clients to connect to the internet with broadband speeds. Consumer WiFi usually uses one or two ISM frequency bands: 2,4 and 5 GHz. However there are also Wi-Fi standards which use the 3,6 and 60 GHz band. The 3,6 GHz band is used by the IEEE 802.11y-2008 standard. and the 60 GHz band for the IEEE 802.11ad protocol. The 802.11 standard defines two services: the basic set (BSS) and the extended service set (ESS). The basic service set without an acces point is an ad hoc network and only consists of accespoints. 
+Wireless local area networks (WLANs) or IEEE 802.11 is popularly known as Wi-Fi (Wireless Fidelity) \cite{wirelessmeshnetworksopportunitiesandchallenges}. With a Wi-Fi connection it is possible for the clients to connect to the internet with broadband speeds. Consumer WiFi usually uses one or two ISM frequency bands: 2,4 and 5 GHz. The 2,4 GHz unlicenced ISM band used for IEEE 802.11b/g/n extends from 2.4 to 2,4835 GHz with a total bandwidth of 83.5MHz. The 5 GHz ISM band used for IEEE 802.11a extends from 5.15 to 5.25 GHz with a power limitation of 50mW, 5.25 to 5.35 Ghz with 250mW and5.725 to 5.825 GHz with 1W of power.\cite{combook} The benefit of using the 5 GHz ISM band is that there are alot less interference from appliances like microwaves, Bluetooth products and a number of other services. The downside of 5 GHz is however, the transmission range decreases greatly because 5 GHz signals are absorbed faster in comparison with 2,4 GHz signals. \cite{combook} There are also Wi-Fi standards which use the 3,6 and 60 GHz band. The 3,6 GHz band is used by the IEEE 802.11y-2008 standard. and the 60 GHz band for the IEEE 802.11ad protocol. The 802.11 standard defines two services: the basic set (BSS) and the extended service set (ESS). The basic service set without an acces point is an ad hoc network and only consists of accespoints. 
 
 
-Wi-Fi uses direct sequence spread spectrum (DSSS) with complementary code keying (CDK) with 14 possible channels on the 2,4 GHz band. Each channel has a bandwidth of 22 MHz, see figure \ref{fig:wifichannels}. 
+Wi-Fi uses direct sequence spread spectrum (DSSS) with complementary code keying (CDK) with 14 possible channels on the 2,4 GHz band. With DSSS it is possible that multiple signals use the same channel. However to prevent interference the channel selection must be criticially considered. Each channel has a bandwidth of 22 MHz and is 5MHz apart, see figure \ref{fig:wifichannels}. \cite{combook} Because of the span of each channel, the channels overlap.
 
 \begin{figure}[H]
    \centering
@@ -540,7 +533,7 @@ In the following situation there will be a collision of information:
 \item Simultaniously node 'C' is also sending information to node 'B'.
 \end{itemize}
 
-Using handshake frames can be a solution to prevent a collision from happening when there is a hidden node. With 802.11, the used handshakes frames are CTS (clear to send) and RTS (request to send). The solution is given in figure \ref{fig:rtscts}. Where node 'A' send an RTS to 'B' and 'B' responds with an CTS to node 'A' and 'C'. Node 'C' didn't send an RTS, so the node knows that it needs to wait. The waiting duration of data transmission is contained in the CTS message which is send by node 'B'. \cite{tcipbook}
+Using handshake frames (CSMA/CD - CA) can be a solution to prevent a collision from happening when there is a hidden node. With 802.11, the used handshakes frames are CTS (clear to send) and RTS (request to send). The solution is given in figure \ref{fig:rtscts}. Where node 'A' send an RTS to 'B' and 'B' responds with an CTS to node 'A' and 'C'. Node 'C' didn't send an RTS, so the node knows that it needs to wait. The waiting duration of data transmission is contained in the CTS message which is send by node 'B'. \cite{tcipbook}
 
 \begin{figure}[H]
    \centering
@@ -571,6 +564,14 @@ As mentioned before, using handshake frames can be a solution to prevent a data 
    \caption{Gives an example of the exposed node problem given in \ref{fig:exposednode}}
    \label{fig:rtts2}
 \end{figure}
+
+\textbf{WiMAX}\\
+
+
+
+\textbf{Infrared}\\
+Infrared is possibly the most widespread wireless technology for short-distance data communication. \cite{combook} It is primarily used for remote control between computers and televisions. The short-range distance with infrared communications is typically about 1 to 9 meters. \cite{combook} Infrared travels with the speed of light which is 299792458 meters per second. \cite{speedoflight}https://en.wikipedia.org/wiki/Wi-Fi In comparison with the other discussed protocols this technology is based on light instead of radio frequency signals. Because of the origin of this technology, there must be a clear (no obstacles block the sight) line of sight (LOS) between the transmitter and receiver. This disadvantage makes the technology not suitable for the communication in a complex swarm network. 
+
 
 \textbf{Summerization}\\
 To summerize the given information from the protocols table \ref{sumtableprotocols} is made.
@@ -614,7 +615,9 @@ Each of the discussed protocols has it's own complexity. The reasearch done in \
 Figure \ref{fig:protocolefficiency} illustrates the data coding efficiency for each protocol. Bluetooth for example has the best data coding efficiency when using a small amount of bytes (around 339 bytes). Wi-FI and UWB on the otherhand are more efficient for large data sizes. Where Zigbee saturates on 80 percent efficiency when the data size increases.
 
 
+\textbf{Interference}
 
+Ultrawideband operates in the 3.1 - 10.6 GHZ range. This region is used by satellites, radars, broadband wireless and wireless networks.
 
 
 

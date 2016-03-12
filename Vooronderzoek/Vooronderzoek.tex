@@ -523,6 +523,31 @@ An ultrasonic sensor is usually used to detect if there is some obstacle in the 
 
 \newpage
 
+\section{Testing} 
+
+In some situations it is needed to see if the theory also applies in real life. In this section some of the test that where done are explained and the results are discussed. 
+
+\subsection{Acoustic sensing}
+
+After some research was done acoustic localization seemed to be a good option overall. Especially for short range between 0 and 3 meters measuring with time of flight. A couple of test where done to test if measuring time of flight of sound waves was suitable for this project. \\ First of all the different frequencies where tested. Important is that the frequency used can travel atleast 3 meters, but also travels omnidirectional. The speaker that is used has a range between the ***Hz and **kHz. Its is known that lower frequencies travel further then the higher frequencies. But the higher frequencies have a more narrow beam then the lower frequencies. We tested in the following situation: 
+
+*plaatje set up
+
+We placed a speaker on the table facing upwards. On a distance of 1, 2, and 3 meters we placed a microphone which was connected to an oscilloscope. For each frequency we tested what the microphone was picking up and how the signal showed up. The higher frequencies did not show up at all, while the lower frequencies where easily visible.  When the speaker was faced directly at the microphone the higher frequencies was better visible then the lower frequencies. From this test it can be concluded that lower sound waves are more preferable since it was the intention to have a wave with omnidirectional characteristics and a minimum of 3 meter travel range in those directions. \\
+Until now only the travel characteristics where tested, but how does the environment have effect on these sound waves. Are the lower or the higher sound waves more more influenced by noise. And if so, can the noise be minimized with filtering. % hier misschien nog onderzoek over opzoeken!??!?!? 
+Filter where implemented to test if the results improved, and if the noise that was added on purpose had any influence on the system. 
+
+*nog een plaatje * 
+
+
+
+
+
+
+
+
+\newpage
+
 \section{Bibliografie}
 \bibliography{references}
 \bibliographystyle{IEEEtran}

@@ -420,7 +420,7 @@ Methods to adress meshed networks are:
     \item Meshed adaptive robust tree (MART)
 \end{itemize}
 
-\textbf{Adaptive robust tree (ART)}\\
+\textbf{\large bbAdaptive robust tree (ART)}\\
 Adaptive robust tree is a meshed tree routing approach to address the nodes. Each node is adaptively addressed during the tree formation. It is desireable that the tree is free of single point failures (SPOF). This means that there is always a redundant path if a node fails, but that's not always possible in non-mesh networks. Each node keeps track of an ART table (ARTT), to map it's branches. In this table the adresses of the connected branches are stored.
 
 ART knows three phases; the initialization, operation and recovery phase. In the initialization phase the tree is formed. The tree formation starts at the root and grows by adding nodes to the tree. The nodes get an adress assigned, when all nodes are joined. Thereafter, the number of nodes are counted in the tree as shown in figure \ref{fig:treenumbers}.
@@ -434,7 +434,7 @@ ART knows three phases; the initialization, operation and recovery phase. In the
 
 The following phase is the operation phase, where small amount of nodes are still able to join, but when the change becomes to big, the network goes in to initialization mode again. When a part of the tree becomes broken, the recovery phase becomes active for the affected part.
 
-\textbf{Meshed adaptive robust tree}\\
+\textbf{\large Meshed adaptive robust tree}\\
 With an ART tree it is possible to create a MART (Meshed adaptive robust tree). Figure \ref{fig:meshtree} illustrates a MART, in this figure there are already connections added that make a mesh network. From the point of view from every node in the network, there still is a tree form. In this mesh network, each node has a redundant path if a connection is broken, so it is SPOF free.
 
 \begin{figure}[H]
@@ -446,7 +446,7 @@ With an ART tree it is possible to create a MART (Meshed adaptive robust tree). 
 
 With a MART, it is possibile to reroute a connection to reduce the path cost in comparison with ART. Most of the time, the transission from ART to MART, removes some SPOFs.
 
-\textbf{Mesh wireless personal area networks}\\
+\textbf{\large Mesh wireless personal area networks}\\
 A mesh wireless personal area networks
 
 
@@ -460,13 +460,15 @@ The following wireless protocols or technologys are defined as short-range (a ra
     \item IEEE 802.15.1 (Bluetooth)
     \item IEEE 802.15.4/5 (ZigBee)
     \item IEEE 802.15.3 (Ultra-wideband)
-    \item IEEE 802.16 a (WiMAX)
-    \item IR (Infrared)
+    \item IR IrDA(Infrared)
 \end{itemize}
- There are however exceptions, some of the technologys have been evolved and are able to transmit further than 100 meters.
+ There are however exceptions, some of the technologys have been evolved and are able to transmit further than 100 meters. WiMax for example is developed to overcome the range problem. 
+\begin{itemize}
+\setlength\itemsep{0em}
+     \item IEEE 802.16 a (WiMAX)
+\end{itemize}
 
-
-\textbf{IEEE 802.15.1 Bluetooth}\\
+\textbf{\large IEEE 802.15.1 Bluetooth}\\
 Bluetooth is designed for short-range communication which uses wireless radio systems. Bluetooth is mostly used for personal-area networks (PAN). \cite{combook} The main purpose of Bluetooth is to create a wireless connection between for example computer peripherals such as; keyboards and mice. These applications are also known as wireless personal area networks (WPAN). \cite{comparitivestudywirelessprotocols} Bluetooth is an ad hoc network, which means that the network is formed spontaneously.\cite{tcipbook}
 
 Bluetooth uses the industrial scientific and medical (or short: ISM) band for receiving en transmission data. The ISM band ranges from 2,400 to 2,4835 GHz in the Netherlands. \cite{frequencyandsnetherlands} Frequency hopping spread spectrum (FHSS) is used to spread out the power over the full bandwidth. After the transmission of each packet, Bluetooth will hop/change to another channel. The ISM band consists of 79 channels with 1MHz each. Changingin frequencies also helps to avoid collision with other networks. But it is still possible that a collision takes place. When a collision happens, the data is resend on another channel untill the transmittion is succesfull.
@@ -484,7 +486,7 @@ Each piconet has one master which has an unique Bluetooth device adress and cloc
 
 A scatternet consists of two or more piconets. It is possible for a client to participate in more than one piconets, but it can only be a master of one network.
 
-\textbf{IEEE 802.15.3 Ultra-wideband}\\
+\textbf{\large IEEE 802.15.3 Ultra-wideband}\\
 Ultra-wideband is designed for short-range high-speed wireless communication. The bandwidth of UWB is over 100Mbps and can reach speeds up to 480 Mbps \cite{comparitivestudywirelessprotocols}. The frequency band of UWB ranges from 3.1 to 10.6 GHz \cite{ultrawidebandwirelesscommunications}. Although the spectrum is large in comparison with other protocols the signal level is very low so it doesn't interfere with other signals. UWB is an baseband or carrierless communication method.
 
 Because of the 'ultra wide' band UWB has benefits over other technologys. The benefits of UWB are \cite{ultrawidebandwirelesscommunications}\cite{combook}: 
@@ -495,16 +497,25 @@ Because of the 'ultra wide' band UWB has benefits over other technologys. The be
     \item Low-cost tranceivers
     \item Low transmit power and low interference
 \end{itemize}
- With UWB it is possible to get high data rates in ranges of 20 to 50 meters. Because of the wide bandwidth of UWB, the material penetration losses are relatively low. Because of the absence of sending a carrier, the transceiver build can be relatively simple. \cite{ultrawidebandwirelesscommunications} The disadvantage is however, the transmitpower must be low for commerical use. This results in a low transmitting range about 30 meters according to \cite{combook}.
+ With UWB it is possible to get high data rates in ranges of 20 to 50 meters. Because of the wide bandwidth of UWB, the material penetration losses are relatively low. As shown in equation \ref{eq:channelcapacity}, the channelcapicity increases linearly with the bandwidth.
 
-\textbf{IEEE 802.15.4 ZigBee}\\
+ \begin{equation}
+    C=Blog_2(1+\frac{S}{N})
+    \label{eq:channelcapacity}
+ \end{equation}
+
+ Because of the absence of sending a carrier, the transceiver build can be relatively simple. \cite{ultrawidebandwirelesscommunications} The disadvantage is however, the transmitpower must be low for commerical use. This results in a low transmitting range about 30 meters according to \cite{combook}.
+
+
+
+\textbf{\large IEEE 802.15.4 ZigBee}\\
 Zigbee is usually used in personal operating spaces (POS) or personal-area networks (PAN) of about 10 meters. \cite{combook} However, there are devices based on Zigbee that can reach up to 1500 meters of span when the target is in line of sight \cite{zigbeewiki}. It is designed for simple devices that consume minimal power and operate in a personal operating space. Applications as sensors. These applications are also known as low-rate wireless personal area networks (LR-WPAN). \cite{comparitivestudywirelessprotocols} Zigbee uses the ISM 900 MHz or, just like Bluetooth and WiFi, the 2,4 GHz ISM band to communicate. Zigbee uses direct sequence spread spectrum (DSSS) with 16 channels and 2 MHz bandwith.
 
 There are proven implementations of networks with ZigBee. It is possible to create a reliable self-organized mesh network which is able to use multi-hopping \cite{comparitivestudywirelessprotocols}.
 
 Zigbee is known for the low power consumption which results in long battery lifetime \cite{performanceevaluationlowratewirelesspan}. There are two types of devices in a LR-WPAN network: A full-functioning device and a reduced-functioning device. Full-functioning devices can be used as a 'Master' or coordinator or as a client. These devices can talk to eachother or to reduced-functioning devices. A RFD is used for simple transmit tasks such as switches or simple inout/output operations. Just like Bluetooth, the coordinator or master, will setup the network.
 
-\textbf{IEEE 802.11 Wi-Fi}\\
+\textbf{\large IEEE 802.11 Wi-Fi}\\
 Wireless local area networks (WLANs) or IEEE 802.11 is popularly known as Wi-Fi (Wireless Fidelity) \cite{wirelessmeshnetworksopportunitiesandchallenges}. With a Wi-Fi connection it is possible for the clients to connect to the internet with broadband speeds. Consumer WiFi usually uses one or two ISM frequency bands: 2,4 and 5 GHz. The 2,4 GHz unlicenced ISM band used for IEEE 802.11b/g/n extends from 2.4 to 2,4835 GHz with a total bandwidth of 83.5MHz. The 5 GHz ISM band used for IEEE 802.11a extends from 5.15 to 5.25 GHz with a power limitation of 50mW, 5.25 to 5.35 Ghz with 250mW and5.725 to 5.825 GHz with 1W of power.\cite{combook} The benefit of using the 5 GHz ISM band is that there are alot less interference from appliances like microwaves, Bluetooth products and a number of other services. The downside of 5 GHz is however, the transmission range decreases greatly because 5 GHz signals are absorbed faster in comparison with 2,4 GHz signals. \cite{combook} There are also Wi-Fi standards which use the 3,6 and 60 GHz band. The 3,6 GHz band is used by the IEEE 802.11y-2008 standard. and the 60 GHz band for the IEEE 802.11ad protocol. The 802.11 standard defines two services: the basic set (BSS) and the extended service set (ESS). The basic service set without an acces point is an ad hoc network and only consists of accespoints. 
 
 
@@ -565,24 +576,43 @@ As mentioned before, using handshake frames can be a solution to prevent a data 
    \label{fig:rtts2}
 \end{figure}
 
-\textbf{WiMAX}\\
+\textbf{\large IR Infrared}\\
+Infrared is possibly the most widespread wireless technology for short-distance data communication. \cite{combook} It is primarily used for remote control between computers and televisions. The short-range distance with infrared communications is typically about 1 to 9 meters. \cite{combook} Infrared travels with the speed of light which is 299792458 meters per second. \cite{speedoflight} In comparison with the other discussed protocols this technology is based on light instead of radio frequency signals. Because of the origin of this technology, there must be a clear (no obstacles block the sight) line of sight (LOS) between the transmitter and receiver. This disadvantage makes the technology not suitable for the communication in a complex swarm network.
+
+\textbf{\large IEEE 802.16 WiMAX}\\
+WiMAX is a wireless metropolitan-area network (MAN network). WiMAX is defined by the IEEE 802.16 standard. The main reason for developing this standard was to deliver consumers wireless broadband speeds. WiMAX is a long-distance data communication technology. WiMAX knows three topology structures: Point-to-point (P2P), point-to-multipoint (PMP) and mesh mode.
 
 
 
-\textbf{Infrared}\\
-Infrared is possibly the most widespread wireless technology for short-distance data communication. \cite{combook} It is primarily used for remote control between computers and televisions. The short-range distance with infrared communications is typically about 1 to 9 meters. \cite{combook} Infrared travels with the speed of light which is 299792458 meters per second. \cite{speedoflight}https://en.wikipedia.org/wiki/Wi-Fi In comparison with the other discussed protocols this technology is based on light instead of radio frequency signals. Because of the origin of this technology, there must be a clear (no obstacles block the sight) line of sight (LOS) between the transmitter and receiver. This disadvantage makes the technology not suitable for the communication in a complex swarm network. 
+\textbf{\large Summerization and comparison}\\
+To summerize the given information from the protocols, table \ref{sumtableprotocols} is made.
+This table displays the most important characteristics of each protocol.
+
+\begin{table}[H]
+\centering
+\caption{A table with a summerazing of the protocols. The table is based on information from \cite{comparitivestudywirelessprotocols}. Infrared is not included due to the line of sight problem.}
+\label{sumtableprotocols}
+\resizebox{\textwidth}{!}{\begin{tabular}{|l|l|l|l|l|}
+\hline
+\textbf{Standard}        & \textbf{Bluetooth} & \textbf{Ultra-wide band} & \textbf{ZigBee}      & \textbf{Wi-Fi} \\ \hline
+IEEE spec.               & 802.15.1           & 802.15.3a                & 802.15.4             & 802.11a/b/g    \\ \hline
+Frequency band           & 2.4 GHz            & 3.1-10.6 GHz             & 868/915 MHz; 2,4 GHz & 2,4GHz; 5GHz   \\ \hline
+Max signal rate          & 1Mb/s              & 110Mb/s                  & 250Kb/s              & 54Mb/s         \\ \hline
+Nominal range            & 10m                & 10m                      & 10-100m              & 100m           \\ \hline
+Channel bandwidth        & 1 MHz              & 500 MHz - 7.5 GHz        & 0.3/0.6 MHz; 2MHz    & 22 MHz         \\ \hline
+Basic cell               & Piconet            & Piconet                  & Star                 & BSS            \\ \hline
+Extension basic cell     & Scatternet         & Peer-to-peer, mesh            & Cluster tree, mesh   & ESS, mesh            \\ \hline
+Max cell nodes & 8  \cite{combook}                & 8                        & \textgreater65000\cite{combook}    & 2007           \\ \hline
+\end{tabular}}
+\end{table}
+
+Each characteristic of the protocol is compared with eachother in this chapter. And for each comparison the most suitable and unsuitable characteric is given pros and cons. This way a recommendation can be made.\\
+
+\textbf{\large Network size}\\
+The networkssize of each of the protocols is expendable. This is shown in table \ref{sumtableprotocols}. A Bluetooth piconet for example can be part of a scatternet, which overlooks serveral other piconets. However, each piconet must have a master as mentioned before, a master in a swarm network is not desirable. Bluetooth also doesn't have mesh network support yet (begin 2016). \cite{bluetoothmesh} This gives Bluetooth the biggest disadvantage in contrast to the other protocols. In comparison with ZigBee which has the biggest possible network size.\\
 
 
-\textbf{Summerization}\\
-To summerize the given information from the protocols table \ref{sumtableprotocols} is made.
-
-Network size
-The networkssize of each of the protocols is expendable. A Bluetooth piconet for example can be part of a scatternet, which overlooks serveral other piconets. However, it is desireable that there are direct limitations in the network size
-
-
-
-
-\textbf{Transmission time}\\
+\textbf{\large Transmission time}\\
 The transmission latency between nodes can be calculated with equation \ref{eq:transmissiontime}.\cite{comparitivestudywirelessprotocols} The data size ($N_{data}$), the maximum payload size ($N_{maxPld}$), the overhead size ($N_{ovhd}$), the bit time ($T_{bit}$) and the propagation time ($T_{prop}$) between devices form the transmission latency ($T_{tx}$). 
 
 \begin{equation}
@@ -592,7 +622,35 @@ The transmission latency between nodes can be calculated with equation \ref{eq:t
 
 When the data payload size increases the transmission time increases as shown in \cite{comparitivestudywirelessprotocols}. In comparison to the other protocols, UWB has the lowest bit time which results in the fastest tranmission time followed by Wi-Fi. Where ZigBee followed by Bluetooth have the slowest tranmission time.
 
-\textbf{Protocol complexity}\\
+As mentioned earlier, the density of a Wi-Fi network, contributes to the network latency due to the exposed node problem.\cite{combook} \\
+
+\textbf{Data distribution per square meter}\\
+Research done in \cite{ultrawidebandshortmediumrange} makes a data distribution comparison between Wi-Fi, Bluetooth and Ultra-wideband. Because of the crowding in the spectrum and the growing demand for wireless data capability at high bandwidth it favors systems just not to have a high-peak bit rate, but also high spatial capacity. Spatial capacity is defined as bits/sec/square-meter. \cite{ultrawidebandshortmediumrange} Table \ref{spatialcapacity} gives the spatial capacity of each protocol.
+
+\begin{table}[H]
+\centering
+\caption{Spatial capacity of different protocols, based on information from \cite{ultrawidebandshortmediumrange}}
+\label{spatialcapacity}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Protocol}  & \textbf{Spatial capacity} \\ \hline
+Wi-Fi IEEE 802.11b & 1.000                     \\ \hline
+Wi-Fi IEEE 802.11a & 83.000                    \\ \hline
+Bluetooth IEEE 802.15.4          & 30.000                    \\ \hline
+UWB IEEE 802.15.3a                & 1.000.000                 \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{spatialcapacity}
+   \caption{Comparision of the spatial capacity for each protocol, found in \cite{ultrawidebandshortmediumrange}.}
+   \label{fig:protocolcomplexity}
+\end{figure}
+
+\textbf{\\Protocol complexity}\\
 The protocol complexity can be compared by the number of primitives and events in a set situation. When there are more primitives or events in a certain protocol, it indicates the complexity. \cite{comparitivestudywirelessprotocols} As indicated in figure \ref{fig:protocolcomplexity} Bluetooth is by far the most complex protocol compared to the other protocols.
 
 \begin{figure}[H]
@@ -612,12 +670,11 @@ Each of the discussed protocols has it's own complexity. The reasearch done in \
    \label{fig:protocolefficiency}
 \end{figure}
 
-Figure \ref{fig:protocolefficiency} illustrates the data coding efficiency for each protocol. Bluetooth for example has the best data coding efficiency when using a small amount of bytes (around 339 bytes). Wi-FI and UWB on the otherhand are more efficient for large data sizes. Where Zigbee saturates on 80 percent efficiency when the data size increases.
+Figure \ref{fig:protocolefficiency} illustrates the data coding efficiency for each protocol. Bluetooth for example has the best data coding efficiency when using a small amount of bytes (around 339 bytes). Wi-FI and UWB on the otherhand are more efficient for large data sizes. Where Zigbee saturates on 80 percent efficiency when the data size increases.\\
 
 
-\textbf{Interference}
-
-Ultrawideband operates in the 3.1 - 10.6 GHZ range. This region is used by satellites, radars, broadband wireless and wireless networks.
+\textbf{Interference}\\
+Ultrawideband operates in the 3.1 - 10.6 GHZ range. This region is used by satellites, radars, broadband wireless and wireless networks.\\
 
 
 
@@ -641,26 +698,31 @@ The power consumption of each protocol depends on the used hardware. To make a v
 \end{figure}
 
 
+\textbf{Conclusion}\\
+
+The final comparison is made in table \ref{protocolcompare}. There have been some adjustments in naming the characteristics to make the table fit the page. 'Rate' is the transceiving data rate, 'Range' is the transceiving data range, 'Scalibility' of the protocol on large and small scale projects, 'Efficiency' means the data coding efficiency, 'Complexity' is the protocol complexity, 'Capacity' stands for the data distribution per square meter, 'Consumption' means the energy comsumption.
 \begin{table}[H]
 \centering
-\caption{A table with a summirazing of the protocols. The table is based on information from \cite{comparitivestudywirelessprotocols}.}
-\label{sumtableprotocols}
-\resizebox{\textwidth}{!}{\begin{tabular}{|l|l|l|l|l|}
+\caption{The comparison of the protocols. The characteristics of each of the protocols get evaluated. The scoring is based on a number between zero and one, where zero is bad and one is good. The total score gives the best protocol for this situation.}
+\label{protocolcompare}
+\resizebox{1\textwidth}{!}{\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|}
 \hline
-\textbf{Standard}        & \textbf{Bluetooth} & \textbf{Ultra-wide band} & \textbf{ZigBee}      & \textbf{Wi-Fi} \\ \hline
-IEEE spec.               & 802.15.1           & 802.15.3a                & 802.15.4             & 802.11a/b/g    \\ \hline
-Frequency band           & 2.4 GHz            & 3.1-10.6 GHz             & 868/915 MHz; 2,4 GHz & 2,4GHz; 5GHz   \\ \hline
-Max signal rate          & 1Mb/s              & 110Mb/s                  & 250Kb/s              & 54Mb/s         \\ \hline
-Nominal range            & 10m                & 10m                      & 10-100m              & 100m           \\ \hline
-Channel bandwidth        & 1 MHz              & 500 MHz - 7.5 GHz        & 0.3/0.6 MHz; 2MHz    & 22 MHz         \\ \hline
-Basic cell               & Piconet            & Piconet                  & Star                 & BSS            \\ \hline
-Extension basic cell     & Scatternet         & Peer-to-peer             & Cluster tree, mesh   & ESS            \\ \hline
-Max cell nodes & 8                  & 8                        & \textgreater65000    & 2007           \\ \hline
+\textbf{Protocol}       & \textbf{Rate} & \textbf{Range} & \textbf{Scalability} & \textbf{Efficiency} & \textbf{Complexity} & \textbf{Capacity} & \textbf{Interference} & \textbf{Consumption} & \textbf{Total} \\ \hline
+\textbf{Wi-Fi}          & 1                  & 0,5            & 0,75                 & 0,7                 & 0,75                & 0,1               & 0,5                   & 1                    & 5,3            \\ \hline
+\textbf{Bluetooth}      & 0                  & 0              & 0                    & 1                   & 0                   & 0                 & 0,75                  & 0,25                 & 2              \\ \hline
+\textbf{ZigBee}         & 0                  & 0,5            & 1                    & 0,9                 & 1                   & -                 & 0,5                   & 1                    & 4,9            \\ \hline
+\textbf{UWB} & 1                  & 1              & 1                    & 0,8                 & 0,5                 & 1                 & 1                     & 0,25                 & 6,55           \\ \hline
 \end{tabular}}
 \end{table}
 
+The information from table \ref{protocolcompare} results in the graph in figure \ref{fig:protocolcomparison}. The protocol with the highest score has the best characteristics to apply in the swarm network. The conclusion is that ultra-wideband is the best option followed by Wi-Fi, ZigBee and Bluetooth.
 
-
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{protocolcomparison}
+   \caption{Total scores for each reviewed protocol.}
+   \label{fig:protocolcomparison}
+\end{figure}
 
 
 
@@ -670,17 +732,25 @@ In this section an substudy in swarm communication is made. The results of the s
 \setlength\itemsep{0em}
     \item The connection must be wireless due to the mobility of swarm members.
     \item Scaling on large-scale projects is not possible without using geographic locating (precize locating). \cite{geographicalrouting}\cite{scalablelocation}. 
-    \item The network must be reliable, so it must use self-organization and topology control algorithms \cite{WMN1}
+    \item The network must be reliable, so it must use self-organization and topology control algorithms. \cite{WMN1}
+    \item The most suitable communication protocol in the described situation is ultra-wideband.
 \end{itemize}
 
-Nog onderzoeken:
-Unicasting, multi-casting and broadcasting
+\textbf{\Large **Matthijs**}
+Nog onderzoeken afmaken:
+\begin{itemize}
+\setlength\itemsep{0em}
+    \item Inleiding uitbreiden
+    \item Unicasting, multi-casting and broadcasting
+    \item Figuur aanpassen meshed ART
+    \item Network realibility
+    \item WiMAX
+    \item Interference
+    \item Data distribution
+    \item Volledige conclusie
+    \item Structuur
+\end{itemize}
 
-Boek communicatie systemen blz:
-827-834
-845-849
-450-453
-438-443
 
 
 \newpage

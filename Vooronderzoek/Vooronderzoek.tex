@@ -144,7 +144,7 @@ For mapping the various positions of all robots in a swarm a localization techni
 Determining relative orientation opposite to each other can be done in various ways. some methods involve larger limitations than others. In general angular measurements are done using the goniometric equations.
 
 \subsubsection{Goniometric angle determination}
-The goniometric system shows how the different angles of a triangle within a circle can be calculated. Determining angles of a triangle within a circle using goniometric formulas mirroring can occur this happens because of the following relation between the angles see figure \ref{circle}.
+The goniometric system shows how the different angles of a triangle within a circle can be calculated. Determining angles of a triangle within a circle using goniometric formulas, a mirroring phenomenon can occur this happens because of the following relation between the angles see figure \ref{circle}.
 
 \begin{figure}[H]
 \centering
@@ -214,7 +214,7 @@ With the cosine rule exact location of the different nodes can be determined. Wh
 \label{triangulatie}
 \end{figure}
 
-In figure \ref{triangulatie} the distances from the beacons to node 1 (N1) are being determined. With these distances the different angles can be calculated this is done in the equation below.
+In figure \ref{triangulatie} the distances from the beacons to node 1 (N1) are being determined. With these distances the different angles can be calculated this is done in the equations below.
 
 \begin{equation}
 A^2 = B^2 + C^2 - 2\cdot B\cdot C\cdot cos(\alpha)
@@ -233,6 +233,8 @@ cos(\alpha) = \frac{(B^2 + C^2 - A^2)}{(2\cdot B\cdot C)}
 \begin{equation}
 cos^{-1}(0,7935) = 37,48\degree
 \end{equation}
+
+Implementing localization using three stationary beacons involves several limitations to the swarm. These limitations are that the swarm cannot operate outside of the triangulation field and therefore is limited to a specific perimeter. Also spreading three stationary beacons autonomously is a difficult task to accomplish.  
 
 A more efficient solution is to retrieve the relative orientation opposite to each other. In combination with the relative distance every robot knows the exact relative position of all the other robots in range of the network.
 

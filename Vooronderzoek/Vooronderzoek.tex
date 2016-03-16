@@ -545,30 +545,33 @@ Distance measurement by acoustic signals using time of flight could be a good op
 \end{itemize}
 
 \subsection{frequency ranges}
-The speaker used for these test has a frequency range between the ***Hz and **kHz. To test what the influence of different frequencies is on the distance that the waves can travel the following test set-up is used:
+The speaker used for these test has a frequency range between the 130 Hz and 20 kHz. To test what the influence of different frequencies is on the distance that the waves can travel the following test set-up is used:
+
 *set-up*
-Thespeaker is faced directly at the microphone to create an ideal situation.
+
+The speaker is faced directly at the microphone to create an ideal situation.
 
 *meetresultaten*
+
 the higher frequencies are better visible then the lower frequencies. 
 
 \subsection{wave characteristics}
-To test the spread of the sound waves the speaker was placed on the table facing upwards. On a distance of 1, 2, and 3 meters we placed a microphone, also facing upwards, which was connected to an oscilloscope. For each frequency we tested what the microphone was picking up and how the signal showed up. 
-*meetresultaten*
-The higher frequencies did not show up at all, while the lower frequencies where easily visible.
+To test the spread of the sound waves the speaker was placed on the table facing upwards. On a distance of 1 meter we placed a microphone, also facing upwards, which was connected to an oscilloscope. The microphone was moved away from the speaker everytime the signal was clear. This way the maximum distance for the frequency could be determined. The maximum range needed is 3 meters. For each frequency we tested what the microphone was picking up and how the signal showed up. 
+
+From 100 Hz till 1 kHz no signal could be detected, even when the microphone was placed very closely. From 2 kHz till 4 khZ the signal became very clear. Although there where some situations where the signal was not as clear as all other situations. These frequencies where loud and clear at a distance of 3 meters. Above the 5 kHz the sounds became a lot more directional. The microphone did not sense any of the waves, unless the speaker was directly aimed at the microphone. 
   
-There are ways to manipulate the direction of the sound waves. If there is need to use frequencies higher than the hearing spectrum. By the use of a parabolic reflector a higher frequency sound beam can be converted to a more omnidirectional wave.
+There are ways to manipulate the direction of the sound waves. If there is need to use higher frequencies. By the use of a parabolic reflector a higher frequency sound beam can be converted to a more omnidirectional wave. 
+
+Some experimental tests where done with a parabolic reflector. In this case a square of aluminum placed slightly above the speaker. The results where promising. The signal was a lot smoother and had more amplitude then before. The frequency waves between 3-5 kHz acted a lot more omnidirectional. The higher frequencies 5 kHz and above could not be sensed by the microphone even with the aluminum plate placed above the speaker. For now it seems that the characteristics of the frequencies between the 3 and 4 kHz meet the requirements.
 
 
 \subsection{interference}
 
-Until now only the travel characteristics where tested, but how does the environment have effect on these sound waves. Are the lower or the higher sound waves more more influenced by noise. And if so, can the noise be minimized with filtering.
-
-Filter where implemented to test if the results improved, and if the noise that was added on purpose had any influence on the system. 
+Until now only the travel characteristics where tested, but how does the environment have effect on these sound waves. Are the lower or the higher sound waves more more influenced by noise. And if so, can the noise be minimized with filtering. Most of the noise between the frequencies between 100 Hz and 20 kHz will come from human speech. In a demonstration sources like music or noise from outside could be minimized, but speech inside a room is hard to ignore. If a band-pass filter is implemented a lot of frequencies can be filtered out depending on how well the filter is build. Experimenting with this set-up is needed to determine if a filter will suffice. 
 
 
 \subsection{Conslusion}
-Lower frequencies have a wider reach than the higher frequencies. But because the higher frequencies have a more narrow beam they have a longer range then the lower frequencies. From this test it can be concluded that lower sound waves are more preferable since it was the intention to have a wave with omnidirectional characteristics and a minimum of 3 meter travel range in those directions.
+Lower frequencies have a wider reach than the higher frequencies. The lower frequency also travel further then the higher frequencies. The only problem with low frequencies is that a lot more power is needed to create the same amount of noise. The higher frequencies are less likely to be interfered by speech. From this test it can be concluded that lower sound waves are more preferable since it was the intention to have a wave with omnidirectional characteristics and a minimum of 3 meter travel range in those directions. The ideal frequency would be the one that has both the characteristics of the lower frequencies but does use a lot of energy to make a detectable sound. From our experiments this would be the frequency between 3 and 4 kHz. 
 
 
 \newpage

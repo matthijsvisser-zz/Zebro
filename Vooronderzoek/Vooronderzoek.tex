@@ -181,7 +181,7 @@ In the above figure multiple data and clock combinations are shown, these combin
 \begin{figure}[H]
         \centering
         \graphicspath{ {./images/} }
-        \includegraphics[scale=.6]{TWImessage}
+        \includegraphics[scale=.3]{TWImessage.pdf}
         \caption{Structure of a TWI message}
         \label{fig:TWIstructure}
 \end{figure}
@@ -194,15 +194,47 @@ The speed of the communication depend on the frequency of the controller that wi
 
 \subsubsection{SPI}
 SPI or Serial Peripheral Interface is, like it names suggests, a serial interface. This interface can be connected in two ways, each having its own advantage. How this works will be explained using the following figure.
-% \begin{figure}[H]
-%         \centering
-%         \graphicspath{ {./images/} }
-%         \includegraphics[scale=.6]{SPI}
-%         \caption{SPI connections}
-%         \label{fig:SPIconnections}
-% \end{figure}
+\begin{figure}[H]
+        \centering
+        \graphicspath{ {./images/} }
+        \includegraphics[scale=.4]{SPI}
+        \caption{SPI connections}
+        \label{fig:SPIconnections}
+\end{figure}
+SPI works by selecting its slaves using its slave select. Slave select is a single bit used to define which slave the master will be talking to. When the master has selected its slave it will be able to shift its data from its shift register into the shift register of the slave using the MOSI output. MOSI mean master out slave in, so if the master asks data from the slave it will be send using the MISO, master in slave out. Knowing this there are two ways to connect the slaves, putting them in series or parallel to eachother. 
+\begin{figure}[H]
+        \centering
+        \graphicspath{ {./images/} }
+        \includegraphics[scale=.4]{SPIserie}
+        \caption{SPI connected in series}
+        \label{fig:SPIseries}
+\end{figure}
+When put in series only one slave select will be used to select all the slaves. Each slave will send its data to the next slave through the MISO line. The disadvantage of this method is when you want to address the last slave in line it has togo through all the slaves, meaning it will costs a lot of extra clockticks to put it through. Another disadvantage of this method is you can not add extra slaves to an excisting series of slaves because the path needs to be closed else the slaves will not be able to send their data to the master.
+\begin{figure}[H]
+        \centering
+        \graphicspath{ {./images/} }
+        \includegraphics[scale=.4]{SPIparallel}
+        \caption{SPI connected parallel}
+        \label{fig:SPIparallel}
+\end{figure}
+The second way to connect the slaves is parallel, this means the master can address all the slaves individually, which will make it faster. The downside of this is you will need a different slave select for every slave. Which means this takes up more outputs from the controller and more space on the circuit boards.
+Another downside of SPI is that it can not be used as a multimaster system this downside means it is not viable for the project.
+\subsubsection{U(S)ART}
+The third serial communucation typically used on microcontrollers is U(S)ART. This protocol has two variaties, the universal asynchronous reciever/transmitter and the synchronous. The difference between the two is that the synchronous uses an extra line to send a clock signal. In asynchronous mode the devices synchronice with a startbit at the beginning of the message.
+Both of the protocols have a TX and a RX line, the transmit and recieve line. Like the name says these are the lines to transcieve the data. Each device connected has two registers, one for recieving data and one for sending. These registers are eight to ten bits long, eight or nine data bits and one or no parity bit. The parity bit can be used as a check to see if the data was recieved correctly by checking if the amount of ones is even or odd. The message is ended with one or two stop bits. So a typical U(S)ART frame looks like the figure below.
+\begin{figure}[H]
+        \centering
+        \graphicspath{ {./images/} }
+        \includegraphics[scale=.4]{UARTframe}
+        \caption{Typical U(S)ART frame}
+        \label{fig:UARTframe}
+\end{figure}
+Depending on the software protocol used it is possible to have a multimaster system using one U(S)ART connection on every device. Every message should get a header in which the addressed divece is selected.
 
-\subsubsection{UART}
+\subsubsection{conclusion}
+Looking at the specifications of each protocol and comparing those, there can be concluded that TWI is most suitible. This is because of the fact it only uses two lines to communicate and is easily implemented in a multimaster system.
+>>>>>>> feature/communication
+
 \subsection{Software}
 
 
@@ -503,12 +535,12 @@ An partly connected network is still mostly redundant, but has less connections 
 
 It is possible but not necessary to connect one or more clients of a mesh network to the internet. Thus the client connected to the internet functions as a gateway for the other clients in the network. \cite{wirelessmeshnetworksopportunitiesandchallenges}
 
-\begin{figure}[H]
-   \centering
-   \includegraphics[width=1\textwidth]{WMN}
-   \caption{An example of a wireless mesh network with 5 clients and an optional internet connection. The connections made in this example are random.}
-   \label{fig:WMN}
-\end{figure}
+%\begin{figure}[H]
+%  \centering
+%   \includegraphics[width=1\textwidth]{WMN}
+%   \caption{An example of a wireless mesh network with 5 clients and an optional internet connection. The connections made in this example are random.}
+%   \label{fig:WMN}
+%\end{figure}
 
 \textbf{Comparison and conclusion}\\
 When the network topology's are compared with each other, the mesh network satisfies the desired requirements. Although it is harder to implement due to mutual connections, it has the best data coverage. In this situation, a mesh network would be the best choice.

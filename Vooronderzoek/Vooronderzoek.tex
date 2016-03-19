@@ -28,9 +28,9 @@
 \rfoot{Page \thepage}
 
 
-%\usepackage{draftwatermark}
-%\SetWatermarkText{Concept}
-%\SetWatermarkScale{5}
+\usepackage{draftwatermark}
+\SetWatermarkText{Concept}
+\SetWatermarkScale{5}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -453,17 +453,18 @@ De keuze van de actuator hangt sterk samen met de effectoren.
 \subsection{Swarm communication}
 There are several requirements to realise a robot swarm. Each member of the population needs to communicate with the rest of the swarm. To give the members full freedom of movement it is also usefull to make the communication wireless. It is important that the population size of the swarm is dynamic, because of the scalability of the swarm. As mentioned earlier a swarm does not have a master. So each member needs to be capable to maintain the network. These networks also must be able to reroute around nodes that have been lost. \cite{Swarmwiki}\cite{swarmintelligence}
 
-The following subsections are 
+The following subsections are:
 \begin{itemize}
 \setlength\itemsep{0em}
     \item Network topology
     \item Network realibility and robustness
-    \item Routing protocol
     \item Data distribution
     \item Wireless mesh network
-    \item Wireless network implementations
+    \item Wireless network protocols
     \item Conclusion
 \end{itemize}
+
+A recommendation is made based on the specifications of this research. The recommendation can be found in the last chapter of this section.
 
 \subsubsection{Network topology}
 Several topologies exist to form a network. Figure \ref{fig:STAR}, \ref{fig:RING}, \ref{fig:BUS} and \ref{fig:WMN} illustrate four network topologies as an example. Each topology has it's own benefits and cons which are discussed in this section.
@@ -514,7 +515,6 @@ It is possible but not necessary to connect one or more clients of a mesh networ
    \caption{An example of a wireless mesh network with 5 clients and an optional internet connection. The connections made in this example are random.}
    \label{fig:WMN}
 \end{figure}
-
 \textbf{Comparison and conclusion}\\
 When the network topology's are compared with each other, the mesh network satisfies the desired requirements. Although it is harder to implement due to mutual connections, it has the best data coverage. To meet the given specifications, a mesh network would be the best choice.
 
@@ -533,33 +533,31 @@ Mesh networks can use self-healing algorithms such as Shortest Path Bridging (SP
 
 A realiable network has a routing algorithm/protocol that includes distributed operating, loop freedom, demand-based operation and sleep period operation. Loop freedom means that the protocol is able to detect loops in the network and eliminates those. For example, data could be floating around in the network. Sleep period operating means that the clients that are not needed go into a 'sleep mode' when it's temporarily inactive.\cite{position-based}
 
-
 \subsubsection{Data distribution}
+To set-up a reliable and stable mesh network, self-organization and topology control algorithms are needed. \cite{WMN1}\cite{position-based} This section discusses the following subjects: Data distribution strategy, routing protocols and adressing.\\
 
-\textbf{Path strategy}\\
+\textbf{Data distribution strategy}\\
 There are several strategys to distribute a package of data in a network. The following enumeration show three strategy's:
 \begin{itemize}
 \setlength\itemsep{0em}
-    \item single-path
-    \item multipath
-    \item flooding
+    \item Single-path (Unicast)
+    \item Multipath (Multicast)
+    \item Flooding (Broadcast)
 \end{itemize}
 
-The single-path strategy is an example of the shortest path route protocol. In the single-path strategy only one packet of data in distributed in the network at a time. Which is desireable for the network capacity which is barely affected. Although the capacity is not affected, it is possible that a package is received later, because of an missing or inactive node in the path. \cite{position-based}
+The single-path strategy is an example of the shortest path route protocol. In the single-path strategy only one packet of data in distributed in the network at a time. Which is desireable for the network capacity which is barely affected. Although the capacity is not affected, it is possible that a package is received later, because of an missing or inactive node in the path. \cite{position-based} Which results in higher latency times.
 
-The other strategy, multipath, sends out multiple packets of data trough recognizable paths. Flooding strategy litterly floods the network with data packages. In case of wireless networks, the single-path strategy is preferred because of the power and bandwidth limitations in wireless networks. \cite{position-based}
+The other strategy, multipath, sends out multiple packets of data trough recognizable paths. Flooding strategy litterly floods the network with data packages. In case of wireless networks, the single-path strategy is preferred because of the power and bandwidth limitations in wireless networks. \cite{position-based}\\
 
 \textbf{Routing protocols}\\
+To meet the requirements given in the specification, the routing of the networks needs to be position based. When the position of the node in the network is known, it wil increase the networks reliability. \cite{position-based} According to the research done in \cite{geographicalrouting} and \cite{scalablelocation} routing algorithms without geographic locating (precize localisation) are not scalable and won't work well in large networks.
+The scalibility of each algorithm means the posibility to adjust the scale of the network by adding or removing clients to the network.
+
 There are several position-based routing protocols each with it's own characteristics a taxonomy is given in \cite{position-based}. As described earlier, only the most important protocols for the given specifcation will be discussed in this research. This means most of the position-based routing protocols such as: power-, cost path protocols, become irrelevant.
 
 The shortest path route protocol uses information such as the hopcount and distance between clients to calculate the shortest route. Hopcount stands for the amount of clients that are passed by. The shortest cost path route protocol also takes account for the energy required for each routing task. The goal of this protocol is to minimize the total energy cost. According to \cite{position-based} it is not desireable or if possible to avoid to memorize routes or past traffic in mobile ad hoc networks. This is because of the mobility of clients in the network and constantly changing infrastructure.
 
-
-The distance between neighboring nodes can be estimated on the basis of signal strengths or time delays in direct communications. The exact positions can for example be estimated by using positioning systems such as GPS (Gereral positioning system). \cite{locationsystemsforubiquitouscomputing} 
-
-The scalibility of each algorithm means the posibility to adjust the scale of the network by adding or removing clients to the network. According to the research done in \cite{geographicalrouting}\cite{scalablelocation} routing algorithms without geographic locating (precize localisation) are not scalable and won't work well in large networks. 
-
-The most efficient algorithm for path bridging depends on the situation where the clients are operating in which is described in \cite{position-based}.
+The distance between neighboring nodes can be estimated on the basis of signal strengths or time delays in direct communications. The exact positions can for example be estimated by using positioning systems such as GPS (Gereral positioning system). \cite{locationsystemsforubiquitouscomputing} The approximation of the position of the node relative to the other nodes can be done by serveral methods.
 
 In figure \ref{fig:greedyrouting} a greedy routing scheme is displayed. The node S contains the data package and D is the destination of the package. 
 
@@ -572,15 +570,19 @@ SPMUWVD, N in NFP/NC path SNGHI that fails to deliver."}
    \label{fig:greedyrouting}
 \end{figure}
 
-The principle of greedy routing is that it is trying to get closer to the destination based on local information. Thus the data package is forwarded to the client/node which is the most suitable from a local point of view. \cite{geographicrouting} "Greedy schemes have a performance close to performance of optimal shortest path (weighted) algorithm for dense graphs, but have low delivery rates for sparse graphs. Schemes that guarantee delivery may have high communication overhead for sparse graphs." \cite{position-based} \\
+The principle of greedy routing is that it is trying to get closer to the destination based on local information. Thus the data package is forwarded to the client/node which is the most suitable from a local point of view. \cite{geographicrouting} "Greedy schemes have a performance close to performance of optimal shortest path (weighted) algorithm for dense graphs, but have low delivery rates for sparse graphs. Schemes that guarantee delivery may have high communication overhead for sparse graphs." \cite{position-based}\cite{positionbasedroutingtaxonomy} \\
 
-\textbf{Adress routing}\\
+The most efficient algorithm for path bridging depends on the situation where the clients are operating in which is described in \cite{position-based}\cite{positionbasedroutingtaxonomy}. As stated earlier, in this stage of the development some characteristics are irrelevant, the energy efficient and cost routing protocols for example. There are however some characteristics that do matter. The single path strategy for example, is preferred because of bandwidth limitations in wireless networks. It is also not preferred to memorize the routes of past traffic in mobile networks.\cite{position-based} \cite{positionbasedroutingtaxonomy} Given these characteristics, the most suitable method will be greedy routing or a derivative/improved version.
+
+
+\textbf{Adressing}\\
 Each node in a mesh network needs a adress for other nodes to refer to. Methods to adress meshed networks are:
 \begin{itemize}
 \setlength\itemsep{0em}
     \item Adaptive robust tree (ART)
     \item Meshed adaptive robust tree (MART)
 \end{itemize}
+Most of the wireless network protocols already cover the adressing in the protocol itself. The following methods are a possible compliment.
 
 \textbf{Adaptive robust tree (ART)}\\
 Adaptive robust tree is a meshed tree routing approach to address the nodes. Each node is adaptively addressed during the tree formation. It is desireable that the tree is free of single point failures (SPOF). This means that there is always a redundant path if a node fails, but that's not always possible in non-mesh networks. Each node keeps track of an ART table (ARTT), to map it's branches. In this table the adresses of the connected branches are stored.
@@ -594,7 +596,7 @@ ART knows three phases; the initialization, operation and recovery phase. In the
    \label{fig:treenumbers}
 \end{figure}
 
-The following phase is the operation phase, where small amount of nodes are still able to join, but when the change becomes to big, the network goes in to initialization mode again. When a part of the tree becomes broken, the recovery phase becomes active for the affected part.
+The following phase is the operation phase, where small amount of nodes are still able to join, but when the change becomes to big, the network goes in to initialization mode again. When a part of the tree becomes broken, the recovery phase becomes active for the affected part.\\
 
 \textbf{Meshed adaptive robust tree}\\
 With an ART tree it is possible to create a MART (Meshed adaptive robust tree). Figure \ref{fig:meshtree} illustrates a MART, in this figure there are already connections added that make a mesh network. The intermitted lines are added for the mesh network. From the point of view from every node in the network, there still is a tree form. In this mesh network, each node has a redundant path if a connection is broken, so it is SPOF free.
@@ -660,27 +662,7 @@ A scatternet consists of two or more piconets. It is possible for a client to pa
    \label{fig:scatternet}
 \end{figure}
 
-\paragraph{IEEE 802.15.3 Ultra-wideband}
-Ultra-wideband is designed for short-range high-speed wireless communication. The bandwidth of UWB is over 100Mbps and can reach speeds up to 480 Mbps \cite{comparitivestudywirelessprotocols}. The frequency band of UWB ranges from 3.1 to 10.6 GHz \cite{ultrawidebandwirelesscommunications}. Although the spectrum is large in comparison with other protocols the signal level is very low so it doesn't interfere with other signals. UWB is a baseband or carrierless communication method. These systems use precisely timed impulses to transmit data on the wide spectrum. This divers from other communication methods where sine modulation is used. \cite{Bluetoothwifisurveyandcomparison}
-
-Because of the 'ultra wide' band UWB has benefits over other technologys. The benefits of UWB are \cite{ultrawidebandwirelesscommunications}\cite{combook}: 
-\begin{itemize}
-\setlength\itemsep{0em}
-    \item High data rates
-    \item Less path los and better immunity to multipath propagation
-    \item Low-cost tranceivers
-    \item Low transmit power and low interference
-\end{itemize}
- With UWB it is possible to get high data rates in ranges of 20 to 50 meters. Because of the wide bandwidth of UWB, the material penetration losses are relatively low. As shown in equation \ref{eq:channelcapacity}, the channelcapicity increases linearly with the bandwidth.
-
- \begin{equation}
-    C=Blog_2(1+\frac{S}{N})
-    \label{eq:channelcapacity}
- \end{equation}
-
- Because of the absence of sending a carrier, the transceiver build can be relatively simple. \cite{ultrawidebandwirelesscommunications} The disadvantage is however, the transmitpower must be low for commerical use. This results in a low transmitting range about 30 meters according to \cite{combook}.\\
-
-
+The biggest drawback by using Bluetooth is that it doesn't officially support mesh networking. According to the IEEE timeline \cite{IEEE80211timeline}, there will be a mesh standard for Bluetooth in the year 2016. \cite{bluetoothmesh} At the time of this research (begin 2016), the standard is not published yet neither, are there implementation avaiable. It is still possible to create a scatternet, with multiple masters/slaves but that doesn't meet the given specifications. \\
 
 \paragraph{IEEE 802.15.4 ZigBee}
 Zigbee is usually used in personal operating spaces (POS) or personal-area networks (PAN) of about 10 meters. \cite{combook} However, there are devices based on Zigbee that can reach up to 1500 meters of span when the target is in line of sight \cite{zigbeewiki}. It is designed for simple devices that consume minimal power and operate in a personal operating space. Applications as sensors. These applications are also known as low-rate wireless personal area networks (LR-WPAN). \cite{comparitivestudywirelessprotocols} Zigbee uses the ISM 900 MHz or, just like Bluetooth and WiFi, the 2,4 GHz ISM band to communicate. Zigbee uses direct sequence spread spectrum (DSSS) with 16 channels and 2 MHz bandwith.
@@ -689,9 +671,10 @@ There are proven implementations of networks with ZigBee. It is possible to crea
 
 Zigbee is known for the low power consumption which results in long battery lifetime \cite{performanceevaluationlowratewirelesspan}. There are two types of devices in a LR-WPAN network: A full-functioning device and a reduced-functioning device. Full-functioning devices can be used as a 'Master' or coordinator or as a client. These devices can talk to eachother or to reduced-functioning devices. A RFD is used for simple transmit tasks such as switches or simple inout/output operations. Just like Bluetooth, the coordinator or master, will setup the network.
 
+Zigbee supports multiple network topology's such as: Star, tree and mesh networks. This means that it is compatible to work with mesh networks. \cite{zigbeewiki}
+
 \paragraph{IEEE 802.11 Wi-Fi}
 Wireless local area networks (WLANs) or IEEE 802.11 is popularly known as Wi-Fi (Wireless Fidelity) \cite{wirelessmeshnetworksopportunitiesandchallenges}. With a Wi-Fi connection it is possible for the clients to connect to the internet with broadband speeds. Consumer WiFi usually uses one or two ISM frequency bands: 2,4 and 5 GHz. The 2,4 GHz unlicenced ISM band used for IEEE 802.11b/g/n/s extends from 2.4 to 2,4835 GHz with a total bandwidth of 83.5MHz. The 5 GHz ISM band used for IEEE 802.11a extends from 5.15 to 5.25 GHz with a power limitation of 50mW, 5.25 to 5.35 Ghz with 250mW and5.725 to 5.825 GHz with 1W of power.\cite{combook} The benefit of using the 5 GHz ISM band is that there are alot less interference from appliances like microwaves, Bluetooth products and a number of other services. The downside of 5 GHz is however, the transmission range decreases greatly because 5 GHz signals are absorbed faster in comparison with 2,4 GHz signals. \cite{combook} There are also Wi-Fi standards which use the 3,6 and 60 GHz band. The 3,6 GHz band is used by the IEEE 802.11y-2008 standard and the 60 GHz band for the IEEE 802.11ad protocol. The 802.11 standard defines two services: the basic set (BSS) and the extended service set (ESS). The basic service set without an acces point is an ad hoc network and only consists of accespoints. All devices in a BSS use the same channel.\cite{Bluetoothwifisurveyandcomparison}
-
 
 Wi-Fi uses different modulation techniques. Direct sequence spread spectrum (DSSS), Orthogonal frequency division multiplexing (OFDM) and code keying (CDK) with 14 possible channels on the 2,4 GHz band. With DSSS it is possible that multiple signals use the same channel. However to prevent interference the channel selection must be criticially considered. Each channel has a bandwidth of 22 MHz and is 5MHz apart, see figure \ref{fig:wifichannels}. \cite{combook} Because of the span of each channel, the channels overlap.
 
@@ -746,11 +729,11 @@ As mentioned before, using handshake frames can be a solution to prevent a data 
 \begin{figure}[H]
    \centering
    \includegraphics[width=.75\textwidth]{rtscts2}
-   \caption{Gives an example of the exposed node problem given in \ref{fig:exposednode}}
+   \caption{Gives an example of the exposed node problem given in \ref{fig:exposedstation}}
    \label{fig:rtscts2}
 \end{figure}
 
-To prevent these problems, frequency- or channelhopping is a solution. \cite{architectureandalgorithmsmultichannelwirelessmeshnetwork} has done research in multi channel wireless mesh networks and have proven that it is practically possible.
+To prevent these problems, frequency- or channelhopping is a solution. \cite{architectureandalgorithmsmultichannelwirelessmeshnetwork} has done research in multi-channel wireless mesh networks and have proven that it is practically possible.
 
 IEEE 802.11s is a Wi-Fi standard for mesh networking. This standard defines how stations can interconnect to form a mesh network. Many other implementations of 802.11 do not interconnect the base stations with eachother and this standard does. \cite{ieee80211sthewlanmeshstandard}
 
@@ -763,10 +746,32 @@ Open80211s is an implementation of the 802.11s standard. According to \cite{ieee
    \caption{\cite{ieee80211sthewlanmeshstandard} gives an performance measurement of the open80211s implementation in 2010.}
    \label{fig:open80211s}
 \end{figure}
-As shown in figure \ref{fig:open80211s}, the discovery time increases linearly with an increasing number of node hops. This decreases the troughput of the nework. 
+As shown in figure \ref{fig:open80211s}, the discovery time increases linearly with an increasing number of node hops. This decreases the troughput of the network.
 
 
-\paragraph{ IR Infrared}
+\paragraph{IEEE 802.15.3 Ultra-wideband}
+Ultra-wideband is designed for short-range high-speed wireless communication. The bandwidth of UWB is over 100Mbps and can reach speeds up to 480 Mbps \cite{comparitivestudywirelessprotocols}. UWB is a high data rate Wireless Personal Area Networks (HR-WPAN). The frequency band of UWB ranges from 3.1 to 10.6 GHz \cite{ultrawidebandwirelesscommunications}. Although the spectrum is large in comparison with other protocols the signal level is very low so it doesn't interfere with other signals. UWB is a baseband or carrierless communication method. These systems use precisely timed impulses to transmit data on the wide spectrum. This divers from other communication methods where sine modulation is used. \cite{Bluetoothwifisurveyandcomparison}
+
+Because of the 'ultra wide' band UWB has benefits over other technologys. The benefits of UWB are \cite{ultrawidebandwirelesscommunications}\cite{combook}: 
+\begin{itemize}
+\setlength\itemsep{0em}
+    \item High data rates
+    \item Less path los and better immunity to multipath propagation
+    \item Low-cost tranceivers
+    \item Low transmit power and low interference
+\end{itemize}
+ With UWB it is possible to get high data rates in ranges of 20 to 50 meters. Because of the wide bandwidth of UWB, the material penetration losses are relatively low. As shown in equation \ref{eq:channelcapacity}, the channelcapicity increases linearly with the bandwidth.
+
+ \begin{equation}
+    C=Blog_2(1+\frac{S}{N})
+    \label{eq:channelcapacity}
+ \end{equation}
+
+ Because of the absence of sending a carrier, the transceiver build can be relatively simple. \cite{ultrawidebandwirelesscommunications} The disadvantage is however, the transmitpower must be low for commerical use. This results in a low transmitting range about 30 meters according to \cite{combook}.
+
+UWB devices are like Bluetooth devices organised in piconets. Each piconet is controlled by a dedicated coordinator (PNC). The benefit of using UWB is however that each devices can communicate in peer to peer with an other device in contrast to Bluetooth. When the devices are not in range of eachother, the coordinators work as an intermediary to connect device 'A' to 'B'. Mesh networks topology's are supported, but it will be using bridges between piconets to maintain the network. Like Wi-Fi UWB also uses a form of CSMA-CA when there are devices competing for acces. \cite{piconetinterconnectionstrategies}
+
+\paragraph{IR Infrared}
 Infrared is possibly the most widespread wireless technology for short-distance data communication. \cite{combook} It is primarily used for remote control between computers and televisions. The short-range distance with infrared communications is typically about 1 to 9 meters. \cite{combook} Infrared travels with the speed of light which is 299792458 meters per second. \cite{speedoflight} In comparison with the other discussed protocols this technology is based on light instead of radio frequency signals. Because of the origin of this technology, there must be a clear (no obstacles block the sight) line of sight (LOS) between the transmitter and receiver. This disadvantage makes the technology not suitable for the communication in a complex swarm network.\\
 
 \paragraph{IEEE 802.16 WiMAX}
@@ -862,23 +867,11 @@ Figure \ref{fig:protocolefficiency} illustrates the data coding efficiency for e
 
 
 \textbf{Interference}\\
-Ultrawideband operates in the 3.1 - 10.6 GHZ range. This region is used by satellites, radars, broadband wireless and wireless networks.\\
+The ISM frequency band is used for industrial, scientific and medical purposes. This means that some regions of the frequency band can be used for educational purposes. All of the discussed protocols use techniques to overcome interference. Some frequency bands are nowadays (over)crowded. This is because of the succes of some of the frequency band regions. \cite{Bluetoothwifisurveyandcomparison} The 2,4 and 5,0 GHz bands for example fullfill the needs of alot appliances.
 
+Ultrawideband operates in the 3.1 - 10.6 GHZ range. This region is used by satellites, radars, broadband wireless and wireless networks. Wi-Fi, ZigBee and Bluetooth operate in the 2,4 GHZ band. Appliances who also use this band are: Microwave ovens, homeRF devices and cordless phones. The 5GHz band is also used by Wi-Fi, which is les crowded. Zigbee also has another band to transmit to, the 915 MHz band which is used by simple sensor networks.
 
-
-Bluetooth's frequency hopping is less sensitive for strong narrow band interference, which only affects a few channels. Wi-Fi however is less sensitive to wide-band noise.
-
-2,4 GHz band
-Wi-Fi
-Bluetooth
-Zigbee
-Microwave ovens
-HomeRF devices
-Cordless phones
-
-5,0 GHz band
-Cordless phones
-Wi-Fi
+As mentioned before all of the protocols use techniques to counter interference from itself or neighbouring devices. Bluetooth's frequency hopping is less sensitive for strong narrow band interference, which only affects a few channels. Wi-Fi however is less sensitive to wide-band noise. \cite{Bluetoothwifisurveyandcomparison} Comparing the protocols, Ultra wideband has the best characterics. The protocol has a wide bandwidth and the transmit power is low. It also interferes the least with other common appliances.\\
 
 \textbf{Power consumption}\\
 The power consumption of each protocol depends on the used hardware. To make a valid comparison, the paper \cite{comparitivestudywirelessprotocols} made a selection of average hardware. The comparison in figure \ref{fig:protocolenergy} gives an indication of the average power consumption of each protocol. Bluetooth and ZigBee both consume about 100mW where the power consumption of UWB and Wi-Fi is about 700mW. Figure \ref{fig:protocolefficiency} gives the normalized energy consumption of each protocol. The normalized energy is given in mJ/Mb. The normalized energy consumption indicates that ZigBee and Bluetooth both use more energy to transceive the same amount of information. UWB is the most efficient protocol to transceive information.
@@ -900,6 +893,7 @@ The power consumption of each protocol depends on the used hardware. To make a v
 
 \paragraph{Conclusion}
 The final comparison is made in table \ref{protocolcompare}. There have been some adjustments in naming the characteristics to make the table fit the page. 'Rate' is the transceiving data rate, 'Range' is the transceiving data range, 'Scalibility' of the protocol on large and small scale projects, 'Efficiency' means the data coding efficiency, 'Complexity' is the protocol complexity, 'Capacity' stands for the data distribution per square meter, 'Consumption' means the energy comsumption.
+
 \begin{table}[H]
 \centering
 \caption{The comparison of the protocols. The characteristics of each of the protocols get evaluated. The scoring is based on a number between zero and one, where zero is bad and one is good. The total score gives the best protocol for this situation.}
@@ -914,7 +908,9 @@ The final comparison is made in table \ref{protocolcompare}. There have been som
 \end{tabular}}
 \end{table}
 
-The information from table \ref{protocolcompare} results in the graph in figure \ref{fig:protocolcomparison}. The protocol with the highest score has the best characteristics to apply in the swarm network. The conclusion is that ultra-wideband is the best option followed by Wi-Fi, ZigBee and Bluetooth.
+The information from table \ref{protocolcompare} results in the graph in figure \ref{fig:protocolcomparison}. The protocol with the highest score has the best characteristics to apply in the swarm network. The conclusion is that Wi-Fi is the best option followed by UWB, ZigBee and Bluetooth. The results of the comparison differ not much from eachother. 
+
+It is possible to create an wireless mesh network with all three of the protocols, however all of them have their own benefits and disadvantages. The preference depends on the available implementations which is discussed in a following chapter.
 
 \begin{figure}[H]
    \centering
@@ -930,27 +926,13 @@ In this section an substudy in swarm communication is made. The results of the s
 \begin{itemize}
 \setlength\itemsep{0em}
     \item The connection must be wireless due to the mobility of swarm members.
-    \item Scaling on large-scale projects is not possible without using geographic locating (precize locating). \cite{geographicalrouting}\cite{scalablelocation}. 
+    \item A (partially connected) mesh network topology satisfies the desired network requirements.
     \item The network must be reliable, so it must use self-organization and topology control algorithms. \cite{WMN1}
-    \item The most suitable communication protocol in the described situation is ultra-wideband.
-    \item A (partially connected) mesh network topology satisfies the desired network requirements
     \item In a wireless network the single-path strategy for data distribution is preferred because of the power and bandwidth limitations. \cite{position-based}
-    \item ART or MART can be used to address the nodes in a mesh network
-\end{itemize}
-
-\textbf{\Large **Matthijs**}
-Nog onderzoeken afmaken:
-\begin{itemize}
-\setlength\itemsep{0em}
-    \item Inleiding uitbreiden
-    \item Unicasting, multi-casting and broadcasting
-    \item Figuur aanpassen meshed ART
-    \item Network realibility
-    \item WiMAX
-    \item Interference
-    \item Data distribution
-    \item Volledige conclusie
-    \item Structuur
+    \item ART or MART can be used to address the nodes in a mesh network.
+    \item Greedy routing or a derivative is the most suitable routing strategy.
+    \item Scaling on large-scale projects is not possible without using geographic locating (precize locating). \cite{geographicalrouting}\cite{scalablelocation}. 
+    \item The most suitable communication protocol in the described situation depends on the available implemtation possibilitys. Wi-Fi, UWB and ZigBee are all three qualified to provide a wireless mesh network.
 \end{itemize}
 
 

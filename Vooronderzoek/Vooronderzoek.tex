@@ -447,9 +447,79 @@ Time Of Flight has been very promising, however using electromagnetic signals (F
 Determining relative distance does not lead to localization to do so a angle is required to be continued... 
 \newpage
 
+\section{Acoustic sensing}
+
+Relative distance sensing can be done by simultaneously sending an RF signal and a sound wave and subtracting the time of arrival.
+This method of sensing is based on the fact that RF signals travel with the speed of light and thence travels much faster than sound through the atmosphere: Light travels at 299.792.458 m/s, whereas the speed of sound is only about 332 m/s, depending on air temperature:
+\begin{equation}
+\label{eq:speedsoundinair}
+V_{sound in air}(m/s)\approx 331.4+0.6T_{c}
+\end{equation}
+Since the speed of the RF signal is so much faster than the speed of sound, the time of arrival of the RF signal in this situation is negligible. Which leads to the following formula:
+\begin{equation}
+Relative distance(m) \approx Toa_{sound}(s)\cdot  331.4+0.6T_{c}
+\end{equation}
+Distance measurement by acoustic signals using time of flight could be a good option for short range localization between 0 and 3 meters. A couple of test where done to test if measuring time of flight of sound waves is suitable for a swarming application. the following points need to be researched:
+\begin{itemize}
+\item To complement the shortcomings of the far range localization system the signal needs to be able to travel atleast 3 meters.
+\item Because the robots need to create awareness to all other robots around, it is important that the waves travel omnidirectional. 
+\item To make the localization as accurately as possible there needs to be a minimum of interference. 
+\end{itemize}
+
+\subsection{Frequency ranges}
+The speaker used for these test has a frequency range between the 130 Hz and 20 kHz. To test what the influence of different frequencies is on the distance that the waves can travel figure \ref{setup1} shows the test set-up used.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{situation1.pdf}
+\caption{Setup used to test the range of different frequencies} 
+\label{setup1}
+\end{figure}
+
+The speaker is faced directly at the microphone to create an ideal situation. 
+
+The higher frequencies are better visible then the lower frequencies. That could be explained by the fact that the higher frequencies contain a lot more energy in the more bundled wave form. If the waves are used in a specific direction a higher frequency is more preferable.  
+
+\subsection{Wave characteristics}
+
+To test the spread of the sound waves the speaker was placed on the table facing upwards. On a distance of 1 meter we placed a microphone, also facing upwards, which was connected to an oscilloscope as shown in figure \ref{setup2}. The microphone was moved away from the speaker every time the signal was clear. This way the maximum distance for the frequency could be determined. The maximum range needed is 3 meters. For each frequency we tested what the microphone was picking up and how the signal showed up. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{situation2.pdf}
+\caption{Setup used to test the omnidirection range and wave characteristics} 
+\label{setup2}
+\end{figure}
+
+From 100 Hz to 1 kHz no signal could be detected, even when the microphone was placed very closely. From 2 kHz to 4 khZ the signal became very clear. Although there where some situations where the signal was not as clear as all other situations. These frequencies where loud and clear at a distance of 3 meters. Above the 5 kHz the sounds became a lot more directional. The microphone did not sense any of the waves, unless the speaker was directly aimed at the microphone. 
+ 
+There are ways to manipulate the direction of the sound waves. If there is need to use higher frequencies. By the use of a parabolic reflector a higher frequency sound beam can be converted to a more omnidirectional wave. 
+
+Some experimental tests where done with a parabolic reflector. In this case a square of aluminum placed slightly above the speaker. The results where promising. The signal was a lot smoother and had more amplitude then before. The frequency waves between 3-5 kHz acted a lot more omnidirectional. The higher frequencies 5 kHz and above could not be sensed by the microphone even with the aluminum plate placed above the speaker. For now it seems that the characteristics of the frequencies between the 3 and 4 kHz meet the requirements.
 
 
-\section{Design}
+\subsection{Interference}
+
+Until now only the travel characteristics where tested, but how does the environment have effect on these sound waves. Are the lower or the higher sound waves more more influenced by noise. And if so, can the noise be minimized with filtering. Most of the noise between the frequencies between 100 Hz and 20 kHz will come from human speech. In a demonstration sources like music or noise from outside could be minimized, but speech inside a room is hard to ignore. If a band-pass filter is implemented a lot of frequencies can be filtered out depending on how well the filter is build. Experimenting with this set-up is needed to determine if a filter will suffice.
+
+\subsection{Modulation}
+
+Another way to distinguish the sound waves from the noise, is to modulate the sound waves. If some sort of information is implemented on the sound wave it could be recognized and be distinguished from the noise. Another advantage of this method is, that it is possible to send information. Since the speed of sound is not that high the amount of information would be limited, but simple messages could be transferred. Different types of modulations could be used to accomplish this. The most common methods for analog signals are: 	
+
+\begin{itemize}
+\item Frequency modulation
+\item Amplitude modulation
+\item Phase modulation
+\end{itemize}
+
+Amplitude modulation is hard to implement since the amplitude of the wave is also determined by the distance and loudness of the source. Even with a good filter, a lot of factors can change the amplitude of the sound wave. Frequency modulation could be a good option since it is a reliable modulation in this case. The only problem could be that there is noise that has the same frequency. But there are ways to overcome this problem. For example to extend the time a frequency is send will decrease the amount of information that could be transferred but will be more reliable. If the duration of the time is determined beforehand it should be easy to distinguish. Phase modulation is a good option but when a short period of the frequency is measured an error can be measured since the frequency is changed. 
+
+Frequency modulation can be done easily with a micro controller using a voltage to frequency converter. The idea is to use send out a sweep. This way the time of the sweep is known, so if only a part of the signal is captured the start of the signal can still be calculated since the time the sweep takes would be the same at all times. Further testing will be done to check if this method would be reliable enough and can be implemented with a micro controller.
+
+
+\subsection{Conclusion}
+
+Lower frequencies have a wider reach than the higher frequencies. The lower frequency also travel further then the higher frequencies. The only problem with low frequencies is that a lot more power is needed to create the same amount of noise. The higher frequencies are less likely to be interfered by speech. From this test it can be concluded that lower sound waves are more preferable since it was the intention to have a wave with omnidirectional characteristics and a minimum of 3 meter travel range in those directions. The ideal frequency would be the one that has both the characteristics of the lower frequencies but does use a lot of energy to make a detectable sound. From our experiments this would be the frequency between 3 and 4 kHz. If a sweep will be used it should consist of the frequencies between the 3 and 4 kHz. This way the characteristics of the wave would not change. 
 
 
 \newpage
@@ -986,81 +1056,6 @@ An ultrasonic sensor is usually used to detect if there is some obstacle in the 
       \includegraphics[width=1\textwidth]{ultrafreq.pdf}
   \caption{The left graph shows the average PSD from 50 echos generated by a plastic botthle from a distance of 100cm, the average envelope is generated using 50 echos of the same bottle} \cite{ultraobject}  \label{ultrafreq}
 \end{figure}
-\newpage
-
-
-\section{Acoustic sensing}
-Relative distance sensing can be done by simultaneously sending an RF signal and a sound wave and subtracting the time of arrival.
-This method of sensing is based on the fact that RF signals travel with the speed of light and thence travels much faster than sound through the atmosphere: Light travels at 299.792.458 m/s, whereas the speed of sound is only about 332 m/s, depending on air temperature:
-\ref{eq:speedsoundinair}
-\begin{equation}
-    \label{eq:speedsoundinair}
-    V_{sound in air}(m/s)\approx 331.4+0.6T_{c}
-\end{equation}
-
-Since the speed of the RF signal is so much faster than the speed of sound, the time of arrival of the RF signal in this situation is negligible. Which leads to the following formula:
-\begin{equation}
-    Relative distance(m) \approx Toa_{sound}(s)\cdot  331.4+0.6T_{c}
-\end{equation}
-Distance measurement by acoustic signals using time of flight could be a good option for short range localization between 0 and 3 meters. A couple of test where done to test if measuring time of flight of sound waves is suitable for a swarming application. the following points need to be researched:
-\begin{itemize}
-\setlength\itemsep{0em}
-    \item To complement the shortcomings of the far range localization system the signal needs to be able to travel atleast 3 meters.
-    \item Because the robots need to create awareness to all other robots around, it is important that the waves travel omnidirectional. 
-    \item To make the localization as accurately as possible there needs to be a minimum of interference. 
-\end{itemize}
-
-\subsection{Frequency ranges}
-The speaker used for these test has a frequency range between the 130 Hz and 20 kHz. To test what the influence of different frequencies is on the distance that the waves can travel figure \ref{setup1} shows the test set-up used.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{situation1.pdf}
-    \caption{Setup used to test the range of different frequencies\cite{setup1}} 
-    \label{setup1}
-\end{figure}
-
-The speaker is faced directly at the microphone to create an ideal situation. 
-
-The higher frequencies are better visible then the lower frequencies. That could be explained by the fact that the higher frequencies contain a lot more energy in the more bundled wave form. If the waves are used in a specific direction a higher frequency is more preferable.  
-
-\subsection{Wave characteristics}
-To test the spread of the sound waves the speaker was placed on the table facing upwards. On a distance of 1 meter we placed a microphone, also facing upwards, which was connected to an oscilloscope as shown in figure \ref{setup2}. The microphone was moved away from the speaker everytime the signal was clear. This way the maximum distance for the frequency could be determined. The maximum range needed is 3 meters. For each frequency we tested what the microphone was picking up and how the signal showed up. 
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{situation2.pdf}
-    \caption{Setup used to test the omnidirection range and wave characteristics\cite{setup2}} 
-    \label{setup2}
-\end{figure}
-
-From 100 Hz to 1 kHz no signal could be detected, even when the microphone was placed very closely. From 2 kHz to 4 khZ the signal became very clear. Although there where some situations where the signal was not as clear as all other situations. These frequencies where loud and clear at a distance of 3 meters. Above the 5 kHz the sounds became a lot more directional. The microphone did not sense any of the waves, unless the speaker was directly aimed at the microphone. 
- 
-There are ways to manipulate the direction of the sound waves. If there is need to use higher frequencies. By the use of a parabolic reflector a higher frequency sound beam can be converted to a more omnidirectional wave. 
-
-Some experimental tests where done with a parabolic reflector. In this case a square of aluminum placed slightly above the speaker. The results where promising. The signal was a lot smoother and had more amplitude then before. The frequency waves between 3-5 kHz acted a lot more omnidirectional. The higher frequencies 5 kHz and above could not be sensed by the microphone even with the aluminum plate placed above the speaker. For now it seems that the characteristics of the frequencies between the 3 and 4 kHz meet the requirements.
-
-
-\subsection{Interference}
-Until now only the travel characteristics where tested, but how does the environment have effect on these sound waves. Are the lower or the higher sound waves more more influenced by noise. And if so, can the noise be minimized with filtering. Most of the noise between the frequencies between 100 Hz and 20 kHz will come from human speech. In a demonstration sources like music or noise from outside could be minimized, but speech inside a room is hard to ignore. If a band-pass filter is implemented a lot of frequencies can be filtered out depending on how well the filter is build. Experimenting with this set-up is needed to determine if a filter will suffice.
-
-\subsection{Modulation}
-Another way to distinguish the sound waves from the noise, is to modulate the sound waves. If some sort of information is implemented on the sound wave it could be recognized and be distinguished from the noise. Another advantage of this method is, that it is possible to send information. Since the speed of sound is not that high the amount of information would be limited, but simple messages could be transferred. Different types of modulations could be used to accomplish this. The most common methods for analog signals are: 	
-
-\begin{itemize}
-\setlength\itemsep{0em}
-    \item Frequency modulation
-    \item Amplitude modulation
-    \item Phase modulation
-\end{itemize}
-
-Amplitude modulation is hard to implement since the amplitude of the wave is also determined by the distance and loudness of the source. Even with a good filter, a lot of factors can change the amplitude of the sound wave. Frequency modulation could be a good option since it is a reliable modulation in this case. The only problem could be that there is noise that has the same frequency. But there are ways to overcome this problem. For example to extend the time a frequency is send will decrease the amount of information that could be transferred but will be more reliable. If the duration of the time is determined beforehand it should be easy to distinguish. Phase modulation is a good option but when a short period of the frequency is measured an error can be measured since the frequency is changed. 
-
-Frequency modulation can be done easily with a micro controller using a voltage to frequency converter. The idea is to use send out a sweep. This way the time of the sweep is known, so if only a part of the signal is captured the start of the signal can still be calculated since the time the sweep takes would be the same at all times. Further testing will be done to check if this method would be reliable enough and can be implemented with a micro controller.
-
-
-\subsection{Conslusion}
-Lower frequencies have a wider reach than the higher frequencies. The lower frequency also travel further then the higher frequencies. The only problem with low frequencies is that a lot more power is needed to create the same amount of noise. The higher frequencies are less likely to be interfered by speech. From this test it can be concluded that lower sound waves are more preferable since it was the intention to have a wave with omnidirectional characteristics and a minimum of 3 meter travel range in those directions. The ideal frequency would be the one that has both the characteristics of the lower frequencies but does use a lot of energy to make a detectable sound. From our experiments this would be the frequency between 3 and 4 kHz. If a sweep will be used it should consist of the frequencies between the 3 and 4 kHz. This way the characteristics of the wave would not change. 
 \newpage
 
 \section{Bibliografie}

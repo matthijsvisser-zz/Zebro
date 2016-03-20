@@ -11,6 +11,15 @@
 \usepackage{eurosym}
  
 \usepackage{fancyhdr}
+
+\usepackage{titlesec}
+
+\setcounter{secnumdepth}{4}
+
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
  
 \pagestyle{fancy}
 \fancyhf{}
@@ -19,9 +28,9 @@
 \rfoot{Page \thepage}
 
 
-%\usepackage{draftwatermark}
-%\SetWatermarkText{Concept}
-%\SetWatermarkScale{5}
+\usepackage{draftwatermark}
+\SetWatermarkText{Concept}
+\SetWatermarkScale{5}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -181,7 +190,7 @@ In the above figure multiple data and clock combinations are shown, these combin
 \begin{figure}[H]
         \centering
         \graphicspath{ {./images/} }
-        \includegraphics[scale=.6]{TWImessage}
+        \includegraphics[scale=.3]{TWImessage.pdf}
         \caption{Structure of a TWI message}
         \label{fig:TWIstructure}
 \end{figure}
@@ -194,15 +203,47 @@ The speed of the communication depend on the frequency of the controller that wi
 
 \subsubsection{SPI}
 SPI or Serial Peripheral Interface is, like it names suggests, a serial interface. This interface can be connected in two ways, each having its own advantage. How this works will be explained using the following figure.
-% \begin{figure}[H]
-%         \centering
-%         \graphicspath{ {./images/} }
-%         \includegraphics[scale=.6]{SPI}
-%         \caption{SPI connections}
-%         \label{fig:SPIconnections}
-% \end{figure}
+\begin{figure}[H]
+        \centering
+        \graphicspath{ {./images/} }
+        \includegraphics[scale=.4]{SPI}
+        \caption{SPI connections}
+        \label{fig:SPIconnections}
+\end{figure}
+SPI works by selecting its slaves using its slave select. Slave select is a single bit used to define which slave the master will be talking to. When the master has selected its slave it will be able to shift its data from its shift register into the shift register of the slave using the MOSI output. MOSI mean master out slave in, so if the master asks data from the slave it will be send using the MISO, master in slave out. Knowing this there are two ways to connect the slaves, putting them in series or parallel to eachother. 
+\begin{figure}[H]
+        \centering
+        \graphicspath{ {./images/} }
+        \includegraphics[scale=.4]{SPIserie}
+        \caption{SPI connected in series}
+        \label{fig:SPIseries}
+\end{figure}
+When put in series only one slave select will be used to select all the slaves. Each slave will send its data to the next slave through the MISO line. The disadvantage of this method is when you want to address the last slave in line it has togo through all the slaves, meaning it will costs a lot of extra clockticks to put it through. Another disadvantage of this method is you can not add extra slaves to an excisting series of slaves because the path needs to be closed else the slaves will not be able to send their data to the master.
+\begin{figure}[H]
+        \centering
+        \graphicspath{ {./images/} }
+        \includegraphics[scale=.4]{SPIparallel}
+        \caption{SPI connected parallel}
+        \label{fig:SPIparallel}
+\end{figure}
+The second way to connect the slaves is parallel, this means the master can address all the slaves individually, which will make it faster. The downside of this is you will need a different slave select for every slave. Which means this takes up more outputs from the controller and more space on the circuit boards.
+Another downside of SPI is that it can not be used as a multimaster system this downside means it is not viable for the project.
+\subsubsection{U(S)ART}
+The third serial communucation typically used on microcontrollers is U(S)ART. This protocol has two variaties, the universal asynchronous reciever/transmitter and the synchronous. The difference between the two is that the synchronous uses an extra line to send a clock signal. In asynchronous mode the devices synchronice with a startbit at the beginning of the message.
+Both of the protocols have a TX and a RX line, the transmit and recieve line. Like the name says these are the lines to transcieve the data. Each device connected has two registers, one for recieving data and one for sending. These registers are eight to ten bits long, eight or nine data bits and one or no parity bit. The parity bit can be used as a check to see if the data was recieved correctly by checking if the amount of ones is even or odd. The message is ended with one or two stop bits. So a typical U(S)ART frame looks like the figure below.
+\begin{figure}[H]
+        \centering
+        \graphicspath{ {./images/} }
+        \includegraphics[scale=.4]{UARTframe}
+        \caption{Typical U(S)ART frame}
+        \label{fig:UARTframe}
+\end{figure}
+Depending on the software protocol used it is possible to have a multimaster system using one U(S)ART connection on every device. Every message should get a header in which the addressed divece is selected.
 
-\subsubsection{UART}
+\subsubsection{conclusion}
+Looking at the specifications of each protocol and comparing those, there can be concluded that TWI is most suitible. This is because of the fact it only uses two lines to communicate and is easily implemented in a multimaster system.
+>>>>>>> feature/communication
+
 \subsection{Software}
 
 
@@ -218,14 +259,14 @@ For mapping the various positions of all robots in a swarm a localization techni
 Determining relative orientation opposite to each other can be done in various ways. some methods involve larger limitations than others. In general angular measurements are done using the goniometric equations.
 
 \subsubsection{Goniometric angle determination}
-The goniometric system shows how the different angles of a triangle within a circle can be calculated. Determining angles of a triangle within a circle using goniometric formulas mirroring can occur this happens because of the following relation between the angles see figure \ref{circle}.
+The goniometric system shows how the different angles of a triangle within a circle can be calculated. Determining angles of a triangle within a circle using goniometric formulas, a mirroring phenomenon can occur this happens because of the following relation between the angles see figure \ref{circle}.
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.7\textwidth]{Cirkel.pdf}
-\caption{Unit circle where points P and Q are mirrored on the X-axes}
-\label{circle}
-\end{figure}
+% \begin{figure}[H]
+% \centering
+% \includegraphics[width=0.7\textwidth]{Cirkel.pdf}
+% \caption{Unit circle where points P and Q are mirrored on the X-axes}
+% \label{circle}
+% \end{figure}
 
 \begin{equation}
 Because\ Xp = Xq,\ cos(-\alpha) = cos(\alpha)\ applies
@@ -237,21 +278,21 @@ Because\ Yq = -Yp,\ sin(-\alpha) = -sin(\alpha)\ applies
 
 This mirroring phenomenon is something that needs to be resolved. Mirroring of the angle means that the robot(s) that is being detected could be in two different direction relative to the interpreter. Figure \ref{detectie} shows how the different robots determine the relative distance to each other. 
 
-\begin{figure}[H]
-\centering
-\includegraphics[angle=90,width=0.7\textwidth]{Detectie.pdf}
-\caption{Relative location interpretation}
-\label{detectie}
-\end{figure}
+% \begin{figure}[H]
+% \centering
+% \includegraphics[angle=90,width=0.7\textwidth]{Detectie.pdf}
+% \caption{Relative location interpretation}
+% \label{detectie}
+% \end{figure}
 
 In figure \ref{detectie} a scenario is given where the relative distance between the different nodes (N1, N2 \& N3) is known but their position within the circle is unknown. Because the relative direction (angle) from the interpreters (different nodes) needs to be determined. According to the goniometric equations the direction (angle) within a circle could be mirrored as shown in equation 1 and 2. This could lead to two different interpretations one being the reality as shown in figure \ref{detectie} and one shown in figure \ref{mirror} (where N1 is the interpreter). 
 
-\begin{figure}[H]
-\centering
-\includegraphics[angle=90,width=0.7\textwidth]{Mirror.pdf}
-\caption{N1 Mirrored interpretation}
-\label{mirror}
-\end{figure}
+% \begin{figure}[H]
+% \centering
+% \includegraphics[angle=90,width=0.7\textwidth]{Mirror.pdf}
+% \caption{N1 Mirrored interpretation}
+% \label{mirror}
+% \end{figure}
 
 For the robots to know in what direction the measured distance is applicable to, they can analyze the change in distance after a robot has moved a specific direction. In order to leverage the previous trilateration procedure requires coordinating the motion of the robots in a manner that gives every robot a chance to move and ensures that when a robot is moving its neighbours remain stationary. \cite{Angle}
 
@@ -259,12 +300,12 @@ This method is very impractical because several robots need to abort their curre
 
 This can also be achieved by the use of stationary beacons. When a minimum of three beacons is placed on the field the location of the robots within this field can be measured, this is called triangulation. Triangulation is the process of determining the location of a point by measuring angles to it from known points. This is illustrated in figure \ref{driehoek}.
 
-\begin{figure}[H]
-\centering
-\includegraphics[angle=90,width=0.7\textwidth]{driehoek.pdf}
-\caption{Triangulation using three stationary beacons}
-\label{driehoek}
-\end{figure}
+% \begin{figure}[H]
+% \centering
+% \includegraphics[angle=90,width=0.7\textwidth]{driehoek.pdf}
+% \caption{Triangulation using three stationary beacons}
+% \label{driehoek}
+% \end{figure}
 
 Using three stationary beacons the exact position of every node within this field can be calculated. This can be done by using the cosine rule shown in the equations below. 
 \begin{equation}
@@ -281,14 +322,14 @@ C^2 = A^2 + B^2 - 2\cdot A\cdot B\cdot cos(\gamma)
 
 With the cosine rule exact location of the different nodes can be determined. While using three stationary beacons mirroring cannot occur any more. Because if one beacon measures a distance to a node that is greater than the mutual-distance to another beacon the node is no longer located within the triangulation field.
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.6\textwidth]{triangulatie.pdf}
-\caption{Determining the angle with three stationary beacons}
-\label{triangulatie}
-\end{figure}
+% \begin{figure}[H]
+% \centering
+% \includegraphics[width=0.6\textwidth]{triangulatie.pdf}
+% \caption{Determining the angle with three stationary beacons}
+% \label{triangulatie}
+% \end{figure}
 
-In figure \ref{triangulatie} the distances from the beacons to node 1 (N1) are being determined. With these distances the different angles can be calculated this is done in the equation below.
+In figure \ref{triangulatie} the distances from the beacons to node 1 (N1) are being determined. With these distances the different angles can be calculated this is done in the equations below.
 
 \begin{equation}
 A^2 = B^2 + C^2 - 2\cdot B\cdot C\cdot cos(\alpha)
@@ -307,6 +348,8 @@ cos(\alpha) = \frac{(B^2 + C^2 - A^2)}{(2\cdot B\cdot C)}
 \begin{equation}
 cos^{-1}(0,7935) = 37,48\degree
 \end{equation}
+
+Implementing localization using three stationary beacons involves several limitations to the swarm. These limitations are that the swarm cannot operate outside of the triangulation field and therefore is limited to a specific perimeter. Also spreading three stationary beacons autonomously is a difficult task to accomplish.  
 
 A more efficient solution is to retrieve the relative orientation opposite to each other. In combination with the relative distance every robot knows the exact relative position of all the other robots in range of the network.
 
@@ -474,51 +517,71 @@ Amplitude modulation is hard to implement since the amplitude of the wave is als
 Frequency modulation can be done easily with a micro controller using a voltage to frequency converter. The idea is to use send out a sweep. This way the time of the sweep is known, so if only a part of the signal is captured the start of the signal can still be calculated since the time the sweep takes would be the same at all times. Further testing will be done to check if this method would be reliable enough and can be implemented with a micro controller.
 
 
-\subsection{Conslusion}
+\subsection{Conclusion}
 
 Lower frequencies have a wider reach than the higher frequencies. The lower frequency also travel further then the higher frequencies. The only problem with low frequencies is that a lot more power is needed to create the same amount of noise. The higher frequencies are less likely to be interfered by speech. From this test it can be concluded that lower sound waves are more preferable since it was the intention to have a wave with omnidirectional characteristics and a minimum of 3 meter travel range in those directions. The ideal frequency would be the one that has both the characteristics of the lower frequencies but does use a lot of energy to make a detectable sound. From our experiments this would be the frequency between 3 and 4 kHz. If a sweep will be used it should consist of the frequencies between the 3 and 4 kHz. This way the characteristics of the wave would not change. 
 
-\section{Propulsion,Actuators and Effectors}
-
-In this chapter the sub-questions about the propulsion, actuators and effectors are researched and answered. First of all, the possible types of propulsion will be researched. Then the various kinds of actuators with a suitable effector will be considered. Depending on the situation different types of propulsion is used. For example a robot that operates in an environment with water would not be implemented with DC motor drivers and tyres. The robot build in this research should be able to operate on Mars in the future. Therefore the robot cant get stuck easily since that will cost millions, since the robot cannot complete his mission. Since swarming and not propulsion is the main goal of this research a simple way of locomotion would suffice. However there should be the possibility to implement a different kind of propulsion in the future, so that the robot can be used on Mars. 
-
-
-%In dit hoofdstuk worden de deelvragen over de aandrijving, actuatoren en effectoren beantwoord. Allereerst zal er onderzocht worden welke soorten aandrijving er mogelijk zijn.Vervolgens zal er worden gekeken welke actuatoren er gebruikt kunnen worden en hoe de energie van de actuator gebruikt kan worden om de robot voort te bewegen. Als laatste wordt er gekeken welke effectoren nodig zijn. Robots worden op veel verschillende manier aangedreven, afhankelijk van de situatie.Bijvoorbeeld een robot die op het water moet opereren zal niet vaak met DC motoren met wielen worden ge\"implementeerd. In dit onderzoek kijken we naar een robot die in de toekomst mogelijk naar mars gestuurd kan worden. Dan kan de robot niet zomaar vast komen te zitten, aangezien er dan miljoenen voor niks verloren gaan. Omdat er eerst met een vereenvoudigde werkelijkheid wordt gewerkt is het vooral belangrijk dat de robot eenvoudig kan voortbewegen. Wel moet er ruimte zijn om later een andere module te kunnen aansluiten zodat hij ook op mars zich zou kunnen voortbewegen. 
-
-\subsubsection{Effectors}
-The way a robot moves is determined by its effector with his corresponding actuator. Possible types of effectors are:
-
-%Door een effector aan een actuator de koppelen kan een robot zich voortbewegen. Mogelijke effectoren kunnen zijn:
-
-\begin{itemize}
-\item Wheels
-\item Leg(s)
-\item Catepillar tracks
-\item Air cushion  
-\item Propeller 
-\item (Superconductor)
-\end{itemize}
-
-Each of these effectors have pro's and con's in different situations. Tyres are easily implemented, but there are various ways to implement these. The amount of tyres used will affect the handling of the robot. With a minimum two tyres, movement can already be realized. The downside is that driving with two wheels is not stable, only with algorithms that can balance the robot stable movement can be accomplished. It would be easier to implement more than two wheels so that the robot is more stable and movement is easier. 
-
-
-  
-%hier gebleven met vertalen
-Elke van deze effectoren hebben voor en nadelen in verschillende situaties.\\Wielen zijn eenvoudig te implementeren, er kunnen verschillende aantallen wielen worden aangebracht. Het aantal wielen heeft wel invloed op het rijgedrag van de robot. Met twee wielen kan er worden gereden, mits de robot in balans wordt gehouden. Dit kan worden gedaan door middel van een zwenkwiel, of door een regelsysteem te bedenken dat de twee wielen de robot in balans houden. Dit laatste kost veel energie en is niet eenvoudig. Met drie wielen staat de robot al een stuk stabieler. Het nadeel hiervan is dat sturen soms moeizaam kan zijn. Met vier wielen is de robot nog stabieler en kan er op verschillende manieren worden gestuurd. De wielen kunnen tegengesteld worden aangedreven waardoor de robot draait. Dit kost wel meer energie dan nodig is aangezien er extra wrijving ontstaat. Een optie is de voorste wielen te laten draaien, waardoor de robot in de richting van de wielen zal voortbewegen. Zoals bij een auto het geval is. Dit is weer lastiger te implementeren aangezien er een soort van stuurmechanisme moet worden bedacht. 
-
-\subsubsection{Actuatoren}
-
-De keuze van de actuator hangt sterk samen met de effectoren.
-
-\subsubsection{Aandrijving}
 
 \newpage
-\section{Swarm Communication}
-There are several requirements to realise a robot swarm. Each member of the population needs to communicate with the rest of the swarm. To give the members full freedom of movement the communication also needs to be wireless. It is important that the population size of the swarm is dynamic, because of the scalability of the swarm. As mentioned earlier a swarm does not have a master. So each member needs to be capable to maintain the network. These networks also must be able to reroute around nodes that have been lost.
+\subsection{Swarm communication}
+There are several requirements to realise a robot swarm. Each member of the population needs to communicate with the rest of the swarm. To give the members full freedom of movement it is also usefull for the communication to be wireless. It is important that the population size of the swarm is dynamic, because of the scalability of the swarm. As mentioned earlier a swarm does not have a master. So each member needs to be capable to maintain the network. These networks also must be able to reroute around nodes that have been lost. \cite{Swarmwiki}\cite{swarmintelligence}
 
-To create an network with those characteristics a (wireless) mesh network ((W)MN) is a possible solution. A mesh network relies on communication nodes in which data is distributed. All of the communication nodes cooperate in the distribution of data in the network. Each node of the network is connected to one or more nearby in range node(s) and forwards data on behalf of the other nodes. \cite{meshnetworking} A example of an mesh network is illustrated in figure \ref{fig:WMN}. To ensure a realiable network, self-organization and topology control alogorithms are needed.\cite{WMN1} Mesh networks can use self-healing algorithms such as Shortest Path Bridging (SPB) to restore and reroute the connection around broken nodes/clients. Shortest path bridging calculates the most favorable connections to the clients with the lowest path costs. \cite{SPB} Other usefull algorithms are listed in \cite{position-based}. The most efficient algorithm for path bridging depends on the situation where the clients are operating in which is described in \cite{position-based}.
+The following subsections are:
+\begin{itemize}
+\setlength\itemsep{0em}
+    \item Network topology
+    \item Network realibility and robustness
+    \item Data distribution
+    \item Wireless mesh network
+    \item Wireless network protocols
+    \item Conclusion
+\end{itemize}
 
-A wireless mesh network (WMN) is a dynamically self-organized and configured network. \cite{WMN1} Each node or client in the network is able to create an ad hoc network to maintain the mesh connectivity, this is called client WMN's. These networks are able to reroute around nodes that have been lost. On large scale projects wireless mesh networks are costefficient because of the saving of wired connections.\cite{meshnetworking}
+A recommendation is made based on the specifications of this research. The recommendation can be found in the last chapter of this section.
+
+\newpage
+\subsubsection{Network topology}
+Several topologies exist to form a network. Figure \ref{fig:STAR}, \ref{fig:RING}, \ref{fig:BUS} and \ref{fig:WMN} illustrate four network topologies as an example. Each topology has it's own benefits and cons which are discussed in this section.
+
+\begin{figure}[H]
+\minipage{0.32\textwidth}
+  \includegraphics[angle=90,width=\linewidth]{STAR}
+  \caption{A star network topology, devices are connected to a central device (in this case device 1.)}\label{fig:STAR}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[angle=90,width=\linewidth]{BUS}
+  \caption{A bus topology, every device is on a common link.}\label{fig:BUS}
+\endminipage\hfill
+\minipage{0.32\textwidth}%
+  \includegraphics[angle=90,width=\linewidth]{RING}
+  \caption{A ring topology, each device is connected to the next nearest device.}\label{fig:RING}
+\endminipage
+\end{figure}
+
+\textbf{Star network}\\
+The star network in figure \ref{fig:STAR} uses the device marked as '1' as an central switch to reach out to other devices.\cite{starwiki} When the central device fails the network will stop working. However, when one of the other nodes fail the network is not completely disabled. Because of the central device, all of the information must pass this node. This could result in speed limitations.Mainly because of the central device, the star topology is not suitable as a swarm network. \cite{combook}
+
+
+\textbf{Ring network}\\
+Devices in a ring network ar always connected to two other devices as displayed in figure \ref{fig:RING}. This means that there are atleast three devices in a ring network. The data distributions is unidirectional, with the traffic travelling clockwise or anticlockwise around the ring. \cite{ringwiki} This topology has it's limitations when one or more devices become isolated due to a device faillure or cable break. This problem can be solved by using a dual ring, which makes the network redundant. Because of the network topology, in which n nodes are connected serially, the communication delay is proportional to the number n devices in the network. The bandwidth is also shared between all the devices. \cite{ringwiki} It is possible to create a swarm network with a ring network but it is far from ideal.
+
+\textbf{Bus network}\\
+In a bus network the devices are connected to a linear half-duplex link. \cite{bustopology} A bus network has the advantage that it is easy to connect devices to and it works well in small networks. A disadvantage when using a bus for swarming is that the entire network shuts down when there is a break in the main connection. 
+Because of this the network is not dynamic.
+
+\textbf{Mesh network}\\
+To create an network with the characteristics described in the previous section a (wireless) mesh network ((W)MN) is a possible solution. A mesh network relies on communication nodes in which data is distributed. Such a network uses multi-hopping to transport data.\cite{multi-hopwirelessnetworks} All of the communication nodes cooperate in the distribution of data in the network. Each node of the network is connected to one or more nearby in range node(s) and forwards data on behalf of the other nodes. \cite{meshnetworking} \\
+
+There are two types of mesh networks: fully connected and partly connected mesh networks. In a fully connected network each node is directly connected to each other node in the network. This type of network is completely redundant because of the alternative connections when one of them fails. The number of needed connections can be calculated with equation \ref{eq:amountofnodes}\cite{combook}. Where 'n' is the amount of nodes and 'c' stands for the needed amount of connections. A fully connected mesh network becomes impractical when the amount of nodes increases.
+
+\begin{equation}
+c=\frac{n(n-1)}{2}
+\label{eq:amountofnodes}
+\end{equation}
+
+An partly connected network is still mostly redundant, but has less connections in comparison with a fully connected network. An example of a partly connected mesh network is illustrated in figure \ref{fig:WMN}. \cite{combook} 
+
+It is possible but not necessary to connect one or more clients of a mesh network to the internet. Thus the client connected to the internet functions as a gateway for the other clients in the network. \cite{wirelessmeshnetworksopportunitiesandchallenges}
 
 \begin{figure}[H]
    \centering
@@ -527,25 +590,430 @@ A wireless mesh network (WMN) is a dynamically self-organized and configured net
    \label{fig:WMN}
 \end{figure}
 
+When the network topology's are compared with each other, the mesh network satisfies the desired requirements. Although it is harder to implement due to mutual connections, it has the best data coverage. To meet the given specifications, a mesh network would be the best choice.
+
+\newpage
+\subsubsection{Network realibility}
+To ensure a realiable network, self-organization and topology control algorithms are needed.\cite{WMN1} Possibly important and usefull (wireless) network characteristics are \cite{position-based}:
+\begin{itemize}
+\setlength\itemsep{0em}
+    \item Low construction costs
+    \item Energy efficient (power aware)
+    \item Cost aware
+    \item Robust - Able to withstand a lost or broken client or connection
+    \item Guaranteed delivery
+\end{itemize}
+
+Mesh networks can use self-healing algorithms such as Shortest Path Bridging (SPB) to restore and reroute the connection around broken nodes/clients. Shortest path bridging calculates the most favorable connections to the clients with the lowest path costs. \cite{SPB} Other usefull algorithms such as shortest path, greedy, shortest cost path, cost aware, power aware, are listed in \cite{position-based} with their characteristics. In this research only the most suitable algorithms will be discussed. 
+
+A realiable network has a routing algorithm/protocol that includes distributed operating, loop freedom, demand-based operation and sleep period operation. Loop freedom means that the protocol is able to detect loops in the network and eliminates those. For example, data could be floating around in the network. Sleep period operating means that the clients that are not needed go into a 'sleep mode' when it's temporarily inactive.\cite{position-based}
+
+\newpage
+\subsubsection{Data distribution}
+To set-up a reliable and stable mesh network, self-organization and topology control algorithms are needed. \cite{WMN1}\cite{position-based} This section discusses the following subjects: Data distribution strategy, routing protocols and adressing.\\
+
+\textbf{Data distribution strategy}\\
+There are several strategys to distribute a package of data in a network. The following enumeration show three strategy's:
+\begin{itemize}
+\setlength\itemsep{0em}
+    \item Single-path (Unicast)
+    \item Multipath (Multicast)
+    \item Flooding (Broadcast)
+\end{itemize}
+
+The single-path strategy is an example of the shortest path route protocol. In the single-path strategy only one packet of data in distributed in the network at a time. Which is desireable for the network capacity which is barely affected. Although the capacity is not affected, it is possible that a package is received later, because of an missing or inactive node in the path. \cite{position-based} Which results in higher latency times.
+
+The other strategy, multipath, sends out multiple packets of data trough recognizable paths. Flooding strategy litterly floods the network with data packages. In case of wireless networks, the single-path strategy is preferred because of the power and bandwidth limitations in wireless networks. \cite{position-based}\\
+
+\textbf{Routing protocols}\\
+To meet the requirements given in the specification, the routing of the networks needs to be position based. When the position of the node in the network is known, it wil increase the networks reliability. \cite{position-based} According to the research done in \cite{geographicalrouting} and \cite{scalablelocation} routing algorithms without geographic locating (precize localisation) are not scalable and won't work well in large networks.
+The scalibility of each algorithm means the posibility to adjust the scale of the network by adding or removing clients to the network.
+
+There are several position-based routing protocols each with it's own characteristics a taxonomy is given in \cite{position-based}. As described earlier, only the most important protocols for the given specifcation will be discussed in this research. This means most of the position-based routing protocols such as: power-, cost path protocols, become irrelevant.
+
+The shortest path route protocol uses information such as the hopcount and distance between clients to calculate the shortest route. Hopcount stands for the amount of clients that are passed by. The shortest cost path route protocol also takes account for the energy required for each routing task. The goal of this protocol is to minimize the total energy cost. According to \cite{position-based} it is not desireable or if possible to avoid to memorize routes or past traffic in mobile ad hoc networks. This is because of the mobility of clients in the network and constantly changing infrastructure.
+
+The distance between neighboring nodes can be estimated on the basis of signal strengths or time delays in direct communications. The exact positions can for example be estimated by using positioning systems such as GPS (Gereral positioning system). \cite{locationsystemsforubiquitouscomputing} The approximation of the position of the node relative to the other nodes can be done by serveral methods.
+
+In figure \ref{fig:greedyrouting} a greedy routing scheme is displayed. The node S contains the data package and D is the destination of the package. 
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{greedyrouting}
+   \caption{Greedy round scheme found in \cite{position-based}. "S selects M in MFR path SMUVD, G in greedy path SGHI that
+fails to deliver, A in direction-based-path SAUWVD, P in power path
+SPMUWVD, N in NFP/NC path SNGHI that fails to deliver."}
+   \label{fig:greedyrouting}
+\end{figure}
+
+The principle of greedy routing is that it is trying to get closer to the destination based on local information. Thus the data package is forwarded to the client/node which is the most suitable from a local point of view. \cite{geographicrouting} "Greedy schemes have a performance close to performance of optimal shortest path (weighted) algorithm for dense graphs, but have low delivery rates for sparse graphs. Schemes that guarantee delivery may have high communication overhead for sparse graphs." \cite{position-based}\cite{positionbasedroutingtaxonomy} \\
+
+The most efficient algorithm for path bridging depends on the situation where the clients are operating in which is described in \cite{position-based}\cite{positionbasedroutingtaxonomy}. As stated earlier, in this stage of the development some characteristics are irrelevant, the energy efficient and cost routing protocols for example. There are however some characteristics that do matter. The single path strategy for example, is preferred because of bandwidth limitations in wireless networks. It is also not preferred to memorize the routes of past traffic in mobile networks.\cite{position-based} \cite{positionbasedroutingtaxonomy} Given these characteristics, the most suitable method will be greedy routing or a derivative/improved version.
+
+
+\textbf{Adressing}\\
+Each node in a mesh network needs a adress for other nodes to refer to. Methods to adress meshed networks are:
+\begin{itemize}
+\setlength\itemsep{0em}
+    \item Adaptive robust tree (ART)
+    \item Meshed adaptive robust tree (MART)
+\end{itemize}
+Most of the wireless network protocols already cover the adressing in the protocol itself. The following methods are a possible compliment.
+
+\textbf{Adaptive robust tree (ART)}\\
+Adaptive robust tree is a meshed tree routing approach to address the nodes. Each node is adaptively addressed during the tree formation. It is desireable that the tree is free of single point failures (SPOF). This means that there is always a redundant path if a node fails, but that's not always possible in non-mesh networks. Each node keeps track of an ART table (ARTT), to map it's branches. In this table the adresses of the connected branches are stored.
+
+ART knows three phases; the initialization, operation and recovery phase. In the initialization phase the tree is formed. The tree formation starts at the root and grows by adding nodes to the tree. The nodes get an address assigned, when all nodes are joined. Thereafter, the number of nodes are counted in the tree as shown in figure \ref{fig:treenumbers}.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{treenumbers}
+   \caption{An example of a wireless mesh network with 5 clients and an optional internet connection. The connections made in this example are random.}
+   \label{fig:treenumbers}
+\end{figure}
+
+The following phase is the operation phase, where small amount of nodes are still able to join, but when the change becomes to big, the network goes in to initialization mode again. When a part of the tree becomes broken, the recovery phase becomes active for the affected part.\\
+
+\textbf{Meshed adaptive robust tree}\\
+With an ART tree it is possible to create a MART (Meshed adaptive robust tree). Figure \ref{fig:meshtree} illustrates a MART, in this figure there are already connections added that make a mesh network. The intermitted lines are added for the mesh network. From the point of view from every node in the network, there still is a tree form. In this mesh network, each node has a redundant path if a connection is broken, so it is SPOF free.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{meshtree}
+   \caption{Meshed ART formation based on figure from \cite{emergingstandarsforwirelessmeshtechnology}}
+   \label{fig:meshtree}
+\end{figure}
+
+With a MART, it is possibile to reroute a connection to reduce the path cost in comparison with ART. Most of the time, the transition from ART to MART, removes some SPOFs.
+
+\subsubsection{Wireless mesh network}
+A mesh network (MN) is a dynamically self-organized and configured network. \cite{WMN1} As described in the specifications, the swarm network is dynamic in size and mutual distance. Because of the size and mobility of the swarm it is not practical to use wired connections between de members of the swarm. So a wireless mesh network (WMN) is needed. Therefore a wireless connection between the members is necessary.
+
+Despite the practical benefits of wireless networks, today's wireless networks still cannot offer the same level of sustained bandwith as their wired brethren. The bandwidth is for instance affected by interference from adjacent hops on the same and neighboring paths. \cite{architectureandalgorithmsmultichannelwirelessmeshnetwork} One of the most important drawbacks is that each client needs to be in transmitting and receiving range to atleast one of the other clients to be connected to the network. \cite{wirelessmeshnetworksopportunitiesandchallenges} Another con is that the data rate falls quickly when increasing the distance between transmitter and receiver, which doesn't or barely apply to wired networks. \cite{architectureandalgorithmsmultichannelwirelessmeshnetwork} The complexity of an WMN network is also a main drawback. It is relatively easy to design a WMN, but it is difficult to achieve an optimum performance while ensuring security and robustness.\cite{wirelessmeshnetworksopportunitiesandchallenges} 
+
+Each node or client in the network is able to create an ad hoc network to maintain the mesh connectivity, this is called "client WMN's". These networks are able to reroute around nodes that have been lost. On large scale projects wireless mesh networks are costefficient because of the saving of wired connections.\cite{meshnetworking} 
+
+Nevertheless, the client mobility weigh out the cons described earlier. So solutions must be found to overcome these drawbacks.
+
+\newpage
+\subsubsection{Wireless network protocols}
+As stated earlier, the communication in the network needs to be wireless. This makes the network flexible in scaling, gives the nodes full freedom of movement and saves physical connections which could be cost efficient.
+
+The following wireless protocols or technologys are defined as short-range (a range of 10-100m) communication protocols \cite{emergingstandarsforwirelessmeshtechnology} \cite{combook}:
+\begin{itemize}
+\setlength\itemsep{0em}
+    \item IEEE 802.11 a/b/g/ac/s (Wi-Fi) \cite{IEEE80211timeline}
+    \item IEEE 802.15.1 (Bluetooth)
+    \item IEEE 802.15.4/5 (ZigBee)
+    \item IEEE 802.15.3 (Ultra-wideband)
+    \item IR IrDA(Infrared)
+\end{itemize}
+ There are however exceptions, some of the technology's have been evolved and are able to transmit further than 100 meters. WiMax for example is developed to overcome the range problem. 
+\begin{itemize}
+\setlength\itemsep{0em}
+     \item IEEE 802.16 a (WiMAX)
+\end{itemize}
+
+\paragraph{IEEE 802.15.1 Bluetooth}
+Bluetooth is designed for short-range communication which uses wireless radio systems. Bluetooth is mostly used for personal-area networks (PAN). \cite{combook} The main purpose of Bluetooth is to create a wireless connection between for example computer peripherals such as; keyboards and mice. These applications are also known as wireless personal area networks (WPAN). \cite{comparitivestudywirelessprotocols} Bluetooth is an ad hoc network, which means that the network is formed spontaneously.\cite{tcipbook}
+
+Bluetooth uses the industrial scientific and medical (or short: ISM) band for receiving en transmission data. The ISM band ranges from 2,400 to 2,4835 GHz in the Netherlands. \cite{frequencyandsnetherlands} Frequency hopping spread spectrum (FHSS) is used to spread out the power over the full bandwidth. After the transmission of each packet, Bluetooth will hop/change to another channel. The ISM band consists of 79 channels with 1MHz each. Changing frequencies also helps to avoid collision with other networks. But it is still possible that a collision takes place. When a collision happens, the data is resend on another channel until the transmition is successful.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{bluetoothfh}
+   \caption{Bluetooth frequency hopping spread spectrum (FHSS) from \cite{bluetoothspectrum}}
+   \label{fig:bluetoothfh}
+\end{figure}
+
+Bluetooth consists of two network topologies: a piconet and scatternet. The piconet has one or more slaves serving one master \cite{bluetoothpiconet}. In a piconet the master synchronizes the master's clock and shares his bluetooth device address at the first connection. The data packet is called a frequency-hopsynchronization packet (FHS packet). The data send in the FHS packet is used to calculate the sequence of frequency hops that all devices in the piconet will follow. Each client in the networks tracks the native- and masters clock, so it will know on which frequency the client needs to transmit or receive.
+
+Each piconet has one master which has an unique Bluetooth device adress and clock. A Bluetooth piconet cannot be large. A piconet consists of 8 active clients in which one is the 'primary' (master).\cite{tcipbook} There can be 255 slaves in a parkmode in a Bluetooth piconet. Because of the frequency hopping, it is possible to have more than one piconets in one area. 
+
+A scatternet consists of two or more piconets. It is possible for a client to participate in more than one piconets, but it can only be a master of one network. Figure \ref{fig:scatternet} illustrates a complex scatternet.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{scatternet}
+   \caption{A complex scatternet found in \cite{Bluetoothwifisurveyandcomparison}}
+   \label{fig:scatternet}
+\end{figure}
+
+The biggest drawback by using Bluetooth is that it doesn't officially support mesh networking. According to the IEEE timeline \cite{IEEE80211timeline}, there will be a mesh standard for Bluetooth in the year 2016. \cite{bluetoothmesh} At the time of this research (begin 2016), the standard is not published yet neither, are there implementation avaiable. It is still possible to create a scatternet, with multiple masters/slaves but that doesn't meet the given specifications. \\
+
+\paragraph{IEEE 802.15.4 ZigBee}
+Zigbee is usually used in personal operating spaces (POS) or personal-area networks (PAN) of about 10 meters. \cite{combook} However, there are devices based on Zigbee that can reach up to 1500 meters of span when the target is in line of sight \cite{zigbeewiki}. It is designed for simple devices that consume minimal power and operate in a personal operating space. Applications as sensors. These applications are also known as low-rate wireless personal area networks (LR-WPAN). \cite{comparitivestudywirelessprotocols} Zigbee uses the ISM 900 MHz or, just like Bluetooth and WiFi, the 2,4 GHz ISM band to communicate. Zigbee uses direct sequence spread spectrum (DSSS) with 16 channels and 2 MHz bandwith.
+
+There are proven implementations of networks with ZigBee. It is possible to create a reliable self-organized mesh network which is able to use multi-hopping \cite{comparitivestudywirelessprotocols}.
+
+Zigbee is known for the low power consumption which results in long battery lifetime \cite{performanceevaluationlowratewirelesspan}. There are two types of devices in a LR-WPAN network: A full-functioning device and a reduced-functioning device. Full-functioning devices can be used as a 'Master' or coordinator or as a client. These devices can talk to each other, or to reduced-functioning devices. A RFD is used for simple transmit tasks such as switches or simple in/output operations. Just like Bluetooth, the coordinator or master, will set the network up.
+
+Zigbee supports multiple network topology's such as: Star, tree and mesh networks. This means that it is compatible to work with mesh networks. \cite{zigbeewiki}
+
+
+\paragraph{IEEE 802.11 Wi-Fi}
+Wireless local area networks (WLANs) or IEEE 802.11 is popularly known as Wi-Fi (Wireless Fidelity) \cite{wirelessmeshnetworksopportunitiesandchallenges}. With a Wi-Fi connection it is possible for the clients to connect to the internet with broadband speeds. Consumer WiFi usually uses one or two ISM frequency bands: 2,4 and 5 GHz. The 2,4 GHz unlicenced ISM band used for IEEE 802.11b/g/n/s extends from 2.4 to 2,4835 GHz with a total bandwidth of 83.5MHz. The 5 GHz ISM band used for IEEE 802.11a extends from 5.15 to 5.25 GHz with a power limitation of 50mW, 5.25 to 5.35 Ghz with 250mW and5.725 to 5.825 GHz with 1W of power.\cite{combook} The benefit of using the 5 GHz ISM band is that there are alot less interference from appliances like microwaves, Bluetooth products and a number of other services. The downside of 5 GHz is however, the transmission range decreases greatly because 5 GHz signals are absorbed faster in comparison with 2,4 GHz signals. \cite{combook} There are also Wi-Fi standards which use the 3,6 and 60 GHz band. The 3,6 GHz band is used by the IEEE 802.11y-2008 standard and the 60 GHz band for the IEEE 802.11ad protocol. The 802.11 standard defines two services: the basic set (BSS) and the extended service set (ESS). The basic service set without an acces point is an ad hoc network and only consists of accespoints. All devices in a BSS use the same channel.\cite{Bluetoothwifisurveyandcomparison}
+
+Wi-Fi uses different modulation techniques. Direct sequence spread spectrum (DSSS), Orthogonal frequency division multiplexing (OFDM) and code keying (CDK) with 14 possible channels on the 2,4 GHz band. With DSSS it is possible that multiple signals use the same channel. However to prevent interference the channel selection must be criticially considered. Each channel has a bandwidth of 22 MHz and is 5MHz apart, see figure \ref{fig:wifichannels}. \cite{combook} Because of the span of each channel, the channels overlap.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{wifichannels}
+   \caption{Illustration of the Wi-Fi channels on the 2,4 GHz band. \cite{wifichannels}}
+   \label{fig:wifichannels}
+\end{figure}
+
+Wi-Fi doesn't use frequency hopping to avoid data collisions. This forms a problem when there are hidden nodes in the network. A hidden node is illustrated in figure \ref{fig:hiddennode}. The circles indicate the transmission range of each node. In figure \ref{fig:hiddennode} 'A' is not in the transmission range of 'C', which makes 'A' invisible to 'C'. In this situation node A and C are not aware of eachother. Therefore one of the nodes can think that it is the only active node in the network.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{hiddennodeproblem}
+   \caption{Illustrates the hidden node problem with three nodes.}
+   \label{fig:hiddennode}
+\end{figure}
+
+In the following situation there will be a collision of information:
+\begin{itemize}
+\setlength\itemsep{0em}
+\item Node 'A' sends data to node 'B'.
+\item Simultaniously node 'C' is also sending information to node 'B'.
+\end{itemize}
+
+Using handshake frames (CSMA/CD - CA) can be a solution to prevent a collision from happening when there is a hidden node. With 802.11, the used handshakes frames are CTS (clear to send) and RTS (request to send). The solution is given in figure \ref{fig:rtscts}. Where node 'A' send an RTS to 'B' and 'B' responds with an CTS to node 'A' and 'C'. Node 'C' didn't send an RTS, so the node knows that it needs to wait. The waiting duration of data transmission is contained in the CTS message which is send by node 'B'. \cite{tcipbook}
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=.75\textwidth]{rtscts}
+   \caption{Gives an example of the hidden node problem given in \ref{fig:hiddennode}}
+   \label{fig:rtscts}
+\end{figure}
+
+As mentioned before, using handshake frames can be a solution to prevent a data collision from happening in case of a hidden node. However, in a exposed node problem, this method will cause data transmission inefficiency. \cite{tcipbook} Figure \ref{fig:exposedstation} illustrates the exposed node problem. In figure \ref{fig:rtscts2} the following situation is illustrated:
+
+\begin{itemize}
+\setlength\itemsep{0em}
+\item Node 'A' wants to send information to the node 'B'.
+\item Node 'C' also wants to send information to node 'D'.
+\item Because node 'C' receives an RTS, it doesn't get permission to send an RTS itself.
+\end{itemize}
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{exposedstation}
+   \caption{The exposed node problem with four nodes and two nodes who want to send information.}
+   \label{fig:exposedstation}
+\end{figure}
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=.75\textwidth]{rtscts2}
+   \caption{Gives an example of the exposed node problem given in \ref{fig:exposedstation}}
+   \label{fig:rtscts2}
+\end{figure}
+
+To prevent these problems, frequency- or channelhopping is a solution. \cite{architectureandalgorithmsmultichannelwirelessmeshnetwork} has done research in multi-channel wireless mesh networks and have proven that it is practically possible.
+
+IEEE 802.11s is a Wi-Fi standard for mesh networking. This standard defines how stations can interconnect to form a mesh network. Many other implementations of 802.11 do not interconnect the base stations with eachother and this standard does. \cite{ieee80211sthewlanmeshstandard}
+
+The 802.11s standard defines a mandatory default scheme for path selection. This default scheme can be replaced by other path selection protocol because of the extensible framework of the standard. By default the Hybrid Wireless Mesh Protocol (HWMP) is used as a path selectiong protocol. HWMP is derived from the Ad Hoc On Demand Distance vector (AODV) protocol. \cite{ieee80211sthewlanmeshstandard}
+
+Open80211s is an implementation of the 802.11s standard. According to \cite{ieee80211sthewlanmeshstandard} this standard will be able to run on legacy 802.11 cards with software adjustments. Figure \ref{fig:open80211s} gives an impression of the network peformance in a 12 node dense network. 
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{open80211s}
+   \caption{\cite{ieee80211sthewlanmeshstandard} gives an performance measurement of the open80211s implementation in 2010.}
+   \label{fig:open80211s}
+\end{figure}
+As shown in figure \ref{fig:open80211s}, the discovery time increases linearly with an increasing number of node hops. This decreases the troughput of the network.
+
+
+\paragraph{IEEE 802.15.3 Ultra-wideband}
+Ultra-wideband is designed for short-range high-speed wireless communication. The bandwidth of UWB is over 100Mbps and can reach speeds up to 480 Mbps \cite{comparitivestudywirelessprotocols}. UWB is a high data rate Wireless Personal Area Networks (HR-WPAN). The frequency band of UWB ranges from 3.1 to 10.6 GHz \cite{ultrawidebandwirelesscommunications}. Although the spectrum is large in comparison with other protocols the signal level is very low so it doesn't interfere with other signals. UWB is a baseband or carrierless communication method. These systems use precisely timed impulses to transmit data on the wide spectrum. This divers from other communication methods where sine modulation is used. \cite{Bluetoothwifisurveyandcomparison}
+
+Because of the 'ultra wide' band UWB has benefits over other technologys. The benefits of UWB are \cite{ultrawidebandwirelesscommunications}\cite{combook}: 
+\begin{itemize}
+\setlength\itemsep{0em}
+    \item High data rates
+    \item Less path los and better immunity to multipath propagation
+    \item Low-cost tranceivers
+    \item Low transmit power and low interference
+\end{itemize}
+ With UWB it is possible to get high data rates in ranges of 20 to 50 meters. Because of the wide bandwidth of UWB, the material penetration losses are relatively low. As shown in equation \ref{eq:channelcapacity}, the channelcapicity increases linearly with the bandwidth.
+
+ \begin{equation}
+    C=Blog_2(1+\frac{S}{N})
+    \label{eq:channelcapacity}
+ \end{equation}
+
+ Because of the absence of sending a carrier, the transceiver build can be relatively simple. \cite{ultrawidebandwirelesscommunications} The disadvantage is however, the transmitpower must be low for commerical use. This results in a low transmitting range about 30 meters according to \cite{combook}.
+
+UWB devices are like Bluetooth devices organised in piconets. Each piconet is controlled by a dedicated coordinator (PNC). The benefit of using UWB is however that each devices can communicate in peer to peer with an other device in contrast to Bluetooth. When the devices are not in range of eachother, the coordinators work as an intermediary to connect device 'A' to 'B'. Mesh networks topology's are supported, but it will be using bridges between piconets to maintain the network. Like Wi-Fi UWB also uses a form of CSMA-CA when there are devices competing for acces. \cite{piconetinterconnectionstrategies}
+
+\paragraph{IR Infrared}
+Infrared is possibly the most widespread wireless technology for short-distance data communication. \cite{combook} It is primarily used for remote control between computers and televisions. The short-range distance with infrared communications is typically about 1 to 9 meters. \cite{combook} Infrared travels with the speed of light which is 299792458 meters per second. \cite{speedoflight} In comparison with the other discussed protocols this technology is based on light instead of radio frequency signals. Because of the origin of this technology, there must be a clear (no obstacles block the sight) line of sight (LOS) between the transmitter and receiver. This disadvantage makes the technology not suitable for the communication in a complex swarm network.\\
+
+\paragraph{IEEE 802.16 WiMAX}
+WiMAX is a wireless metropolitan-area network (MAN network). WiMAX is defined by the IEEE 802.16 standard. The main reason for developing this standard was to deliver consumers wireless broadband speeds. WiMAX is a long-distance data communication technology. WiMAX knows three topology structures: Point-to-point (P2P), point-to-multipoint (PMP) and mesh mode.\\
 
 
 
-There exist several techniques to accomplish this method 
-Examples of possible protocols:
+\paragraph{General comparison}
+To summerize the given information from the protocols, table \ref{sumtableprotocols} is made. This table displays the most important characteristics of each protocol.
 
-% \begin{itemize}[noitemsep]
-%     \item IEEE 802.11
-%     \item ZigBee
-%     \item SwarmBee
-% \end{itemize}
+\begin{table}[H]
+\centering
+\caption{A table with a summerazing of the protocols. The table is based on information from \cite{comparitivestudywirelessprotocols}. Infrared is not included due to the line of sight problem.}
+\label{sumtableprotocols}
+\resizebox{\textwidth}{!}{\begin{tabular}{|l|l|l|l|l|}
+\hline
+\textbf{Standard}        & \textbf{Bluetooth} & \textbf{Ultra-wide band} & \textbf{ZigBee}      & \textbf{Wi-Fi} \\ \hline
+IEEE spec.               & 802.15.1           & 802.15.3a                & 802.15.4             & 802.11a/b/g    \\ \hline
+Frequency band           & 2.4 GHz            & 3.1-10.6 GHz             & 868/915 MHz; 2,4 GHz & 2,4GHz; 5GHz   \\ \hline
+Max signal rate          & 1Mb/s              & 110Mb/s                  & 250Kb/s              & 54Mb/s         \\ \hline
+Nominal range            & 10m                & 10m                      & 10-100m              & 100m           \\ \hline
+Channel bandwidth        & 1 MHz              & 500 MHz - 7.5 GHz        & 0.3/0.6 MHz; 2MHz    & 22 MHz         \\ \hline
+Basic cell               & Piconet            & Piconet                  & Star                 & BSS            \\ \hline
+Extension basic cell     & Scatternet         & Peer-to-peer, mesh            & Cluster tree, mesh   & ESS, mesh            \\ \hline
+Max cell nodes & 8  \cite{combook}                & 8                        & \textgreater65000\cite{combook}    & 2007           \\ \hline
+\end{tabular}}
+\end{table}
+
+Each characteristic of the protocol is compared with each other in this chapter. And for each comparison the most suitable and unsuitable characteristic is given pros and cons. This way a recommendation can be made.\\
+
+\textbf{Network size}\\
+The networkssize of each of the protocols is expendable. This is shown in table \ref{sumtableprotocols}. A Bluetooth piconet for example can be part of a scatternet, which overlooks serveral other piconets. However, each piconet must have a master as mentioned before, a master in a swarm network is not desirable. Bluetooth also doesn't have mesh network support yet (begin 2016). \cite{bluetoothmesh} This gives Bluetooth the biggest disadvantage in contrast to the other protocols. In comparison with ZigBee which has the biggest possible network size.\\
+
+
+\textbf{Transmission time}\\
+The transmission latency between nodes can be calculated with equation \ref{eq:transmissiontime}.\cite{comparitivestudywirelessprotocols} The data size ($N_{data}$), the maximum payload size ($N_{maxPld}$), the overhead size ($N_{ovhd}$), the bit time ($T_{bit}$) and the propagation time ($T_{prop}$) between devices form the transmission latency ($T_{tx}$). 
+
+\begin{equation}
+    T_{tx}=(N_{data} + \Bigg(\frac{N_{data}}{N_{maxPld}} N_{ovhd} \Bigg) T_{bit} + T_{prop})
+    \label{eq:transmissiontime}
+\end{equation}
+
+When the data payload size increases the transmission time increases as shown in \cite{comparitivestudywirelessprotocols}. In comparison to the other protocols, UWB has the lowest bit time which results in the fastest transmission time followed by Wi-Fi. Where ZigBee followed by Bluetooth have the slowest transmission time.
+
+As mentioned earlier, the density of a Wi-Fi network, contributes to the network latency due to the exposed node problem.\cite{combook} \\
+
+\textbf{Data distribution per square meter}\\
+Research done in \cite{ultrawidebandshortmediumrange} makes a data distribution comparison between Wi-Fi, Bluetooth and Ultra-wideband. Because of the crowding in the spectrum and the growing demand for wireless data capability at high bandwidth it favors systems just not to have a high-peak bit rate, but also high spatial capacity. Spatial capacity is defined as bits/sec/square-meter. \cite{ultrawidebandshortmediumrange} Table \ref{spatialcapacity} gives the spatial capacity of each protocol.
+
+\begin{table}[H]
+\centering
+\caption{Spatial capacity of different protocols, based on information from \cite{ultrawidebandshortmediumrange}}
+\label{spatialcapacity}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Protocol}  & \textbf{Spatial capacity} \\ \hline
+Wi-Fi IEEE 802.11b & 1.000                     \\ \hline
+Wi-Fi IEEE 802.11a & 83.000                    \\ \hline
+Bluetooth IEEE 802.15.4          & 30.000                    \\ \hline
+UWB IEEE 802.15.3a                & 1.000.000                 \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{spatialcapacity}
+   \caption{Comparision of the spatial capacity for each protocol, found in \cite{ultrawidebandshortmediumrange}.}
+   \label{fig:protocolcomplexity}
+\end{figure}
+
+\textbf{\\Protocol complexity}\\
+The protocol complexity can be compared by the number of primitives and events in a set situation. When there are more primitives or events in a certain protocol, it indicates the complexity. \cite{comparitivestudywirelessprotocols} As indicated in figure \ref{fig:protocolcomplexity} Bluetooth is by far the most complex protocol compared to the other protocols.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{protocolcomplexity}
+   \caption{Comparision of the complexity for each protocol, found in \cite{comparitivestudywirelessprotocols}.}
+   \label{fig:protocolcomplexity}
+\end{figure}
+
+Each of the discussed protocols has it's own complexity. The reasearch done in \cite{comparitivestudywirelessprotocols} compares them in data coding efficiency versus the data size. The data coding efficiency is based on the data and message size. The average ratio between the data and message size is the data coding efficiency percentage. 
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{datacodingefficieny}
+   \caption{Comparision of the data coding efficiency for each protocol, found in \cite{comparitivestudywirelessprotocols}.}
+   \label{fig:protocolefficiency}
+\end{figure}
+
+Figure \ref{fig:protocolefficiency} illustrates the data coding efficiency for each protocol. Bluetooth for example has the best data coding efficiency when using a small amount of bytes (around 339 bytes). Wi-FI and UWB on the other hand are more efficient for large data sizes. Where Zigbee saturates on 80 percent efficiency when the data size increases.\\
+
+\textbf{Interference}\\
+The ISM frequency band is used for industrial, scientific and medical purposes. This means that some regions of the frequency band can be used for educational purposes. All of the discussed protocols use techniques to overcome interference. Some frequency bands are nowadays (over)crowded. This is because of the succes of some of the frequency band regions. \cite{Bluetoothwifisurveyandcomparison} The 2,4 and 5,0 GHz bands for example fullfill the needs of alot appliances.
+
+Ultrawideband operates in the 3.1 - 10.6 GHZ range. This region is used by satellites, radars, broadband wireless and wireless networks. Wi-Fi, ZigBee and Bluetooth operate in the 2,4 GHZ band. Appliances who also use this band are: Microwave ovens, homeRF devices and cordless phones. The 5GHz band is also used by Wi-Fi, which is les crowded. Zigbee also has another band to transmit to, the 915 MHz band which is used by simple sensor networks.
+
+As mentioned before all of the protocols use techniques to counter interference from itself or neighbouring devices. Bluetooth's frequency hopping is less sensitive for strong narrow band interference, which only affects a few channels. Wi-Fi however is less sensitive to wide-band noise. \cite{Bluetoothwifisurveyandcomparison} Comparing the protocols, Ultra wideband has the best characterics. The protocol has a wide bandwidth and the transmit power is low. It also interferes the least with other common appliances.\\
+
+\textbf{Power consumption}\\
+The power consumption of each protocol depends on the used hardware. To make a valid comparison, the paper \cite{comparitivestudywirelessprotocols} made a selection of average hardware. The comparison in figure \ref{fig:protocolenergy} gives an indication of the average power consumption of each protocol. Bluetooth and ZigBee both consume about 100mW where the power consumption of UWB and Wi-Fi is about 700mW. Figure \ref{fig:protocolefficiency} gives the normalized energy consumption of each protocol. The normalized energy is given in mJ/Mb. The normalized energy consumption indicates that ZigBee and Bluetooth both use more energy to send and receive the same amount of information. UWB is the most efficient protocol to process information.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{images/protocolenergy.png}
+   \caption{Comparision of the power consumption for each protocol, found in \cite{comparitivestudywirelessprotocols}.}
+   \label{fig:protocolenergy}
+\end{figure}
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{images/protocolenergynormalized.png}
+   \caption{Comparision of the normalized energy consumption for each protocol, found in \cite{comparitivestudywirelessprotocols}.}
+   \label{fig:protocolenergynormalized}
+\end{figure}
+
+
+\paragraph{Conclusion comparison}
+The final comparison is made in table \ref{protocolcompare}. There have been some adjustments in naming the characteristics to make the table fit the page. 'Rate' is the transceiving data rate, 'Range' is the transceiving data range, 'Scalibility' of the protocol on large and small scale projects, 'Efficiency' means the data coding efficiency, 'Complexity' is the protocol complexity, 'Capacity' stands for the data distribution per square meter, 'Consumption' means the energy comsumption.
+
+\begin{table}[H]
+\centering
+\caption{The comparison of the protocols. The characteristics of each of the protocols get evaluated. The scoring is based on a number between zero and one, where zero is bad and one is good. The total score gives the best protocol for this situation.}
+\label{protocolcompare}
+\resizebox{\textwidth}{!}{\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{Protocol}  & \textbf{Rate} & \textbf{Range} & \textbf{Scalability} & \textbf{Efficiency} & \textbf{Complexity} & \textbf{Capacity} & \textbf{Interference} & \textbf{Consumption} & \textbf{Total} \\ \hline
+\textbf{Wi-Fi}     & 1               & 1             & 0.75                   & 0.7                   & 0,75                  & 0.1                 & 0.5                     & 1                      & 5.8              \\ \hline
+\textbf{Bluetooth} & 0               & 0                & 0                      & 1                     & 0                     & 0                   & 0.75                    & 0.25                   & 2                \\ \hline
+\textbf{ZigBee}    & 0               & 1              & 1                      & 0.9                   & 1                     & 0.1                 & 0.5                     & 1                      & 5.5              \\ \hline
+\textbf{UWB}       & 1               & 0                & 1                      & 0.8                   & 0.5                   & 1                   & 1                       & 0.25                   & 5.55             \\ \hline
+\end{tabular}}
+\end{table}
+
+The information from table \ref{protocolcompare} results in the graph in figure \ref{fig:protocolcomparison}. The protocol with the highest score has the best characteristics to apply in the swarm network. The conclusion is that Wi-Fi is the best option followed by UWB, ZigBee and Bluetooth. The results of the comparison differ not much from eachother. 
+
+It is possible to create an wireless mesh network with all three of the protocols, however all of them have their own benefits and disadvantages. The preference depends on the available implementations which is discussed in a following chapter.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=1\textwidth]{protocolcomparison}
+   \caption{Total scores for each reviewed protocol.}
+   \label{fig:protocolcomparison}
+\end{figure}
+
+
+\newpage
+\subsubsection{Conclusion communnication}
+In this section an sub-study in swarm communication is made. The results of the sub-study have resulted in recommendations for the implementation of the swarming module. An enumeration of the recommendations are given below:
+\begin{itemize}
+\setlength\itemsep{0em}
+    \item The connection must be wireless due to the mobility of swarm members.
+    \item A (partially connected) mesh network topology satisfies the desired network requirements.
+    \item The network must be reliable, so it must use self-organization and topology control algorithms. \cite{WMN1}
+    \item In a wireless network the single-path strategy for data distribution is preferred because of the power and bandwidth limitations. \cite{position-based}
+    \item ART or MART can be used to address the nodes in a mesh network.
+    \item Greedy routing or a derivative is the most suitable routing strategy.
+    \item Scaling on large-scale projects is not possible without using geographic locating (precize locating). \cite{geographicalrouting}\cite{scalablelocation}. 
+    \item The most suitable communication protocol in the described situation depends on the available implemtation possibilitys. Wi-Fi, UWB and ZigBee are all three qualified to provide a wireless mesh network.
+\end{itemize}
 
 \newpage
 
-
 \subsection{Proximity sensor}
-
 For close range obstacle avoidance (0m - 0,3m, the robots will need some kind of proximity sensing technique. The sensor needs to differentiate between different "treats" for the robot to function properly. For example; when the sensor detects a small hill, which the robot can move over it should not trigger the robot to move away from it. But when it detects a big obstacle it should trigger the robot to move away. This is important because the robots will eventually be expected to move across rough terrain (like Mars). In the next paragraphs some different proximity sensor techniques will be discussed. Price is also a important factor while comparing these techniques. Multiple robots must be made on a tight budget, so costs should be cut where possible.\\
-
 
 \subsubsection{Ultrasonic sensor}
 Ultrasonic sensors are widely used in robotics for proximity sensing. An ultrasonic sensor uses the time of flight (TOF) to operate. It sends out an ultrasonic sound wave and measures the time it takes for the sound to be reflected back. The speed of the sound is known so the distance can be calculated. The fact that this method uses sound is a big advantage when measuring small distances. Sound has a velocity of propagation of around 340 m/s. Most other methods use signals that travel with the speed of light ( $3\cdot10^{8}$). The problem with the high velocity of  propagation especially with measuring distances shorter than one meter is that the TOF will be in terms of a few nanoseconds.  The hardware needed to process signals with this kind of speed will require more complex circuit design and ultimately cost more. The ultrasonic signal that is received after reflected from an object hold information about the shape and size of the object. This can be used to discriminate between different obstacles\cite{ultraobject}. Because there's a diffrent atmosphere on Mars ultrasonic sound gets heavily dappened \cite{soundonmars}. This mean that this method wont be usable on Mars itself. A pro of the ultrasonic sensor is the low cost. A sensor with specified for short distances costs between 2\euro and 10\euro.
@@ -566,12 +1034,11 @@ Light detection and ranging (lidar) works with the same principle as the ultraso
 \subsubsection{Mechanische sensor}
 A mechanical sensor will consist of two important parts. The actuator, this could be a simple switch sensitive to a certain pressure. And the so called "arm" or "bumper", this is the part that makes contact with the obstacle's surface and works the mechanical force on the actuator. The beauty of this system is it's simplicity. There's no fast signals with different frequencies to be processed, just a simple on or of signal is all that needs to be observed. Due this limited input object discrimination wont be possible. Also robots bumping into object and each other is not a preferable situation. The robots might get stuck or break down.
 
-
-
 \subsubsection{Sensor choice for the robot}
 Now the question is which of the different sensor techniques proposed, is the best to implement on the swarm robots. While answering this question the following points will be taken into account:
 
 \begin{itemize}
+\setlength\itemsep{0em}
     \item The sensor must be easy to reproduce because multiple robots must be made from the swarm.
     \item The budget is limited, therefore the sensor price should be cheap compared the the total price of one robot.
     \item Energy usage should be as low as possible to increase the operation time per robot.
@@ -585,14 +1052,10 @@ Looking at these points it becomes clear that the lidar sensor wouldn't be the b
 An ultrasonic sensor is usually used to detect if there is some obstacle in the way. In this case there is made no difference made between a obstacle that the robot can move over, or a obstacle that should be avoided. For example: a small slope or hill might be detected as an obstacle, but in truth the robot can move over it. The robots developed for this program will eventually be able to cross harsh terrain. In this case the proximity sensor will need to discriminate between these situations. Working with ultrasonic waves there are multiple domains to work with. These are time, frequency and amplitude. Time is used to determine the distance between the object and the sensor. The change in frequency and/or amplitude contains information about the shape of the object\cite{ultraobject}see figure \ref{ultrafreq}. In the paper "Object recognition with ultrasonic sensor" is concluded that looking at the amplitude over time contains enough information to discriminate between object\cite{ultraobject}. The example is given of an object with separated surfaces of 3,5 cm, the echo from the second surface will be delayed by 0,2 msec relative to the echo from the first surface. This delay can be easily detected with a microprocessor. The reason looking at frequency isn't the first choice is because of the higher hardware requirements it would require to properly sample the ultrasonic signal. Looking at amplitude and time does not require the signal to be sampled at the Nyquist rate so lower clock rate microprocessors can be used to do the processing.
 \\
 \begin{figure}[h]
-
   \centering
       \includegraphics[width=1\textwidth]{ultrafreq.pdf}
   \caption{The left graph shows the average PSD from 50 echos generated by a plastic botthle from a distance of 100cm, the average envelope is generated using 50 echos of the same bottle} \cite{ultraobject}  \label{ultrafreq}
- 
 \end{figure}
-
-
 \newpage
 
 \section{Bibliografie}

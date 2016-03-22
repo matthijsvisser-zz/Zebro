@@ -1004,6 +1004,10 @@ An ultrasonic sensor is usually used to detect if there is some obstacle in the 
  
 \end{figure}
 
+\section{Swarmdetection}
+\subsection{algorithm}
+Using the radio communication and the microphones on the swarming units it is possible to determine the distance and angle of every unit within range. each robot will send out a broadcast saying it is going to send its detection signal. As soon as the other units recieve this message they will start a timer. Immidiatly after the broadcast the broadcasting robot will send out a detection sound. As soon as this signal is recieved by the other robots' microphones the timer will stop and the different times of detection of each microphone will be used to calculate the angle and distance of the unit.
+Using triliteration it is possible to determine the angles of the created triangle knowing the lengths. It is possible to calculate six angles, because of this it is possible to detect the direction of the broadcaster without the possibility of mirroring. As soon as the direction is know it becomes possible to put the detected robot on an XY grid using the build in compas. When all the robots within swarming range have done this all the relative positions will be know from eachother.
 
 \newpage
 

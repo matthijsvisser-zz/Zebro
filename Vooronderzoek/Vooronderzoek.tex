@@ -215,7 +215,7 @@ With location awareness it is also possible to divide the swarm into multiple gr
 For mapping the various positions of all robots in a swarm a localization technique needs to be implemented. The robots can use information as relative position and relative orientation of their neighbours and fuse the information collected by other robots to interpret the relative location. With relative position the units can define the distance relative to each other. When all robots in the swarm are aware of the distance opposite to each other, a map of the current formation can be created. However this can result in multiple solutions because there are no orientations involved. 
 
 \subsection{Angle determination}
-Determining relative orientation opposite to each other can be done in various ways. some methods involve larger limitations than others. In general angular measurements are done using the goniometric equations.
+Determining the relative orientation with respect to each other can be done in various ways. some methods involve larger limitations than others. In general angular measurements are done using goniometric equations.
 
 \subsubsection{Goniometric angle determination}
 The goniometric system shows how the different angles of a triangle within a circle can be calculated. Determining angles of a triangle within a circle using goniometric formulas, a mirroring phenomenon can occur this happens because of the following relation between the angles see figure \ref{circle}.
@@ -235,7 +235,7 @@ Because\ Xp = Xq,\ cos(-\alpha) = cos(\alpha)\ applies
 Because\ Yq = -Yp,\ sin(-\alpha) = -sin(\alpha)\ applies
 \end{equation}
 
-This mirroring phenomenon is something that needs to be resolved. Mirroring of the angle means that the robot(s) that is being detected could be in two different direction relative to the interpreter. Figure \ref{detectie} shows how the different robots determine the relative distance to each other. 
+This mirroring phenomenon is something that needs to be resolved. Mirroring of the angle means that the robot(s) which is being detected could be in two different direction relative to the interpreter. Figure \ref{detectie} shows how the different robots determine the relative distance to each other. 
 
 \begin{figure}[H]
 \centering
@@ -244,13 +244,22 @@ This mirroring phenomenon is something that needs to be resolved. Mirroring of t
 \label{detectie}
 \end{figure}
 
-In figure \ref{detectie} a scenario is given where the relative distance between the different nodes (N1, N2 \& N3) is known but their position within the circle is unknown. Because the relative direction (angle) from the interpreters (different nodes) needs to be determined. According to the goniometric equations the direction (angle) within a circle could be mirrored as shown in equation 1 and 2. This could lead to two different interpretations one being the reality as shown in figure \ref{detectie} and one shown in figure \ref{mirror} (where N1 is the interpreter). 
+In figure \ref{detectie} a scenario is given where the relative distance between the different nodes (N1, N2 \& N3) is known but their position within the circle is unknown. Because the relative direction (angle) from the interpreters (different nodes) needs to be determined. According to the goniometric equations the direction (angle) within a circle could be mirrored as shown in equation 1 and 2. This could lead to two different interpretations one being the reality as shown in figure \ref{mirror} and one being mirrored as shown in figure \ref{mirror1} (where N1 is the interpreter). 
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{Mirror1.pdf}
+\caption{N1 Location interpretation}
+\label{mirror}
+\end{figure}
+
+In a more practical scenario instead of a mathematical scenario this mirroring phenomenon occurs because every node draws a circle towards the detected node. Doing so this leads to two different intersectionpoints, one being the "real" position and one being the mirrored opposite. In figure \ref{mirror} the real position is shown, also the intersections of the different circles are displayed. Each intersect is a potential location of a node, as seen in figure \ref{mirror} per node there are two possibilities. In figure \ref{mirror1} the mirrored interpretation of N1 is illustrated.
+ 
 \begin{figure}[H]
 \centering
 \includegraphics[angle=90,width=0.7\textwidth]{Mirror.pdf}
 \caption{N1 Mirrored interpretation}
-\label{mirror}
+\label{mirror1}
 \end{figure}
 
 For the robots to know in what direction the measured distance is applicable to, they can analyze the change in distance after a robot has moved a specific direction. In order to leverage the previous trilateration procedure requires coordinating the motion of the robots in a manner that gives every robot a chance to move and ensures that when a robot is moving its neighbours remain stationary. \cite{Angle}
@@ -391,7 +400,7 @@ Using the SETS method enables the use of waveform with an velocity propagation n
 \end{figure}
 \newpage
 
-\subsection{Conclusion}
+\subsection{Localization conclusion}
 Different studies have shown that Received Signal Strength can theoretically measure distance accurately. However RSSI seems to be very unreliable in many circumstances which leads to not being viable for distance measurements with moving robots. 
 
 Time Of Flight has been very promising, however using electromagnetic signals (For example RF, WI-FI or Bluetooth) the acceptable accuracy starts at from a minimum range of 1-2 meters which leads to unreliable to no useful information at all in the range of 1-2 meters. This minimum range could be narrowed using an Sequential Equivalent Time Sampling Circuit, however such a circuit is complex to develop. However using waveforms with a lower velocity propagation can lead to accurate close range measurements. In this case Time Of Flight suits better for the required use, being more accurate and reliable see figure \ref{RSSIvsTOF}.\cite{TOF}
@@ -403,7 +412,9 @@ Time Of Flight has been very promising, however using electromagnetic signals (F
 \label{RSSIvsTOF}
 \end{figure}
 
-Determining relative distance does not lead to localization to do so a angle is required to be continued... 
+Determining relative distance does not lead to localization to do so a angle is required. Angle determination can be done in various ways, most of them implementing the goniometric system. The goniometric system explains different approaches for determining the relative angle. The most common method is determining relative location with the use of three stationary beacons, however this limits several possibilities of the entire swarm, being limited to the triangulation perimeter and autonomous spreading the beacons is a difficult and time consuming task.
+Another method is determining relative angle using movement. While measuring the relative angle a phenomenon called mirroring will occur where the angle of the detected node can be in two different directions, one being the reality and one being mirrored. This phenomenon needs to be resolved, and can be done by moving the nodes in different directions after the first measurement has been done. After the first measurement cycle has been completed, the nodes have to move in a specific location then a second measurement cycle measures the movement of the node relative to the first measured location. Doing so this will eliminates the mirrored angle and the relative angle remains. However determining relative angle using movement techniques is a time consuming task and therefore angular updates cannot be done very often.
+
 \newpage
 
 

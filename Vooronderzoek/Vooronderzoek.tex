@@ -162,7 +162,7 @@ Number of Units & \multicolumn{1}{c|}{3} & \multicolumn{1}{c|}{$\infty$} & \mult
 \caption{Specifications number of units}
 \label{specunits}
 \end{table}
-
+\newpage
 
 \section{Protocol}
 \subsection{Hardware}
@@ -240,9 +240,9 @@ Both of the protocols have a TX and a RX line, the transmit and recieve line. Li
 \end{figure}
 Depending on the software protocol used it is possible to have a multimaster system using one U(S)ART connection on every device. Every message should get a header in which the addressed divece is selected.
 
-\subsubsection{conclusion}
+\subsubsection{Conclusion}
 Looking at the specifications of each protocol and comparing those, there can be concluded that TWI is most suitible. This is because of the fact it only uses two lines to communicate and is easily implemented in a multimaster system.
->>>>>>> feature/communication
+
 
 \subsection{Software}
 
@@ -536,7 +536,7 @@ Lower frequencies have a wider reach than the higher frequencies. The lower freq
 
 
 \newpage
-\subsection{Swarm communication}
+\section{Swarm communication}
 There are several requirements to realise a robot swarm. Each member of the population needs to communicate with the rest of the swarm. To give the members full freedom of movement it is also usefull for the communication to be wireless. It is important that the population size of the swarm is dynamic, because of the scalability of the swarm. As mentioned earlier a swarm does not have a master. So each member needs to be capable to maintain the network. These networks also must be able to reroute around nodes that have been lost. \cite{Swarmwiki}\cite{swarmintelligence}
 
 The following subsections are:
@@ -553,7 +553,7 @@ The following subsections are:
 A recommendation is made based on the specifications of this research. The recommendation can be found in the last chapter of this section.
 
 \newpage
-\subsubsection{Network topology}
+\subsection{Network topology}
 Several topologies exist to form a network. Figure \ref{fig:STAR}, \ref{fig:RING}, \ref{fig:BUS} and \ref{fig:WMN} illustrate four network topologies as an example. Each topology has it's own benefits and cons which are discussed in this section.
 
 \begin{figure}[H]
@@ -573,7 +573,6 @@ Several topologies exist to form a network. Figure \ref{fig:STAR}, \ref{fig:RING
 
 \textbf{Star network}\\
 The star network in figure \ref{fig:STAR} uses the device marked as '1' as an central switch to reach out to other devices.\cite{starwiki} When the central device fails the network will stop working. However, when one of the other nodes fail the network is not completely disabled. Because of the central device, all of the information must pass this node. This could result in speed limitations.Mainly because of the central device, the star topology is not suitable as a swarm network. \cite{combook}
-
 
 \textbf{Ring network}\\
 Devices in a ring network ar always connected to two other devices as displayed in figure \ref{fig:RING}. This means that there are atleast three devices in a ring network. The data distributions is unidirectional, with the traffic travelling clockwise or anticlockwise around the ring. \cite{ringwiki} This topology has it's limitations when one or more devices become isolated due to a device faillure or cable break. This problem can be solved by using a dual ring, which makes the network redundant. Because of the network topology, in which n nodes are connected serially, the communication delay is proportional to the number n devices in the network. The bandwidth is also shared between all the devices. \cite{ringwiki} It is possible to create a swarm network with a ring network but it is far from ideal.
@@ -606,7 +605,7 @@ It is possible but not necessary to connect one or more clients of a mesh networ
 When the network topology's are compared with each other, the mesh network satisfies the desired requirements. Although it is harder to implement due to mutual connections, it has the best data coverage. To meet the given specifications, a mesh network would be the best choice.
 
 \newpage
-\subsubsection{Network realibility}
+\subsection{Network realibility}
 To ensure a realiable network, self-organization and topology control algorithms are needed.\cite{WMN1} Possibly important and usefull (wireless) network characteristics are \cite{position-based}:
 \begin{itemize}
 \setlength\itemsep{0em}
@@ -622,7 +621,7 @@ Mesh networks can use self-healing algorithms such as Shortest Path Bridging (SP
 A realiable network has a routing algorithm/protocol that includes distributed operating, loop freedom, demand-based operation and sleep period operation. Loop freedom means that the protocol is able to detect loops in the network and eliminates those. For example, data could be floating around in the network. Sleep period operating means that the clients that are not needed go into a 'sleep mode' when it's temporarily inactive.\cite{position-based}
 
 \newpage
-\subsubsection{Data distribution}
+\subsection{Data distribution}
 To set-up a reliable and stable mesh network, self-organization and topology control algorithms are needed. \cite{WMN1}\cite{position-based} This section discusses the following subjects: Data distribution strategy, routing protocols and adressing.\\
 
 \textbf{Data distribution strategy}\\
@@ -699,7 +698,7 @@ With an ART tree it is possible to create a MART (Meshed adaptive robust tree). 
 
 With a MART, it is possibile to reroute a connection to reduce the path cost in comparison with ART. Most of the time, the transition from ART to MART, removes some SPOFs.
 
-\subsubsection{Wireless mesh network}
+\subsection{Wireless mesh network}
 A mesh network (MN) is a dynamically self-organized and configured network. \cite{WMN1} As described in the specifications, the swarm network is dynamic in size and mutual distance. Because of the size and mobility of the swarm it is not practical to use wired connections between de members of the swarm. So a wireless mesh network (WMN) is needed. Therefore a wireless connection between the members is necessary.
 
 Despite the practical benefits of wireless networks, today's wireless networks still cannot offer the same level of sustained bandwith as their wired brethren. The bandwidth is for instance affected by interference from adjacent hops on the same and neighboring paths. \cite{architectureandalgorithmsmultichannelwirelessmeshnetwork} One of the most important drawbacks is that each client needs to be in transmitting and receiving range to atleast one of the other clients to be connected to the network. \cite{wirelessmeshnetworksopportunitiesandchallenges} Another con is that the data rate falls quickly when increasing the distance between transmitter and receiver, which doesn't or barely apply to wired networks. \cite{architectureandalgorithmsmultichannelwirelessmeshnetwork} The complexity of an WMN network is also a main drawback. It is relatively easy to design a WMN, but it is difficult to achieve an optimum performance while ensuring security and robustness.\cite{wirelessmeshnetworksopportunitiesandchallenges} 
@@ -709,7 +708,7 @@ Each node or client in the network is able to create an ad hoc network to mainta
 Nevertheless, the client mobility weigh out the cons described earlier. So solutions must be found to overcome these drawbacks.
 
 \newpage
-\subsubsection{Wireless network protocols}
+\subsection{Wireless network protocols}
 As stated earlier, the communication in the network needs to be wireless. This makes the network flexible in scaling, gives the nodes full freedom of movement and saves physical connections which could be cost efficient.
 
 The following wireless protocols or technologys are defined as short-range (a range of 10-100m) communication protocols \cite{emergingstandarsforwirelessmeshtechnology} \cite{combook}:
@@ -1009,7 +1008,7 @@ It is possible to create an wireless mesh network with all three of the protocol
 
 
 \newpage
-\subsubsection{Conclusion communnication}
+\subsection{Conclusion communnication}
 In this section an sub-study in swarm communication is made. The results of the sub-study have resulted in recommendations for the implementation of the swarming module. An enumeration of the recommendations are given below:
 \begin{itemize}
 \setlength\itemsep{0em}
@@ -1025,14 +1024,14 @@ In this section an sub-study in swarm communication is made. The results of the 
 
 \newpage
 
-\subsection{Proximity sensor}
+\section{Proximity sensor}
 For close range obstacle avoidance (0m - 0,3m, the robots will need some kind of proximity sensing technique. The sensor needs to differentiate between different "treats" for the robot to function properly. For example; when the sensor detects a small hill, which the robot can move over it should not trigger the robot to move away from it. But when it detects a big obstacle it should trigger the robot to move away. This is important because the robots will eventually be expected to move across rough terrain (like Mars). In the next paragraphs some different proximity sensor techniques will be discussed. Price is also a important factor while comparing these techniques. Multiple robots must be made on a tight budget, so costs should be cut where possible.\\
 
-\subsubsection{Ultrasonic sensor}
+\subsection{Ultrasonic sensor}
 Ultrasonic sensors are widely used in robotics for proximity sensing. An ultrasonic sensor uses the time of flight (TOF) to operate. It sends out an ultrasonic sound wave and measures the time it takes for the sound to be reflected back. The speed of the sound is known so the distance can be calculated. The fact that this method uses sound is a big advantage when measuring small distances. Sound has a velocity of propagation of around 340 m/s. Most other methods use signals that travel with the speed of light ( $3\cdot10^{8}$). The problem with the high velocity of  propagation especially with measuring distances shorter than one meter is that the TOF will be in terms of a few nanoseconds.  The hardware needed to process signals with this kind of speed will require more complex circuit design and ultimately cost more. The ultrasonic signal that is received after reflected from an object hold information about the shape and size of the object. This can be used to discriminate between different obstacles\cite{ultraobject}. Because there's a diffrent atmosphere on Mars ultrasonic sound gets heavily dappened \cite{soundonmars}. This mean that this method wont be usable on Mars itself. A pro of the ultrasonic sensor is the low cost. A sensor with specified for short distances costs between 2\euro and 10\euro.
 
 
-\subsubsection{Lidar sensor}
+\subsection{Lidar sensor}
 Light detection and ranging (lidar) works with the same principle as the ultrasonic sensor. It uses time of flight to determine the distance from an object. Instead of sound it uses the light of a laser as its medium. Lidar can be used for various applications like: 3D modeling of an environment, weather forecast and distance measurements \cite{whatlidar}. Lidar is a proven technology on Mars, it has been used on the Phoenix mission to measure clouds and atmospheric dust \cite{lidarmars}. A lidar suitable for the purpose of proximity sensing would be de Lidar lite v2. This is a proximity sensor designed for robotics. It has a range 0-40m and an accuracy of +/- 0,025m. Being the cheapest lidar sensor on the market it still costs 100\euro. Object discrimination with the Lidar lite is not possible due to the limited information. More complex lidar systems with a moving laser could be able to discriminate and detect objects really precise, but this requires really complex systems.
 
 
@@ -1044,10 +1043,10 @@ Light detection and ranging (lidar) works with the same principle as the ultraso
  
 \end{figure}
 
-\subsubsection{Mechanische sensor}
+\subsection{Mechanische sensor}
 A mechanical sensor will consist of two important parts. The actuator, this could be a simple switch sensitive to a certain pressure. And the so called "arm" or "bumper", this is the part that makes contact with the obstacle's surface and works the mechanical force on the actuator. The beauty of this system is it's simplicity. There's no fast signals with different frequencies to be processed, just a simple on or of signal is all that needs to be observed. Due this limited input object discrimination wont be possible. Also robots bumping into object and each other is not a preferable situation. The robots might get stuck or break down.
 
-\subsubsection{Sensor choice for the robot}
+\subsection{Sensor choice for the robot}
 Now the question is which of the different sensor techniques proposed, is the best to implement on the swarm robots. While answering this question the following points will be taken into account:
 
 \begin{itemize}
@@ -1061,7 +1060,7 @@ Now the question is which of the different sensor techniques proposed, is the be
 
 Looking at these points it becomes clear that the lidar sensor wouldn't be the best choice. It doesn't really have any outstanding pros compared to the other two techniques and it's much more expensive. . As talked about before the mechanical sensor has a few drawbacks compared to the ultrasonic sensor. For these reasons the ultrasonic sensor seems the best choice. The only issue left to solve is how to sense the difference between obstacles which the robot has to avoid, and things the robot doesn't have to avoid, but still might be detected by the sensor. This will be discussed in the next paragraph.
 
-\subsubsection{Obstacle discrimination with an ultrasonic sensor}
+\subsection{Obstacle discrimination with an ultrasonic sensor}
 An ultrasonic sensor is usually used to detect if there is some obstacle in the way. In this case there is made no difference made between a obstacle that the robot can move over, or a obstacle that should be avoided. For example: a small slope or hill might be detected as an obstacle, but in truth the robot can move over it. The robots developed for this program will eventually be able to cross harsh terrain. In this case the proximity sensor will need to discriminate between these situations. Working with ultrasonic waves there are multiple domains to work with. These are time, frequency and amplitude. Time is used to determine the distance between the object and the sensor. The change in frequency and/or amplitude contains information about the shape of the object\cite{ultraobject}see figure \ref{ultrafreq}. In the paper "Object recognition with ultrasonic sensor" is concluded that looking at the amplitude over time contains enough information to discriminate between object\cite{ultraobject}. The example is given of an object with separated surfaces of 3,5 cm, the echo from the second surface will be delayed by 0,2 msec relative to the echo from the first surface. This delay can be easily detected with a microprocessor. The reason looking at frequency isn't the first choice is because of the higher hardware requirements it would require to properly sample the ultrasonic signal. Looking at amplitude and time does not require the signal to be sampled at the Nyquist rate so lower clock rate microprocessors can be used to do the processing.
 \\
 \begin{figure}[h]

@@ -537,11 +537,11 @@ Lower frequencies have a wider reach than the higher frequencies. The lower freq
 
 \newpage
 \section{Swarm communication}
-There are several requirements to realise a robot swarm. Each member of the population needs to communicate with the rest of the swarm. To give the members full freedom of movement it is also usefull for the communication to be wireless. It is important that the population size of the swarm is dynamic, because of the scalability of the swarm. As mentioned earlier a swarm does not have a master. So each member needs to be capable to maintain the network. These networks also must be able to reroute around nodes that have been lost. \cite{Swarmwiki}\cite{swarmintelligence}
 
 The following subsections are:
 \begin{itemize}
 \setlength\itemsep{0em}
+    \item Network criteria
     \item Network topology
     \item Network realibility and robustness
     \item Data distribution
@@ -550,7 +550,13 @@ The following subsections are:
     \item Conclusion
 \end{itemize}
 
+
+To give the members full freedom of movement it is usefull for the communication to be wireless. It is important that the population size of the swarm is dynamic, because of the scalability of the swarm. As mentioned earlier a swarm does not have a master. So each member needs to be capable to maintain the network. These networks also must be able to reroute around nodes that have been lost. \cite{Swarmwiki}\cite{swarmintelligence}
+
 A recommendation is made based on the specifications of this research. The recommendation can be found in the last chapter of this section.
+
+\subsection{Network criteria}
+There are several requirements to realise a robot swarm. Each member of the population needs to communicate with the rest of the swarm. To
 
 \newpage
 \subsection{Network topology}
@@ -723,7 +729,7 @@ The following wireless protocols or technologys are defined as short-range (a ra
  There are however exceptions, some of the technology's have been evolved and are able to transmit further than 100 meters. WiMax for example is developed to overcome the range problem. 
 \begin{itemize}
 \setlength\itemsep{0em}
-     \item IEEE 802.16 a (WiMAX)
+     \item IEEE 802.16 (a) (WiMAX)
 \end{itemize}
 
 \paragraph{IEEE 802.15.1 Bluetooth}
@@ -838,7 +844,6 @@ Open80211s is an implementation of the 802.11s standard. According to \cite{ieee
 \end{figure}
 As shown in figure \ref{fig:open80211s}, the discovery time increases linearly with an increasing number of node hops. This decreases the troughput of the network.
 
-
 \paragraph{IEEE 802.15.3 Ultra-wideband}
 Ultra-wideband is designed for short-range high-speed wireless communication. The bandwidth of UWB is over 100Mbps and can reach speeds up to 480 Mbps \cite{comparitivestudywirelessprotocols}. UWB is a high data rate Wireless Personal Area Networks (HR-WPAN). The frequency band of UWB ranges from 3.1 to 10.6 GHz \cite{ultrawidebandwirelesscommunications}. Although the spectrum is large in comparison with other protocols the signal level is very low so it doesn't interfere with other signals. UWB is a baseband or carrierless communication method. These systems use precisely timed impulses to transmit data on the wide spectrum. This divers from other communication methods where sine modulation is used. \cite{Bluetoothwifisurveyandcomparison}
 
@@ -865,9 +870,16 @@ UWB devices are like Bluetooth devices organised in piconets. Each piconet is co
 Infrared is possibly the most widespread wireless technology for short-distance data communication. \cite{combook} It is primarily used for remote control between computers and televisions. The short-range distance with infrared communications is typically about 1 to 9 meters. \cite{combook} Infrared travels with the speed of light which is 299792458 meters per second. \cite{speedoflight} In comparison with the other discussed protocols this technology is based on light instead of radio frequency signals. Because of the origin of this technology, there must be a clear (no obstacles block the sight) line of sight (LOS) between the transmitter and receiver. This disadvantage makes the technology not suitable for the communication in a complex swarm network.\\
 
 \paragraph{IEEE 802.16 WiMAX}
-WiMAX is a wireless metropolitan-area network (MAN network). WiMAX is defined by the IEEE 802.16 standard. The main reason for developing this standard was to deliver consumers wireless broadband speeds. WiMAX is a long-distance data communication technology. WiMAX knows three topology structures: Point-to-point (P2P), point-to-multipoint (PMP) and mesh mode.\\
+WiMAX in the United States or HIPERMAN in europe is a wireless metropolitan-area network (MAN network). \cite{draadlozecommunicatie} WiMAX is defined by the IEEE 802.16 standard. The main reason for developing this standard was to deliver consumers wireless broadband speeds. WiMAX networks are managed by network operators.
 
+WiMAX is a long-distance data communication technology. The maximum theoretical distance reached by this protocol is defined as 50 km. The used frequency band ranges from 2 to 11 and 10 to 66 GHz with the 802.16(a) standard. The higher frequency range is only used for line of sight (LOS) transmission and the lower range for (NLOS) not line of sight transmission.\cite{draadlozecommunicatie}
 
+WiMAX knows three topology structures: Point-to-point (P2P), point-to-multipoint (PMP) and mesh mode. \cite{combook}
+
+To realise the high transmit ranges, high transmit power is needed. A typical basestation consumes approximately 20W and the mobile stations 200mW. A mobile station can easily receive the transmission from a basestation. The communication from the mobile station to the basestation however is more difficult to receive, because of the low transmitting power.
+\cite{wimax}
+
+In comparison with Wi-Fi, WiMAX is more based on the master-slave technique. The basestation has complete control over the transmission. This characteristic and the high power usage makes and the dependence on a network provider makes this protocol does not meet the criteria for the described swarm network.\\
 
 \paragraph{General comparison}
 To summerize the given information from the protocols, table \ref{sumtableprotocols} is made. This table displays the most important characteristics of each protocol.

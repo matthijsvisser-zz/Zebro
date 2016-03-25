@@ -95,12 +95,12 @@
 Swarming is a wide concept and can be achieved in many forms. In this section will be defined what we consider swarming during this project. Many choices made here will be up for discussion, but these choices have to be made so the project can be successfully specified. For example, no clear minimal number of units is specified for a group of robots to be called a swarm. When specification have to be exact and testable this becomes a problem. The following subjects will be discussed: number of robots and scalability, precision of localisation. Its important to keep in mind that the choices made in this section, mostly consist of educated guesses. These guesses will later be confirmed by testing.
 
 \subsection{Situational sketch}
-To be able to make any assumptions we will first sketch a situation. We propose a test situation where a swarm of eight robots need to explore a room as efficient as possible. They will need to find a certain object and when the object is found by one of the units, the others will have to come to the objects location. For the robots to search efficiently they will need some type of "close range" relative localisation, so they can spread evenly across the room without bumping into each other. Speed is also an important factor when considering the frequency of distance measurements. For this sketch we chose an average speed of 3,6km/h or 1m/s, this a bit slower than average walking speed and seems realistic for smaller robots. The robots are programmed to keep a distance of 5cm from each others outer boundaries. And should keep a absolute minimal distance of 2cm.
+To be able to make any assumptions we will first sketch a situation. We propose a test situation where a swarm of eight robots need to explore a room as efficient as possible. They will need to find a certain object and when the object is found by one of the units, the others will have to come to the objects location. For the robots to search efficiently they will need some type of "close range" relative localisation, so they can spread evenly across the room without bumping into each other. Speed is also an important factor when considering the frequency of distance measurements. For this sketch we chose an average speed of 3,6 km/h or 1 m/s, this a bit slower than average walking speed and seems realistic for smaller robots. The robots are programmed to keep a distance of 5 cm from each others outer boundaries. And should keep a absolute minimal distance of 2 cm.
 
 \subsection{Precision of localization}
 An obvious answer for the question "How precise does the localisation need to be?" would be "As precise as possible!". However with swarming robots it might not need to be precise at all. This depends mostly on what the swarm needs to accomplish. For the situation we proposed the localisation needs to be precise at closer range but can be less accurate when further away. We choose to define "close range" as 0 to 3 meters, and "long range" as 3 to 25 meters (further if possible).  The big difference between the two is the margin of error that is allowed. \\
 
-Close range localisation has a smaller margin of error because the robots will need to be able to move precisely, to perform certain tasks without bumping into each other. To determine the precision needed, size of the robots matter.  The project group of the Zebro light set out to make a robot with maximum dimensions of  300x 200 x 60 mm \cite{zebrolight}. When the swarming module is placed in the middle of this platform the the absolute minimum distance between the two modules will be 20cm from middle point till middle point. Considering that some deviations might occur the minimal measuring distance or "dead zone" is chosen to be 15cm. The worst case scenario is shown in figure \ref{fig:smrange} the maximum deviation is calculated with by dividing the absolute minimal distance (2cm) by the distance between the swarming modules (22cm). This results in a maximum deviation of 9\% in the close range distance measurement. The relative angle to another swarming module is needed to successfully implement localisation. At close range the localisation will mostly by used so the robots don't collide, or to implement swarming behaviour like trail following as discussed in the problem definition. Limited information about the relative angle would be enough to perform these tasks. We propose angle measurement at close range to have a resolution of 45\degree. In field testing will have to validate these assumptions. The speed of the robots determine the frequency at which the close range localisation should take place. The robots in this sketch move at a maximum speed of 1 m/s, the worst case scenario is that the robots will approach each other head-on. This makes their combined speed 2 m/s. The robots have been programmed to keep a minimal distance of 5cm from each other. Dividing the minimal distance by the combined speed will result in 40Hz which is the minimal required sampling speed. \\
+Close range localisation has a smaller margin of error because the robots will need to be able to move precisely, to perform certain tasks without bumping into each other. To determine the precision needed, size of the robots matter.  The project group of the Zebro light set out to make a robot with maximum dimensions of  300x 200 x 60 mm \cite{zebrolight}. When the swarming module is placed in the middle of this platform the the absolute minimum distance between the two modules will be 20 cm from middle point till middle point. Considering that some deviations might occur the minimal measuring distance or "dead zone" is chosen to be 15 cm. The worst case scenario is shown in figure \ref{fig:smrange} the maximum deviation is calculated with by dividing the absolute minimal distance (2 cm) by the distance between the swarming modules (22 cm). This results in a maximum deviation of 9\% in the close range distance measurement. The relative angle to another swarming module is needed to successfully implement localization. At close range the localization will mostly by used so the robots don't collide, or to implement swarming behaviour like trail following as discussed in the problem definition. Limited information about the relative angle would be enough to perform these tasks. We propose angle measurement at close range to have a resolution of 45\degree. In field testing will have to validate these assumptions. The speed of the robots determine the frequency at which the close range localization should take place. The robots in this sketch move at a maximum speed of 1 m/s, the worst case scenario is that the robots will approach each other head-on. This makes their combined speed 2 m/s. The robots have been programmed to keep a minimal distance of 5 cm from each other. Dividing the minimal distance by the combined speed will result in 40 Hz which is the minimal required sampling speed. \\
 
 \begin{figure}[H]
         \centering
@@ -111,8 +111,8 @@ Close range localisation has a smaller margin of error because the robots will n
 \end{figure}
 
 
-Long range localisation will only be used to keep members of certain groups in the swarm together. When the units are working together on a task, they will be using the close range localisation. A situation might occur where a members of a group of members of the swarm will have to complete a task outside of the range of the close range localisation. When they are done and they want to return to the swarm the long range localisation will be used. As discussed earlier the long range localisation will start at three meters. But it has to get the unit in close range. Therefore the minimal measuring distance will be chosen at two meters. The distance measurement will need to be precise enough to detect when it reaches the overlap between 2 and 3 meters. This maximum deviation for this to be true is 1 meter. Long range localisation will actually be a long range distance measurement. The relative angle between modules will not be needed. When an unit needs to return to the rest of the swarm a algorithm can be developed that finds it way back by looking at the changing distance. When the robot is trying to determine the right direction, the update frequency is important. At far range we would assume that a robot has to move one meter to determine if its getting closer or not. With the robot moving at 1 m/s the minimal update frequency is 1Hz. \\\\
-Summed up the specifications of localisation are:
+Long range localization will only be used to keep members of certain groups in the swarm together. When the units are working together on a task, they will be using the close range localization. A situation might occur where a members of a group of members of the swarm will have to complete a task outside of the range of the close range localization. When they are done and they want to return to the swarm the long range localization will be used. As discussed earlier the long range localization will start at three meters. But it has to get the unit in close range. Therefore the minimal measuring distance will be chosen at two meters. The distance measurement will need to be precise enough to detect when it reaches the overlap between 2 and 3 meters. This maximum deviation for this to be true is 1 meter. Long range localization will actually be a long range distance measurement. The relative angle between modules will not be needed. When an unit needs to return to the rest of the swarm a algorithm can be developed that finds it way back by looking at the changing distance. When the robot is trying to determine the right direction, the update frequency is important. At far range we would assume that a robot has to move one meter to determine if its getting closer or not. With the robot moving at 1 m/s the minimal update frequency is 1 Hz. \\\\
+Summed up the specifications of localization are:
 
 
 % Please add the following required packages to your document preamble:
@@ -122,21 +122,21 @@ Summed up the specifications of localisation are:
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{|l|l|l|}
 \hline
-                     & \textbf{Close range (0 - 3 m)} & \textbf{Long range (3 - 25m)} \\ \hline
-Deadzone distance    & 0,015 meters                   & 2 meters                      \\ \hline
+                     & \textbf{Close range (0 - 3 m)} & \textbf{Long range (3 - 25 m)} \\ \hline
+Dead zone distance    & 0,015 meters                   & 2 meters                      \\ \hline
 Deviation (distance) & +/- 9\%                         & +/- 1 meter                   \\ \hline
 Angle Resolution     & 45\%                            & -                             \\ \hline
-Update frequency     & 40Hz                           & 1Hz                           \\ \hline
+Update frequency     & 40 Hz                           & 1 Hz                           \\ \hline
 \end{tabular}%
 }
-\caption{Localisation specification}
+\caption{localization specification}
 \label{smrange}
 \end{table}
 
 
 
 \subsection{Number of units of the Swarm}
-As discussed before in the problem definition, its hard to put an exact number on what number of units it required to form a swarm. We mentioned "a high number of units" and that a minimum number of units is hard to justify. We will look at what the preferable amount of units would be to demonstrate the swarming module. Also we will look at a minimum amount and a maximum. Important to remember is that the swarm must always be scalable, so no static number of units will be defined.\\\\Robots in a swarm have limited capabilities on their own, thus they need to work together to perform a complicated task. When one unit breaks down the others should still be able to complete the task. With this is mind the absolute minimum units required for a swarm is chosen to be 3. When one breaks down the other two can still complete the task faster/better than one could do on its own. It would be preferable to make the total swarm endlessly scalable. When developing the swarming module no maximum number should be defined to the swarm. Hardware limitations will later determine a maximum. However a maximum of units can be calculated, that one unit has to be able to detect at close range. The detection surface can be viewed as a circle around of unit with a radius of 3 meters. The radius for the  circle is also calculated for the area where robots will avoid each other. This is done by taking the furthest point seen from the center of the robot and then adding 0,05m (the range where robots will avoid each other), this circle is shown in figure \ref{fig:smrange}. The maximum amount of robots in this range can then be calculated using a simple tool, the result is shown in figure \ref{fig:ccircle}. The end result is a maximum of 130 robots.
+As discussed before in the problem definition, its hard to put an exact number on what number of units it required to form a swarm. We mentioned "a high number of units" and that a minimum number of units is hard to justify. We will look at what the preferable amount of units would be to demonstrate the swarming module. Also we will look at a minimum amount and a maximum. Important to remember is that the swarm must always be scalable, so no static number of units will be defined.\\\\Robots in a swarm have limited capabilities on their own, thus they need to work together to perform a complicated task. When one unit breaks down the others should still be able to complete the task. With this is mind the absolute minimum units required for a swarm is chosen to be 3. When one breaks down the other two can still complete the task faster/better than one could do on its own. It would be preferable to make the total swarm endlessly scalable. When developing the swarming module no maximum number should be defined to the swarm. Hardware limitations will later determine a maximum. However a maximum of units can be calculated, that one unit has to be able to detect at close range. The detection surface can be viewed as a circle around of unit with a radius of 3 meters. The radius for the  circle is also calculated for the area where robots will avoid each other. This is done by taking the furthest point seen from the center of the robot and then adding 0,05 m (the range where robots will avoid each other), this circle is shown in figure \ref{fig:smrange}. The maximum amount of robots in this range can then be calculated using a simple tool, the result is shown in figure \ref{fig:ccircle}. The end result is a maximum of 130 robots.
 
 \begin{figure}[H]
         \centering
@@ -174,7 +174,7 @@ Building a modular robot consisting of subsystems, there must be a method to let
 Every subsystem features a micro-controller which must be capable of transmitting and receiving data.  
 
 \subsubsection{TWI}
-The name TWI stands for "Two wire interface" which strongly resembles Phillps' protocol $I^(2)C$. Like the name suggests the bus is build up using two wires, one is used for the clock signal and the other is used for the data signal. Each of these wires is connected to the powerline through a pull-up resistor so every subsystem connected to the line can pull the line down which other systems can see. TWI can be used as a multimaster system which means every subsystem can send it's data without being dependend on a single master.
+The name TWI stands for "Two wire interface" which strongly resembles Phillips' protocol $I^(2)C$. Like the name suggests the bus is build up using two wires, one is used for the clock signal and the other is used for the data signal. Each of these wires is connected to the power line through a pull-up resistor so every subsystem connected to the line can pull the line down which other systems can see. TWI can be used as a multimaster system which means every subsystem can send it's data without being dependent on a single master.
 
 
 
@@ -185,7 +185,7 @@ The name TWI stands for "Two wire interface" which strongly resembles Phillps' p
         \caption{Data conditions}
         \label{fig:Data conditions}
 \end{figure}
-In the above figure multiple data and clock combinations are shown, these combinations define the message start, sending a zero, a one and a stopbit. The system that wants to send information starts a message bij changing the datasignal from one to zero on a high clocksignal. All systems that are listening now know one of the systems is going to send a message. Data can be send by changing the dataline from zero to one or the other way around during a low clocksignal, the other systems will read this bit when the clocksignal becomes high again. Once the system is done sending its message it will let the other systems know by sending a stopbit.
+In the above figure multiple data and clock combinations are shown, these combinations define the message start, sending a zero, a one and a stop bit. The system that wants to send information starts a message by changing the data signal from one to zero on a high clock signal. All systems that are listening now know one of the systems is going to send a message. Data can be send by changing the data line from zero to one or the other way around during a low clock signal, the other systems will read this bit when the clock signal becomes high again. Once the system is done sending its message it will let the other systems know by sending a stop bit.
 
 \begin{figure}[H]
         \centering
@@ -194,7 +194,7 @@ In the above figure multiple data and clock combinations are shown, these combin
         \caption{Structure of a TWI message}
         \label{fig:TWIstructure}
 \end{figure}
-In the above picture the structure of a message is shown. As explained before the message starts with a startbit after which a small header follows. The header contains information about who is going to be adressed by the message and if you want to read or write. After this the adressed system will respond with an acknowladge to make sure the information has come across. When the acknowladge is recieved the system will start sending data, followed by and acknowladge from the reciever after every recieved byte of data. when the system is done sending all of its data and recieved the last acknowladge it will send the stopbit which means all communication has ended.
+In the above picture the structure of a message is shown. As explained before the message starts with a start bit after which a small header follows. The header contains information about who is going to be addressed by the message and if you want to read or write. After this the addressed system will respond with an acknowledge to make sure the information has come across. When the acknowledge is received the system will start sending data, followed by and acknowledge from the receiver after every received byte of data. when the system is done sending all of its data and received the last acknowledge it will send the stop bit which means all communication has ended.
 \\
 \\
 TWI has a few benefits, because it is a simple serial protocol it only uses two wires. this saves a lot of space in the hardware design. Also, it has the possibility to be used as a multimaster system.
@@ -210,7 +210,7 @@ SPI or Serial Peripheral Interface is, like it names suggests, a serial interfac
         \caption{SPI connections}
         \label{fig:SPIconnections}
 \end{figure}
-SPI works by selecting its slaves using its slave select. Slave select is a single bit used to define which slave the master will be talking to. When the master has selected its slave it will be able to shift its data from its shift register into the shift register of the slave using the MOSI output. MOSI mean master out slave in, so if the master asks data from the slave it will be send using the MISO, master in slave out. Knowing this there are two ways to connect the slaves, putting them in series or parallel to eachother. 
+SPI works by selecting its slaves using its slave select. Slave select is a single bit used to define which slave the master will be talking to. When the master has selected its slave it will be able to shift its data from its shift register into the shift register of the slave using the MOSI output. MOSI mean master out slave in, so if the master asks data from the slave it will be send using the MISO, master in slave out. Knowing this there are two ways to connect the slaves, putting them in series or parallel to each other. 
 \begin{figure}[H]
         \centering
         \graphicspath{ {./images/} }
@@ -218,7 +218,7 @@ SPI works by selecting its slaves using its slave select. Slave select is a sing
         \caption{SPI connected in series}
         \label{fig:SPIseries}
 \end{figure}
-When put in series only one slave select will be used to select all the slaves. Each slave will send its data to the next slave through the MISO line. The disadvantage of this method is when you want to address the last slave in line it has togo through all the slaves, meaning it will costs a lot of extra clockticks to put it through. Another disadvantage of this method is you can not add extra slaves to an excisting series of slaves because the path needs to be closed else the slaves will not be able to send their data to the master.
+When put in series only one slave select will be used to select all the slaves. Each slave will send its data to the next slave through the MISO line. The disadvantage of this method is when you want to address the last slave in line it has to go through all the slaves, meaning it will costs a lot of extra clock ticks to put it through. Another disadvantage of this method is you can not add extra slaves to an existing series of slaves because the path needs to be closed else the slaves will not be able to send their data to the master.
 \begin{figure}[H]
         \centering
         \graphicspath{ {./images/} }
@@ -229,8 +229,8 @@ When put in series only one slave select will be used to select all the slaves. 
 The second way to connect the slaves is parallel, this means the master can address all the slaves individually, which will make it faster. The downside of this is you will need a different slave select for every slave. Which means this takes up more outputs from the controller and more space on the circuit boards.
 Another downside of SPI is that it can not be used as a multimaster system this downside means it is not viable for the project.
 \subsubsection{U(S)ART}
-The third serial communucation typically used on microcontrollers is U(S)ART. This protocol has two variaties, the universal asynchronous reciever/transmitter and the synchronous. The difference between the two is that the synchronous uses an extra line to send a clock signal. In asynchronous mode the devices synchronice with a startbit at the beginning of the message.
-Both of the protocols have a TX and a RX line, the transmit and recieve line. Like the name says these are the lines to transcieve the data. Each device connected has two registers, one for recieving data and one for sending. These registers are eight to ten bits long, eight or nine data bits and one or no parity bit. The parity bit can be used as a check to see if the data was recieved correctly by checking if the amount of ones is even or odd. The message is ended with one or two stop bits. So a typical U(S)ART frame looks like the figure below.
+The third serial communication typically used on microcontrollers is U(S)ART. This protocol has two varieties, the universal asynchronous reliever/transmitter and the synchronous. The difference between the two is that the synchronous uses an extra line to send a clock signal. In asynchronous mode the devices synchronise with a start bit at the beginning of the message.
+Both of the protocols have a TX and a RX line, the transmit and receive line. Like the name says these are the lines to transceiver the data. Each device connected has two registers, one for receiving data and one for sending. These registers are eight to ten bits long, eight or nine data bits and one or no parity bit. The parity bit can be used as a check to see if the data was received correctly by checking if the amount of ones is even or odd. The message is ended with one or two stop bits. So a typical U(S)ART frame looks like the figure below.
 \begin{figure}[H]
         \centering
         \graphicspath{ {./images/} }
@@ -238,10 +238,10 @@ Both of the protocols have a TX and a RX line, the transmit and recieve line. Li
         \caption{Typical U(S)ART frame}
         \label{fig:UARTframe}
 \end{figure}
-Depending on the software protocol used it is possible to have a multimaster system using one U(S)ART connection on every device. Every message should get a header in which the addressed divece is selected.
+Depending on the software protocol used it is possible to have a multimaster system using one U(S)ART connection on every device. Every message should get a header in which the addressed device is selected.
 
 \subsubsection{Conclusion}
-Looking at the specifications of each protocol and comparing those, there can be concluded that TWI is most suitible. This is because of the fact it only uses two lines to communicate and is easily implemented in a multimaster system.
+Looking at the specifications of each protocol and comparing those, there can be concluded that TWI is most suitable. This is because of the fact it only uses two lines to communicate and is easily implemented in a multimaster system.
 
 
 \subsection{Software}
@@ -500,15 +500,15 @@ To test the spread of the sound waves the speaker was placed on the table facing
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.9\textwidth]{situation2.pdf}
-\caption{Setup used to test the omnidirection range and wave characteristics} 
+\caption{Setup used to test the omni-direction range and wave characteristics} 
 \label{setup2}
 \end{figure}
 
-From 100 Hz to 1 kHz no signal could be detected, even when the microphone was placed very closely. From 2 kHz to 4 khZ the signal became very clear. Although there where some situations where the signal was not as clear as all other situations. These frequencies where loud and clear at a distance of 3 meters. Above the 5 kHz the sounds became a lot more directional. The microphone did not sense any of the waves, unless the speaker was directly aimed at the microphone. 
+From 100 Hz to 1 kHz no signal could be detected, even when the microphone was placed very closely. From 2 kHz to 4 kHz the signal became very clear. Although there where some situations where the signal was not as clear as all other situations. These frequencies where loud and clear at a distance of 3 meters. Above the 5 kHz the sounds became a lot more directional. The microphone did not sense any of the waves, unless the speaker was directly aimed at the microphone. 
  
 There are ways to manipulate the direction of the sound waves. If there is need to use higher frequencies. By the use of a parabolic reflector a higher frequency sound beam can be converted to a more omnidirectional wave. 
 
-Some experimental tests where done with a parabolic reflector. In this case a square of aluminum placed slightly above the speaker. The results where promising. The signal was a lot smoother and had more amplitude then before. The frequency waves between 3-5 kHz acted a lot more omnidirectional. The higher frequencies 5 kHz and above could not be sensed by the microphone even with the aluminum plate placed above the speaker. For now it seems that the characteristics of the frequencies between the 3 and 4 kHz meet the requirements.
+Some experimental tests where done with a parabolic reflector. In this case a square of aluminium placed slightly above the speaker. The results where promising. The signal was a lot smoother and had more amplitude then before. The frequency waves between 3-5 kHz acted a lot more omnidirectional. The higher frequencies 5 kHz and above could not be sensed by the microphone even with the aluminium plate placed above the speaker. For now it seems that the characteristics of the frequencies between the 3 and 4 kHz meet the requirements.
 
 
 \subsection{Interference}
@@ -527,7 +527,7 @@ Another way to distinguish the sound waves from the noise, is to modulate the so
 
 Amplitude modulation is hard to implement since the amplitude of the wave is also determined by the distance and loudness of the source. Even with a good filter, a lot of factors can change the amplitude of the sound wave. Frequency modulation could be a good option since it is a reliable modulation in this case. The only problem could be that there is noise that has the same frequency. But there are ways to overcome this problem. For example to extend the time a frequency is send will decrease the amount of information that could be transferred but will be more reliable. If the duration of the time is determined beforehand it should be easy to distinguish. Phase modulation is a good option but when a short period of the frequency is measured an error can be measured since the frequency is changed. 
 
-Frequency modulation can be done easily with a micro controller using a voltage to frequency converter. The idea is to use send out a sweep. This way the time of the sweep is known, so if only a part of the signal is captured the start of the signal can still be calculated since the time the sweep takes would be the same at all times. Further testing will be done to check if this method would be reliable enough and can be implemented with a micro controller.
+Frequency modulation can be done easily with a microcontroller using a voltage to frequency converter. The idea is to use send out a sweep. This way the time of the sweep is known, so if only a part of the signal is captured the start of the signal can still be calculated since the time the sweep takes would be the same at all times. Further testing will be done to check if this method would be reliable enough and can be implemented with a micro controller.
 
 
 \subsection{Conclusion}
@@ -537,20 +537,26 @@ Lower frequencies have a wider reach than the higher frequencies. The lower freq
 
 \newpage
 \section{Swarm communication}
-There are several requirements to realise a robot swarm. Each member of the population needs to communicate with the rest of the swarm. To give the members full freedom of movement it is also usefull for the communication to be wireless. It is important that the population size of the swarm is dynamic, because of the scalability of the swarm. As mentioned earlier a swarm does not have a master. So each member needs to be capable to maintain the network. These networks also must be able to reroute around nodes that have been lost. \cite{Swarmwiki}\cite{swarmintelligence}
 
 The following subsections are:
 \begin{itemize}
 \setlength\itemsep{0em}
+    \item Network criteria
     \item Network topology
-    \item Network realibility and robustness
+    \item Network reliability and robustness
     \item Data distribution
     \item Wireless mesh network
     \item Wireless network protocols
     \item Conclusion
 \end{itemize}
 
+
+To give the members full freedom of movement it is usefull for the communication to be wireless. It is important that the population size of the swarm is dynamic, because of the scalability of the swarm. As mentioned earlier a swarm does not have a master. So each member needs to be capable to maintain the network. These networks also must be able to reroute around nodes that have been lost. \cite{Swarmwiki}\cite{swarmintelligence}
+
 A recommendation is made based on the specifications of this research. The recommendation can be found in the last chapter of this section.
+
+\subsection{Network criteria}
+There are several requirements to realise a robot swarm. Each member of the population needs to communicate with the rest of the swarm. To
 
 \newpage
 \subsection{Network topology}
@@ -605,7 +611,7 @@ It is possible but not necessary to connect one or more clients of a mesh networ
 When the network topology's are compared with each other, the mesh network satisfies the desired requirements. Although it is harder to implement due to mutual connections, it has the best data coverage. To meet the given specifications, a mesh network would be the best choice.
 
 \newpage
-\subsection{Network realibility}
+\subsection{Network reliability}
 To ensure a realiable network, self-organization and topology control algorithms are needed.\cite{WMN1} Possibly important and usefull (wireless) network characteristics are \cite{position-based}:
 \begin{itemize}
 \setlength\itemsep{0em}
@@ -622,10 +628,10 @@ A realiable network has a routing algorithm/protocol that includes distributed o
 
 \newpage
 \subsection{Data distribution}
-To set-up a reliable and stable mesh network, self-organization and topology control algorithms are needed. \cite{WMN1}\cite{position-based} This section discusses the following subjects: Data distribution strategy, routing protocols and adressing.\\
+To set-up a reliable and stable mesh network, self-organization and topology control algorithms are needed. \cite{WMN1}\cite{position-based} This section discusses the following subjects: Data distribution strategy, routing protocols and addressing.\\
 
 \textbf{Data distribution strategy}\\
-There are several strategys to distribute a package of data in a network. The following enumeration show three strategy's:
+There are several strategy's to distribute a package of data in a network. The following enumeration show three strategy's:
 \begin{itemize}
 \setlength\itemsep{0em}
     \item Single-path (Unicast)
@@ -638,14 +644,14 @@ The single-path strategy is an example of the shortest path route protocol. In t
 The other strategy, multipath, sends out multiple packets of data trough recognizable paths. Flooding strategy litterly floods the network with data packages. In case of wireless networks, the single-path strategy is preferred because of the power and bandwidth limitations in wireless networks. \cite{position-based}\\
 
 \textbf{Routing protocols}\\
-To meet the requirements given in the specification, the routing of the networks needs to be position based. When the position of the node in the network is known, it wil increase the networks reliability. \cite{position-based} According to the research done in \cite{geographicalrouting} and \cite{scalablelocation} routing algorithms without geographic locating (precize localisation) are not scalable and won't work well in large networks.
-The scalibility of each algorithm means the posibility to adjust the scale of the network by adding or removing clients to the network.
+To meet the requirements given in the specification, the routing of the networks needs to be position based. When the position of the node in the network is known, it wil increase the networks reliability. \cite{position-based} According to the research done in \cite{geographicalrouting} and \cite{scalablelocation} routing algorithms without geographic locating (precise localization) are not scalable and won't work well in large networks.
+The scalability of each algorithm means the possibility to adjust the scale of the network by adding or removing clients to the network.
 
-There are several position-based routing protocols each with it's own characteristics a taxonomy is given in \cite{position-based}. As described earlier, only the most important protocols for the given specifcation will be discussed in this research. This means most of the position-based routing protocols such as: power-, cost path protocols, become irrelevant.
+There are several position-based routing protocols each with it's own characteristics a taxonomy is given in \cite{position-based}. As described earlier, only the most important protocols for the given specification will be discussed in this research. This means most of the position-based routing protocols such as: power-, cost path protocols, become irrelevant.
 
-The shortest path route protocol uses information such as the hopcount and distance between clients to calculate the shortest route. Hopcount stands for the amount of clients that are passed by. The shortest cost path route protocol also takes account for the energy required for each routing task. The goal of this protocol is to minimize the total energy cost. According to \cite{position-based} it is not desireable or if possible to avoid to memorize routes or past traffic in mobile ad hoc networks. This is because of the mobility of clients in the network and constantly changing infrastructure.
+The shortest path route protocol uses information such as the hopcount and distance between clients to calculate the shortest route. Hopcount stands for the amount of clients that are passed by. The shortest cost path route protocol also takes account for the energy required for each routing task. The goal of this protocol is to minimize the total energy cost. According to \cite{position-based} it is not desirable or if possible to avoid to memorize routes or past traffic in mobile ad hoc networks. This is because of the mobility of clients in the network and constantly changing infrastructure.
 
-The distance between neighboring nodes can be estimated on the basis of signal strengths or time delays in direct communications. The exact positions can for example be estimated by using positioning systems such as GPS (Gereral positioning system). \cite{locationsystemsforubiquitouscomputing} The approximation of the position of the node relative to the other nodes can be done by serveral methods.
+The distance between neighboring nodes can be estimated on the basis of signal strengths or time delays in direct communications. The exact positions can for example be estimated by using positioning systems such as GPS (Gereral positioning system). \cite{locationsystemsforubiquitouscomputing} The approximation of the position of the node relative to the other nodes can be done by several methods.
 
 In figure \ref{fig:greedyrouting} a greedy routing scheme is displayed. The node S contains the data package and D is the destination of the package. 
 
@@ -663,19 +669,20 @@ The principle of greedy routing is that it is trying to get closer to the destin
 The most efficient algorithm for path bridging depends on the situation where the clients are operating in which is described in \cite{position-based}\cite{positionbasedroutingtaxonomy}. As stated earlier, in this stage of the development some characteristics are irrelevant, the energy efficient and cost routing protocols for example. There are however some characteristics that do matter. The single path strategy for example, is preferred because of bandwidth limitations in wireless networks. It is also not preferred to memorize the routes of past traffic in mobile networks.\cite{position-based} \cite{positionbasedroutingtaxonomy} Given these characteristics, the most suitable method will be greedy routing or a derivative/improved version.
 
 
-\textbf{Adressing}\\
-Each node in a mesh network needs a adress for other nodes to refer to. Methods to adress meshed networks are:
+\textbf{Addressing}\\
+Each node in a mesh network needs a address for other nodes to refer to. Methods to address meshed networks are:
 \begin{itemize}
 \setlength\itemsep{0em}
     \item Adaptive robust tree (ART)
     \item Meshed adaptive robust tree (MART)
 \end{itemize}
-Most of the wireless network protocols already cover the adressing in the protocol itself. The following methods are a possible compliment.
+Most of the wireless network protocols already cover the dressing in the protocol itself. The following methods are a possible compliment.
 
 \textbf{Adaptive robust tree (ART)}\\
-Adaptive robust tree is a meshed tree routing approach to address the nodes. Each node is adaptively addressed during the tree formation. It is desireable that the tree is free of single point failures (SPOF). This means that there is always a redundant path if a node fails, but that's not always possible in non-mesh networks. Each node keeps track of an ART table (ARTT), to map it's branches. In this table the adresses of the connected branches are stored.
+Adaptive robust tree is a meshed tree routing approach to address the nodes. Each node is adaptively addressed during the tree formation. It is desirable that the tree is free of single point failures (SPOF). This means that there is always a redundant path if a node fails, but that's not always possible in non-mesh networks. Each node keeps track of an ART table (ARTT), to map it's branches. In this table the addresses of the connected branches are stored.
 
 ART knows three phases; the initialization, operation and recovery phase. In the initialization phase the tree is formed. The tree formation starts at the root and grows by adding nodes to the tree. The nodes get an address assigned, when all nodes are joined. Thereafter, the number of nodes are counted in the tree as shown in figure \ref{fig:treenumbers}.
+
 
 \begin{figure}[H]
    \centering
@@ -687,7 +694,7 @@ ART knows three phases; the initialization, operation and recovery phase. In the
 The following phase is the operation phase, where small amount of nodes are still able to join, but when the change becomes to big, the network goes in to initialization mode again. When a part of the tree becomes broken, the recovery phase becomes active for the affected part.\\
 
 \textbf{Meshed adaptive robust tree}\\
-With an ART tree it is possible to create a MART (Meshed adaptive robust tree). Figure \ref{fig:meshtree} illustrates a MART, in this figure there are already connections added that make a mesh network. The intermitted lines are added for the mesh network. From the point of view from every node in the network, there still is a tree form. In this mesh network, each node has a redundant path if a connection is broken, so it is SPOF free.
+With an ART tree it is possible to create a MART (Meshed adaptive robust tree). Figure \ref{fig:meshtree} illustrates a MART, in this figure there are already connections added that make a mesh network. The intermittent lines are added for the mesh network. From the point of view from every node in the network, there still is a tree form. In this mesh network, each node has a redundant path if a connection is broken, so it is SPOF free.
 
 \begin{figure}[H]
    \centering
@@ -696,7 +703,7 @@ With an ART tree it is possible to create a MART (Meshed adaptive robust tree). 
    \label{fig:meshtree}
 \end{figure}
 
-With a MART, it is possibile to reroute a connection to reduce the path cost in comparison with ART. Most of the time, the transition from ART to MART, removes some SPOFs.
+With a MART, it is possible to reroute a connection to reduce the path cost in comparison with ART. Most of the time, the transition from ART to MART, removes some SPOFs.
 
 \subsection{Wireless mesh network}
 A mesh network (MN) is a dynamically self-organized and configured network. \cite{WMN1} As described in the specifications, the swarm network is dynamic in size and mutual distance. Because of the size and mobility of the swarm it is not practical to use wired connections between de members of the swarm. So a wireless mesh network (WMN) is needed. Therefore a wireless connection between the members is necessary.
@@ -723,22 +730,22 @@ The following wireless protocols or technologys are defined as short-range (a ra
  There are however exceptions, some of the technology's have been evolved and are able to transmit further than 100 meters. WiMax for example is developed to overcome the range problem. 
 \begin{itemize}
 \setlength\itemsep{0em}
-     \item IEEE 802.16 a (WiMAX)
+     \item IEEE 802.16 (a) (WiMAX)
 \end{itemize}
 
 \paragraph{IEEE 802.15.1 Bluetooth}
 Bluetooth is designed for short-range communication which uses wireless radio systems. Bluetooth is mostly used for personal-area networks (PAN). \cite{combook} The main purpose of Bluetooth is to create a wireless connection between for example computer peripherals such as; keyboards and mice. These applications are also known as wireless personal area networks (WPAN). \cite{comparitivestudywirelessprotocols} Bluetooth is an ad hoc network, which means that the network is formed spontaneously.\cite{tcipbook}
 
-Bluetooth uses the industrial scientific and medical (or short: ISM) band for receiving en transmission data. The ISM band ranges from 2,400 to 2,4835 GHz in the Netherlands. \cite{frequencyandsnetherlands} Frequency hopping spread spectrum (FHSS) is used to spread out the power over the full bandwidth. After the transmission of each packet, Bluetooth will hop/change to another channel. The ISM band consists of 79 channels with 1MHz each. Changing frequencies also helps to avoid collision with other networks. But it is still possible that a collision takes place. When a collision happens, the data is resend on another channel until the transmition is successful.
+Bluetooth uses the industrial scientific and medical (or short: ISM) band for receiving en transmission data. The ISM band ranges from 2,400 to 2,4835 GHz in the Netherlands. \cite{frequencyandsnetherlands} Frequency hopping spread spectrum (FHSS) is used to spread out the power over the full bandwidth. After the transmission of each packet, Bluetooth will hop/change to another channel. The ISM band consists of 79 channels with 1 MHz each. Changing frequencies also helps to avoid collision with other networks. But it is still possible that a collision takes place. When a collision happens, the data is resend on another channel until the transmission is successful.
 
 \begin{figure}[H]
    \centering
-   \includegraphics[width=1\textwidth]{bluetoothfh}
-   \caption{Bluetooth frequency hopping spread spectrum (FHSS) from \cite{bluetoothspectrum}}
-   \label{fig:bluetoothfh}
+   \includegraphics[width=1\textwidth]{Bluetoothfh}
+   \caption{Bluetooth frequency hopping spread spectrum (FHSS) from \cite{Bluetoothspectrum}}
+   \label{fig:Bluetoothfh}
 \end{figure}
 
-Bluetooth consists of two network topologies: a piconet and scatternet. The piconet has one or more slaves serving one master \cite{bluetoothpiconet}. In a piconet the master synchronizes the master's clock and shares his bluetooth device address at the first connection. The data packet is called a frequency-hopsynchronization packet (FHS packet). The data send in the FHS packet is used to calculate the sequence of frequency hops that all devices in the piconet will follow. Each client in the networks tracks the native- and masters clock, so it will know on which frequency the client needs to transmit or receive.
+Bluetooth consists of two network topologies: a piconet and scatternet. The piconet has one or more slaves serving one master \cite{Bluetoothpiconet}. In a piconet the master synchronizes the master's clock and shares his Bluetooth device address at the first connection. The data packet is called a frequency-hopsynchronization packet (FHS packet). The data send in the FHS packet is used to calculate the sequence of frequency hops that all devices in the piconet will follow. Each client in the networks tracks the native- and masters clock, so it will know on which frequency the client needs to transmit or receive.
 
 Each piconet has one master which has an unique Bluetooth device adress and clock. A Bluetooth piconet cannot be large. A piconet consists of 8 active clients in which one is the 'primary' (master).\cite{tcipbook} There can be 255 slaves in a parkmode in a Bluetooth piconet. Because of the frequency hopping, it is possible to have more than one piconets in one area. 
 
@@ -751,10 +758,10 @@ A scatternet consists of two or more piconets. It is possible for a client to pa
    \label{fig:scatternet}
 \end{figure}
 
-The biggest drawback by using Bluetooth is that it doesn't officially support mesh networking. According to the IEEE timeline \cite{IEEE80211timeline}, there will be a mesh standard for Bluetooth in the year 2016. \cite{bluetoothmesh} At the time of this research (begin 2016), the standard is not published yet neither, are there implementation avaiable. It is still possible to create a scatternet, with multiple masters/slaves but that doesn't meet the given specifications. \\
+The biggest drawback by using Bluetooth is that it doesn't officially support mesh networking. According to the IEEE timeline \cite{IEEE80211timeline}, there will be a mesh standard for Bluetooth in the year 2016. \cite{Bluetoothmesh} At the time of this research (begin 2016), the standard is not published yet neither, are there implementation available. It is still possible to create a scatternet, with multiple masters/slaves but that doesn't meet the given specifications. \\
 
 \paragraph{IEEE 802.15.4 ZigBee}
-Zigbee is usually used in personal operating spaces (POS) or personal-area networks (PAN) of about 10 meters. \cite{combook} However, there are devices based on Zigbee that can reach up to 1500 meters of span when the target is in line of sight \cite{zigbeewiki}. It is designed for simple devices that consume minimal power and operate in a personal operating space. Applications as sensors. These applications are also known as low-rate wireless personal area networks (LR-WPAN). \cite{comparitivestudywirelessprotocols} Zigbee uses the ISM 900 MHz or, just like Bluetooth and WiFi, the 2,4 GHz ISM band to communicate. Zigbee uses direct sequence spread spectrum (DSSS) with 16 channels and 2 MHz bandwith.
+Zigbee is usually used in personal operating spaces (POS) or personal-area networks (PAN) of about 10 meters. \cite{combook} However, there are devices based on Zigbee that can reach up to 1500 meters of span when the target is in line of sight \cite{zigbeewiki}. It is designed for simple devices that consume minimal power and operate in a personal operating space. Applications as sensors. These applications are also known as low-rate wireless personal area networks (LR-WPAN). \cite{comparitivestudywirelessprotocols} Zigbee uses the ISM 900 MHz or, just like Bluetooth and WiFi, the 2,4 GHz ISM band to communicate. Zigbee uses direct sequence spread spectrum (DSSS) with 16 channels and 2 MHz bandwidth.
 
 There are proven implementations of networks with ZigBee. It is possible to create a reliable self-organized mesh network which is able to use multi-hopping \cite{comparitivestudywirelessprotocols}.
 
@@ -775,7 +782,7 @@ Wi-Fi uses different modulation techniques. Direct sequence spread spectrum (DSS
    \label{fig:wifichannels}
 \end{figure}
 
-Wi-Fi doesn't use frequency hopping to avoid data collisions. This forms a problem when there are hidden nodes in the network. A hidden node is illustrated in figure \ref{fig:hiddennode}. The circles indicate the transmission range of each node. In figure \ref{fig:hiddennode} 'A' is not in the transmission range of 'C', which makes 'A' invisible to 'C'. In this situation node A and C are not aware of eachother. Therefore one of the nodes can think that it is the only active node in the network.
+Wi-Fi doesn't use frequency hopping to avoid data collisions. This forms a problem when there are hidden nodes in the network. A hidden node is illustrated in figure \ref{fig:hiddennode}. The circles indicate the transmission range of each node. In figure \ref{fig:hiddennode} 'A' is not in the transmission range of 'C', which makes 'A' invisible to 'C'. In this situation node A and C are not aware of each other. Therefore one of the nodes can think that it is the only active node in the network.
 
 \begin{figure}[H]
    \centering
@@ -788,7 +795,7 @@ In the following situation there will be a collision of information:
 \begin{itemize}
 \setlength\itemsep{0em}
 \item Node 'A' sends data to node 'B'.
-\item Simultaniously node 'C' is also sending information to node 'B'.
+\item Simultaneously node 'C' is also sending information to node 'B'.
 \end{itemize}
 
 Using handshake frames (CSMA/CD - CA) can be a solution to prevent a collision from happening when there is a hidden node. With 802.11, the used handshakes frames are CTS (clear to send) and RTS (request to send). The solution is given in figure \ref{fig:rtscts}. Where node 'A' send an RTS to 'B' and 'B' responds with an CTS to node 'A' and 'C'. Node 'C' didn't send an RTS, so the node knows that it needs to wait. The waiting duration of data transmission is contained in the CTS message which is send by node 'B'. \cite{tcipbook}
@@ -829,15 +836,14 @@ IEEE 802.11s is a Wi-Fi standard for mesh networking. This standard defines how 
 
 The 802.11s standard defines a mandatory default scheme for path selection. This default scheme can be replaced by other path selection protocol because of the extensible framework of the standard. By default the Hybrid Wireless Mesh Protocol (HWMP) is used as a path selectiong protocol. HWMP is derived from the Ad Hoc On Demand Distance vector (AODV) protocol. \cite{ieee80211sthewlanmeshstandard}
 
-Open80211s is an implementation of the 802.11s standard. According to \cite{ieee80211sthewlanmeshstandard} this standard will be able to run on legacy 802.11 cards with software adjustments. Figure \ref{fig:open80211s} gives an impression of the network peformance in a 12 node dense network. 
+Open80211s is an implementation of the 802.11s standard. According to \cite{ieee80211sthewlanmeshstandard} this standard will be able to run on legacy 802.11 cards with software adjustments. Figure \ref{fig:open80211s} gives an impression of the network performance in a 12 node dense network. 
 \begin{figure}[H]
    \centering
    \includegraphics[width=1\textwidth]{open80211s}
    \caption{\cite{ieee80211sthewlanmeshstandard} gives an performance measurement of the open80211s implementation in 2010.}
    \label{fig:open80211s}
 \end{figure}
-As shown in figure \ref{fig:open80211s}, the discovery time increases linearly with an increasing number of node hops. This decreases the troughput of the network.
-
+As shown in figure \ref{fig:open80211s}, the discovery time increases linearly with an increasing number of node hops. This decreases the throughput of the network.
 
 \paragraph{IEEE 802.15.3 Ultra-wideband}
 Ultra-wideband is designed for short-range high-speed wireless communication. The bandwidth of UWB is over 100Mbps and can reach speeds up to 480 Mbps \cite{comparitivestudywirelessprotocols}. UWB is a high data rate Wireless Personal Area Networks (HR-WPAN). The frequency band of UWB ranges from 3.1 to 10.6 GHz \cite{ultrawidebandwirelesscommunications}. Although the spectrum is large in comparison with other protocols the signal level is very low so it doesn't interfere with other signals. UWB is a baseband or carrierless communication method. These systems use precisely timed impulses to transmit data on the wide spectrum. This divers from other communication methods where sine modulation is used. \cite{Bluetoothwifisurveyandcomparison}
@@ -846,8 +852,8 @@ Because of the 'ultra wide' band UWB has benefits over other technologys. The be
 \begin{itemize}
 \setlength\itemsep{0em}
     \item High data rates
-    \item Less path los and better immunity to multipath propagation
-    \item Low-cost tranceivers
+    \item Less path loss and better immunity to multipath propagation
+    \item Low-cost transceivers
     \item Low transmit power and low interference
 \end{itemize}
  With UWB it is possible to get high data rates in ranges of 20 to 50 meters. Because of the wide bandwidth of UWB, the material penetration losses are relatively low. As shown in equation \ref{eq:channelcapacity}, the channelcapicity increases linearly with the bandwidth.
@@ -865,12 +871,19 @@ UWB devices are like Bluetooth devices organised in piconets. Each piconet is co
 Infrared is possibly the most widespread wireless technology for short-distance data communication. \cite{combook} It is primarily used for remote control between computers and televisions. The short-range distance with infrared communications is typically about 1 to 9 meters. \cite{combook} Infrared travels with the speed of light which is 299792458 meters per second. \cite{speedoflight} In comparison with the other discussed protocols this technology is based on light instead of radio frequency signals. Because of the origin of this technology, there must be a clear (no obstacles block the sight) line of sight (LOS) between the transmitter and receiver. This disadvantage makes the technology not suitable for the communication in a complex swarm network.\\
 
 \paragraph{IEEE 802.16 WiMAX}
-WiMAX is a wireless metropolitan-area network (MAN network). WiMAX is defined by the IEEE 802.16 standard. The main reason for developing this standard was to deliver consumers wireless broadband speeds. WiMAX is a long-distance data communication technology. WiMAX knows three topology structures: Point-to-point (P2P), point-to-multipoint (PMP) and mesh mode.\\
+WiMAX in the United States or HIPERMAN in europe is a wireless metropolitan-area network (MAN network). \cite{draadlozecommunicatie} WiMAX is defined by the IEEE 802.16 standard. The main reason for developing this standard was to deliver consumers wireless broadband speeds. WiMAX networks are managed by network operators.
 
+WiMAX is a long-distance data communication technology. The maximum theoretical distance reached by this protocol is defined as 50 km. The used frequency band ranges from 2 to 11 and 10 to 66 GHz with the 802.16(a) standard. The higher frequency range is only used for line of sight (LOS) transmission and the lower range for (NLOS) not line of sight transmission.\cite{draadlozecommunicatie}
 
+WiMAX knows three topology structures: Point-to-point (P2P), point-to-multipoint (PMP) and mesh mode. \cite{combook}
+
+To realise the high transmit ranges, high transmit power is needed. A typical basestation consumes approximately 20W and the mobile stations 200mW. A mobile station can easily receive the transmission from a basestation. The communication from the mobile station to the basestation however is more difficult to receive, because of the low transmitting power.
+\cite{wimax}
+
+In comparison with Wi-Fi, WiMAX is more based on the master-slave technique. The basestation has complete control over the transmission. This characteristic and the high power usage makes and the dependence on a network provider makes this protocol does not meet the criteria for the described swarm network.\\
 
 \paragraph{General comparison}
-To summerize the given information from the protocols, table \ref{sumtableprotocols} is made. This table displays the most important characteristics of each protocol.
+To summarize the given information from the protocols, table \ref{sumtableprotocols} is made. This table displays the most important characteristics of each protocol.
 
 \begin{table}[H]
 \centering
@@ -954,14 +967,14 @@ Each of the discussed protocols has it's own complexity. The reasearch done in \
 Figure \ref{fig:protocolefficiency} illustrates the data coding efficiency for each protocol. Bluetooth for example has the best data coding efficiency when using a small amount of bytes (around 339 bytes). Wi-FI and UWB on the other hand are more efficient for large data sizes. Where Zigbee saturates on 80 percent efficiency when the data size increases.\\
 
 \textbf{Interference}\\
-The ISM frequency band is used for industrial, scientific and medical purposes. This means that some regions of the frequency band can be used for educational purposes. All of the discussed protocols use techniques to overcome interference. Some frequency bands are nowadays (over)crowded. This is because of the succes of some of the frequency band regions. \cite{Bluetoothwifisurveyandcomparison} The 2,4 and 5,0 GHz bands for example fullfill the needs of alot appliances.
+The ISM frequency band is used for industrial, scientific and medical purposes. This means that some regions of the frequency band can be used for educational purposes. All of the discussed protocols use techniques to overcome interference. Some frequency bands are nowadays (over)crowded. This is because of the succes of some of the frequency band regions. \cite{Bluetoothwifisurveyandcomparison} The 2,4 and 5,0 GHz bands for example full fill the needs of a lot appliances.
 
-Ultrawideband operates in the 3.1 - 10.6 GHZ range. This region is used by satellites, radars, broadband wireless and wireless networks. Wi-Fi, ZigBee and Bluetooth operate in the 2,4 GHZ band. Appliances who also use this band are: Microwave ovens, homeRF devices and cordless phones. The 5GHz band is also used by Wi-Fi, which is les crowded. Zigbee also has another band to transmit to, the 915 MHz band which is used by simple sensor networks.
+Ultrawideband operates in the 3.1 - 10.6 GHZ range. This region is used by satellites, radars, broadband wireless and wireless networks. Wi-Fi, ZigBee and Bluetooth operate in the 2,4 GHZ band. Appliances who also use this band are: Microwave ovens, homeRF devices and cordless phones. The 5GHz band is also used by Wi-Fi, which is less crowded. Zigbee also has another band to transmit to, the 915 MHz band which is used by simple sensor networks.
 
-As mentioned before all of the protocols use techniques to counter interference from itself or neighbouring devices. Bluetooth's frequency hopping is less sensitive for strong narrow band interference, which only affects a few channels. Wi-Fi however is less sensitive to wide-band noise. \cite{Bluetoothwifisurveyandcomparison} Comparing the protocols, Ultra wideband has the best characterics. The protocol has a wide bandwidth and the transmit power is low. It also interferes the least with other common appliances.\\
+As mentioned before all of the protocols use techniques to counter interference from itself or neighbouring devices. Bluetooth's frequency hopping is less sensitive for strong narrow band interference, which only affects a few channels. Wi-Fi however is less sensitive to wide-band noise. \cite{Bluetoothwifisurveyandcomparison} Comparing the protocols, Ultra wideband has the best characteristics. The protocol has a wide bandwidth and the transmit power is low. It also interferes the least with other common appliances.\\
 
 \textbf{Power consumption}\\
-The power consumption of each protocol depends on the used hardware. To make a valid comparison, the paper \cite{comparitivestudywirelessprotocols} made a selection of average hardware. The comparison in figure \ref{fig:protocolenergy} gives an indication of the average power consumption of each protocol. Bluetooth and ZigBee both consume about 100mW where the power consumption of UWB and Wi-Fi is about 700mW. Figure \ref{fig:protocolefficiency} gives the normalized energy consumption of each protocol. The normalized energy is given in mJ/Mb. The normalized energy consumption indicates that ZigBee and Bluetooth both use more energy to send and receive the same amount of information. UWB is the most efficient protocol to process information.
+The power consumption of each protocol depends on the used hardware. To make a valid comparison, the paper \cite{comparitivestudywirelessprotocols} made a selection of average hardware. The comparison in figure \ref{fig:protocolenergy} gives an indication of the average power consumption of each protocol. Bluetooth and ZigBee both consume about 100 mW where the power consumption of UWB and Wi-Fi is about 700 mW. Figure \ref{fig:protocolefficiency} gives the normalized energy consumption of each protocol. The normalized energy is given in mJ/Mb. The normalized energy consumption indicates that ZigBee and Bluetooth both use more energy to send and receive the same amount of information. UWB is the most efficient protocol to process information.
 
 \begin{figure}[H]
    \centering
@@ -979,7 +992,7 @@ The power consumption of each protocol depends on the used hardware. To make a v
 
 
 \paragraph{Conclusion comparison}
-The final comparison is made in table \ref{protocolcompare}. There have been some adjustments in naming the characteristics to make the table fit the page. 'Rate' is the transceiving data rate, 'Range' is the transceiving data range, 'Scalibility' of the protocol on large and small scale projects, 'Efficiency' means the data coding efficiency, 'Complexity' is the protocol complexity, 'Capacity' stands for the data distribution per square meter, 'Consumption' means the energy comsumption.
+The final comparison is made in table \ref{protocolcompare}. There have been some adjustments in naming the characteristics to make the table fit the page. 'Rate' is the transceiving data rate, 'Range' is the transceiving data range, 'Scalability' of the protocol on large and small scale projects, 'Efficiency' means the data coding efficiency, 'Complexity' is the protocol complexity, 'Capacity' stands for the data distribution per square meter, 'Consumption' means the energy consumption.
 
 \begin{table}[H]
 \centering
@@ -995,7 +1008,7 @@ The final comparison is made in table \ref{protocolcompare}. There have been som
 \end{tabular}}
 \end{table}
 
-The information from table \ref{protocolcompare} results in the graph in figure \ref{fig:protocolcomparison}. The protocol with the highest score has the best characteristics to apply in the swarm network. The conclusion is that Wi-Fi is the best option followed by UWB, ZigBee and Bluetooth. The results of the comparison differ not much from eachother. 
+The information from table \ref{protocolcompare} results in the graph in figure \ref{fig:protocolcomparison}. The protocol with the highest score has the best characteristics to apply in the swarm network. The conclusion is that Wi-Fi is the best option followed by UWB, ZigBee and Bluetooth. The results of the comparison differ not much from each other. 
 
 It is possible to create an wireless mesh network with all three of the protocols, however all of them have their own benefits and disadvantages. The preference depends on the available implementations which is discussed in a following chapter.
 
@@ -1008,7 +1021,7 @@ It is possible to create an wireless mesh network with all three of the protocol
 
 
 \newpage
-\subsection{Conclusion communnication}
+\subsection{Conclusion communication}
 In this section an sub-study in swarm communication is made. The results of the sub-study have resulted in recommendations for the implementation of the swarming module. An enumeration of the recommendations are given below:
 \begin{itemize}
 \setlength\itemsep{0em}
@@ -1019,20 +1032,20 @@ In this section an sub-study in swarm communication is made. The results of the 
     \item ART or MART can be used to address the nodes in a mesh network.
     \item Greedy routing or a derivative is the most suitable routing strategy.
     \item Scaling on large-scale projects is not possible without using geographic locating (precize locating). \cite{geographicalrouting}\cite{scalablelocation}. 
-    \item The most suitable communication protocol in the described situation depends on the available implemtation possibilitys. Wi-Fi, UWB and ZigBee are all three qualified to provide a wireless mesh network.
+    \item The most suitable communication protocol in the described situation depends on the available implementation possibility. Wi-Fi, UWB and ZigBee are all three qualified to provide a wireless mesh network.
 \end{itemize}
 
 \newpage
 
 \section{Proximity sensor}
-For close range obstacle avoidance (0m - 0,3m, the robots will need some kind of proximity sensing technique. The sensor needs to differentiate between different "treats" for the robot to function properly. For example; when the sensor detects a small hill, which the robot can move over it should not trigger the robot to move away from it. But when it detects a big obstacle it should trigger the robot to move away. This is important because the robots will eventually be expected to move across rough terrain (like Mars). In the next paragraphs some different proximity sensor techniques will be discussed. Price is also a important factor while comparing these techniques. Multiple robots must be made on a tight budget, so costs should be cut where possible.\\
+For close range obstacle avoidance (0 m - 0,3 m, the robots will need some kind of proximity sensing technique. The sensor needs to differentiate between different "treats" for the robot to function properly. For example; when the sensor detects a small hill, which the robot can move over it should not trigger the robot to move away from it. But when it detects a big obstacle it should trigger the robot to move away. This is important because the robots will eventually be expected to move across rough terrain (like Mars). In the next paragraphs some different proximity sensor techniques will be discussed. Price is also a important factor while comparing these techniques. Multiple robots must be made on a tight budget, so costs should be cut where possible.\\
 
 \subsection{Ultrasonic sensor}
 Ultrasonic sensors are widely used in robotics for proximity sensing. An ultrasonic sensor uses the time of flight (TOF) to operate. It sends out an ultrasonic sound wave and measures the time it takes for the sound to be reflected back. The speed of the sound is known so the distance can be calculated. The fact that this method uses sound is a big advantage when measuring small distances. Sound has a velocity of propagation of around 340 m/s. Most other methods use signals that travel with the speed of light ( $3\cdot10^{8}$). The problem with the high velocity of  propagation especially with measuring distances shorter than one meter is that the TOF will be in terms of a few nanoseconds.  The hardware needed to process signals with this kind of speed will require more complex circuit design and ultimately cost more. The ultrasonic signal that is received after reflected from an object hold information about the shape and size of the object. This can be used to discriminate between different obstacles\cite{ultraobject}. Because there's a diffrent atmosphere on Mars ultrasonic sound gets heavily dappened \cite{soundonmars}. This mean that this method wont be usable on Mars itself. A pro of the ultrasonic sensor is the low cost. A sensor with specified for short distances costs between 2\euro and 10\euro.
 
 
 \subsection{Lidar sensor}
-Light detection and ranging (lidar) works with the same principle as the ultrasonic sensor. It uses time of flight to determine the distance from an object. Instead of sound it uses the light of a laser as its medium. Lidar can be used for various applications like: 3D modeling of an environment, weather forecast and distance measurements \cite{whatlidar}. Lidar is a proven technology on Mars, it has been used on the Phoenix mission to measure clouds and atmospheric dust \cite{lidarmars}. A lidar suitable for the purpose of proximity sensing would be de Lidar lite v2. This is a proximity sensor designed for robotics. It has a range 0-40m and an accuracy of +/- 0,025m. Being the cheapest lidar sensor on the market it still costs 100\euro. Object discrimination with the Lidar lite is not possible due to the limited information. More complex lidar systems with a moving laser could be able to discriminate and detect objects really precise, but this requires really complex systems.
+Light detection and ranging (lidar) works with the same principle as the ultrasonic sensor. It uses time of flight to determine the distance from an object. Instead of sound it uses the light of a laser as its medium. Lidar can be used for various applications like: 3D modeling of an environment, weather forecast and distance measurements \cite{whatlidar}. Lidar is a proven technology on Mars, it has been used on the Phoenix mission to measure clouds and atmospheric dust \cite{lidarmars}. A lidar suitable for the purpose of proximity sensing would be de Lidar lite v2. This is a proximity sensor designed for robotics. It has a range 0-40 m and an accuracy of +/- 0,025 m. Being the cheapest lidar sensor on the market it still costs 100\euro. Object discrimination with the Lidar lite is not possible due to the limited information. More complex lidar systems with a moving laser could be able to discriminate and detect objects really precise, but this requires really complex systems.
 
 
 \begin{figure}[!ht]
@@ -1061,7 +1074,7 @@ Now the question is which of the different sensor techniques proposed, is the be
 Looking at these points it becomes clear that the lidar sensor wouldn't be the best choice. It doesn't really have any outstanding pros compared to the other two techniques and it's much more expensive. . As talked about before the mechanical sensor has a few drawbacks compared to the ultrasonic sensor. For these reasons the ultrasonic sensor seems the best choice. The only issue left to solve is how to sense the difference between obstacles which the robot has to avoid, and things the robot doesn't have to avoid, but still might be detected by the sensor. This will be discussed in the next paragraph.
 
 \subsection{Obstacle discrimination with an ultrasonic sensor}
-An ultrasonic sensor is usually used to detect if there is some obstacle in the way. In this case there is made no difference made between a obstacle that the robot can move over, or a obstacle that should be avoided. For example: a small slope or hill might be detected as an obstacle, but in truth the robot can move over it. The robots developed for this program will eventually be able to cross harsh terrain. In this case the proximity sensor will need to discriminate between these situations. Working with ultrasonic waves there are multiple domains to work with. These are time, frequency and amplitude. Time is used to determine the distance between the object and the sensor. The change in frequency and/or amplitude contains information about the shape of the object\cite{ultraobject}see figure \ref{ultrafreq}. In the paper "Object recognition with ultrasonic sensor" is concluded that looking at the amplitude over time contains enough information to discriminate between object\cite{ultraobject}. The example is given of an object with separated surfaces of 3,5 cm, the echo from the second surface will be delayed by 0,2 msec relative to the echo from the first surface. This delay can be easily detected with a microprocessor. The reason looking at frequency isn't the first choice is because of the higher hardware requirements it would require to properly sample the ultrasonic signal. Looking at amplitude and time does not require the signal to be sampled at the Nyquist rate so lower clock rate microprocessors can be used to do the processing.
+An ultrasonic sensor is usually used to detect if there is some obstacle in the way. In this case there is made no difference made between a obstacle that the robot can move over, or a obstacle that should be avoided. For example: a small slope or hill might be detected as an obstacle, but in truth the robot can move over it. The robots developed for this program will eventually be able to cross harsh terrain. In this case the proximity sensor will need to discriminate between these situations. Working with ultrasonic waves there are multiple domains to work with. These are time, frequency and amplitude. Time is used to determine the distance between the object and the sensor. The change in frequency and/or amplitude contains information about the shape of the object\cite{ultraobject}see figure \ref{ultrafreq}. In the paper "Object recognition with ultrasonic sensor" is concluded that looking at the amplitude over time contains enough information to discriminate between object\cite{ultraobject}. The example is given of an object with separated surfaces of 3,5 cm, the echo from the second surface will be delayed by 0,2 milliseconds relative to the echo from the first surface. This delay can be easily detected with a microprocessor. The reason looking at frequency isn't the first choice is because of the higher hardware requirements it would require to properly sample the ultrasonic signal. Looking at amplitude and time does not require the signal to be sampled at the Nyquist rate so lower clock rate microprocessors can be used to do the processing.
 \\
 \begin{figure}[h]
   \centering
@@ -1072,8 +1085,8 @@ An ultrasonic sensor is usually used to detect if there is some obstacle in the 
 
 \section{Swarmdetection}
 \subsection{algorithm}
-Using the radio communication and the microphones on the swarming units it is possible to determine the distance and angle of every unit within range. each robot will send out a broadcast saying it is going to send its detection signal. As soon as the other units recieve this message they will start a timer. Immidiatly after the broadcast the broadcasting robot will send out a detection sound. As soon as this signal is recieved by the other robots' microphones the timer will stop and the different times of detection of each microphone will be used to calculate the angle and distance of the unit.
-Using triliteration it is possible to determine the angles of the created triangle knowing the lengths. It is possible to calculate six angles, because of this it is possible to detect the direction of the broadcaster without the possibility of mirroring. As soon as the direction is know it becomes possible to put the detected robot on an XY grid using the build in compas. When all the robots within swarming range have done this all the relative positions will be know from eachother.
+Using the radio communication and the microphones on the swarming units it is possible to determine the distance and angle of every unit within range. each robot will send out a broadcast saying it is going to send its detection signal. As soon as the other units receive this message they will start a timer. Immediately after the broadcast the broadcasting robot will send out a detection sound. As soon as this signal is received by the other robots' microphones the timer will stop and the different times of detection of each microphone will be used to calculate the angle and distance of the unit.
+Using triliteration it is possible to determine the angles of the created triangle knowing the lengths. It is possible to calculate six angles, because of this it is possible to detect the direction of the broadcaster without the possibility of mirroring. As soon as the direction is know it becomes possible to put the detected robot on an XY grid using the build in compass. When all the robots within swarming range have done this all the relative positions will be know from each other.
 \newpage
 
 \section{Bibliografie}

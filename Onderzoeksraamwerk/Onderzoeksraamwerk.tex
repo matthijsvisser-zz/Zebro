@@ -186,10 +186,9 @@ The following questions need to be answered to come to a good conclusion to our 
 In this chapter the functional requirements for building a robot which can perform a task in cooperation with other robots will be defined. The specifications are divided into several features. The specifications to be achieved for swarming will be classified according to the MoSCoW-method. The corresponding specifications are further illustrated in this chapter. In the block diagram shown in Figure  \ref{fig:blockschematic}, the various modules are connected to each other.
 
 
-
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1\textwidth]{blockschematic}
+    \includegraphics[width=1\textwidth]{newblock.pdf}
     \caption{simplified block diagram of the connection of the different subsystems within the robot }
     \label{fig:blockschematic}
 \end{figure}
@@ -208,22 +207,20 @@ M5 - Scalable swarm population - This is one of the criteria of swarming discuss
 
 \subsection{Should haves}
 
-S1 - Is able to carry a payload - One criteria of swarming is that robots should be able to adjust their environment, a payload could be some kind of tool to make this possible\\\\
-S2 - The robot platform must be modular - It would be preferable if the robots developed during this project are modular so they can be used in further development.\\\\
-S3 - The robot must be able to propel themselves omnidirectional - For exploration based mission the robots should be able to move in different directions so the full area can be explored.\\
+S1 - The localization technique should be able to work in any kind of noisy environment and therefore is immune to interference sound noise\\\\
+
 
 \subsection{Could haves}
 
-C1 - Can move according to the principle of the ZebRo - Research shows that the ZebRo walking principle is a proven concept to get across rough terrain.\\\\
-C2 - Ability to self- charging/ recharging of energy - Makes the robot capable of operating for a not determined time.\\\\
-C3 - Shows signs of intelligence - Could learn how to behave on specific (environment) situations\\\\
-C4 - Is aware when the robot is upside down - When the robot gets in a situation where it is unable to move, the orientation could be usefull to free itself. \\\\
+C1 - Localization also works with heights. Could be able to identify its' surroundings with an additional z-axis.
+C2 - Shows signs of intelligence - Could learn how to behave on specific (environment) situations\\\\
+
 
 
 
 \subsection{Won't haves}
 \begin{itemize}
-\item A master in the swarm network
+\item A master in the swarm network. There won't be a swarm master controlling the swarm.
 \end{itemize}
 
 \newpage

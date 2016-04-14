@@ -29,7 +29,7 @@
 
 
 \usepackage{draftwatermark}
-\SetWatermarkText{Concept}
+\SetWatermarkText{}
 \SetWatermarkScale{5}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
@@ -1088,6 +1088,153 @@ An ultrasonic sensor is usually used to detect if there is some obstacle in the 
 Using the radio communication and the microphones on the swarming units it is possible to determine the distance and angle of every unit within range. each robot will send out a broadcast saying it is going to send its detection signal. As soon as the other units receive this message they will start a timer. Immediately after the broadcast the broadcasting robot will send out a detection sound. As soon as this signal is received by the other robots' microphones the timer will stop and the different times of detection of each microphone will be used to calculate the angle and distance of the unit.
 Using triliteration it is possible to determine the angles of the created triangle knowing the lengths. It is possible to calculate six angles, because of this it is possible to detect the direction of the broadcaster without the possibility of mirroring. As soon as the direction is know it becomes possible to put the detected robot on an XY grid using the build in compass. When all the robots within swarming range have done this all the relative positions will be know from each other.
 \newpage
+
+\section{Functional design}
+
+This chapter describes the functional design of the swarming module. An overview of the swarming module is given in figure \ref{overall}. The module is designed in such a way that it is modulair. This module can be placed on an object (i.e. a robot) and can be used by the object to send and receive relevant information about other in-range swarming modules.
+
+This chapter discusses the following subjects:
+\begin{itemize}
+\setlength\itemsep{0em}
+\item Swarming module
+\item Power supply and safety
+\item Central operating unit
+\item Wireless communication module
+\item Relative orientation sensor
+\item Orientation sensor
+\item Localisation sensor
+\end{itemize}
+
+\subsection{Swarming module}
+The overall design of the swarming module is shown in figure \ref{overall}. Each block of the overall design is described in the following figures.
+\begin{figure}[h]
+  \centering
+      \includegraphics[width=1\textwidth]{overall.pdf}
+  \caption{Overview of the swarm module design}
+  \label{overall}
+\end{figure}
+
+\subsubsection{Power supply and safety}
+An external powersupply is used to provide the system of power. The system uses a fuse as a safeguard to protect the module's sub systems from overloading. The safeguard and power supply are shown in table \ref{power-supply} and \ref{safeguard}.
+
+\begin{table}[H]
+\centering
+\caption{Power supply}
+\label{power-supply}
+\begin{tabular}{|p{1,5cm}|p{9,5cm}|}
+\hline
+Module   & Power supply                                        \\ \hline
+Input    & 5 VDC, 3A                                            \\ \hline
+Outputs  & 5 VDC, 3A                                             \\ \hline
+Function & Provides the system with enough current to power all of the sub modules. \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Safeguard}
+\label{safeguard}
+\begin{tabular}{|p{1,5cm}|p{9,5cm}|}
+\hline
+Module   & Safeguard                                        \\ \hline
+Input    & 5 VDC, 3A                                            \\ \hline
+Outputs  & 5 VDC, 3A                                             \\ \hline
+Function & Protects the module with a fuse from overloading. \\ \hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Central operating unit}
+The central operating unit processes data from the sensors and swarm network. This unit uses the external wireless swarm communication, the local communication bus and the debug interface as an communication channel. The local communication bus uses a TWI (Two Wire Interface) protocol and is used for the communication with the robots peripherals i.e. actuators. The debug interface of the central operating unit uses an UART protocol to communicate with external systems for debug purposes.
+
+\begin{table}[H]
+\centering
+\caption{Central operating unit}
+\label{cou}
+\begin{tabular}{|p{1,5cm}|p{9,5cm}|}
+\hline
+Module   & Central operating unit                                        \\ \hline
+Input    & 3,3 VDC \\
+         & Data streams (TWI, UART)                                           \\ \hline
+Outputs  & Data streams (TWI, UART)                                             \\ \hline
+Function & Calculates the relative position to other swarming modules. Distributes local and external data streams. Analyses and uses sensor information.\\ \hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Wireless communication module}
+The wireless communication module is reponsible for the wireless communication to other swarming modules. The specification of this block is given in table \ref{wcm}.
+
+\begin{table}[H]
+\centering
+\caption{Wireless communication module}
+\label{wcm}
+\begin{tabular}{|p{1,5cm}|p{9,5cm}|}
+\hline
+Module   & Wireless communication module                                       \\ \hline
+Input    & 5 VDC\\ 
+        & Swarm data\\
+        & RF signal                                              \\ \hline
+Outputs  & RF signal                                           \\ 
+& Swarm data \\ \hline
+Function & Processes information to and from other swarm modules. Transmission speed is not defined yet. The transmission range must be around 100 meters or more. \\ \hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Orientation sensor}
+The module uses an orientation sensor to calculate the relative position to other modules. This sensor is connected to the central operating unit which uses the sensor information for the localization algorithm. The specifications of the orientation sensor is given in table \ref{orisensor}.
+
+\begin{table}[H]
+\centering
+\caption{Orientation sensor}
+\label{orisensor}
+\begin{tabular}{|p{1,5cm}|p{9,5cm}|}
+\hline
+Module   & Relative orientation sensor                                        \\ \hline
+Input    & 5 VDC                                             \\ \hline
+Outputs  & Orientation information                                           \\ \hline
+Function & Retrieves the relative orientation of the module. Resolution of at least 45 degrees. \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Localisation sensors}
+\subsubsection{Short range}
+The principle of the short range localisation sensor is displayed in figure \ref{demodulator}, \ref{modulator} and \ref{pll}.
+
+The audio signal will be modulated with frequency shift keying which is an FM based modulation technique. This modulator exist of an voltage controlled oscillator (VCO) with a center frequency of 4KHz. The VCO sends out 3,9KHz when no voltage is applied to it and 4,1KHz when 5V is applied to it. This gives the VCO a frequency swing of 200Hz at which 3,9KHz means a logic ‘0’ and 4,1KHz means a logic ‘1’. This frequency will be fed to an audio amplifier connected to the speaker.
+
+As mentioned earlier the short relative distance measurement will be done acoustically. With acoustic sensing it is required to let the speaker sway to the right oscillation frequency, reaching this oscillation frequency takes time since the speaker won’t oscillate at the right frequency instantly. This complicates the measurement a little bit, since just detecting the to be measured signal won’t always translate into an exact distance due to the time the speakers take to sway into oscillation.
+
+A solution to this problem is to create a fixed reference point within the sent signal. Creating this reference point after a fixed time enables the speaker to sway into oscillation making sure that no faulty measurements occur do to this “swaying time”. When the reference point has been detected by the receiver an accurate distance can be determined by subtracting the fixed “sway time”.
+
+Without the implementation of this fixed reference point it is possible for a receiver to miss a few periods of the signal, due to the speaker still swaying into oscillation and the time of swaying being unknown. For example take an acoustic signal (Speed of sound 340.29 m/s) with a frequency of 4000Hz, one period of this signal is 0.00025s. Missing one period of this signal translates into a distance error of 8.5cm. Since the sway time of a speaker can change over time due to mechanical stresses a fixed time stamp seems the most suitable solution for the long term.
+
+
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=1\textwidth]{modulator.pdf}
+  \caption{Modulator}
+  \label{modulator}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=1\textwidth]{demodulator.pdf}
+  \caption{Demodulator}
+  \label{demodulator}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=1\textwidth]{pll.pdf}
+  \caption{PLL}
+  \label{pll}
+\end{figure}
+
+\subsubsection{Long-rage}
+...
+
+\newpage
+
 
 \section{Bibliografie}
 \bibliography{references}

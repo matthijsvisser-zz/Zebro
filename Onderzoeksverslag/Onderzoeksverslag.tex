@@ -1148,7 +1148,7 @@ The overall design of the swarming module is shown in figure \ref{overall}. Each
 \end{figure}
 
 \subsubsection{Power supply and safety}
-An external powersupply is used to provide the system of power. The system uses a fuse as a safeguard to protect the module's sub systems from overloading. The safeguard and power supply are shown in table \ref{power-supply} and \ref{safeguard}.
+An external power supply is used to provide the system of power. The system uses a fuse as a safeguard to protect the module's sub systems from overloading. The safeguard and power supply are shown in table \ref{power-supply} and \ref{safeguard}.
 
 \begin{table}[H]
 \centering
@@ -1263,8 +1263,6 @@ The main purpose is the demodulator is to identify the reference point. And more
   \label{demodulator}
 \end{figure}
 
-
-
 \begin{table}[H]
 \centering
 \caption{Demodulation specifications}
@@ -1297,13 +1295,55 @@ Features & Rough estimate of relative distance, relative big deadzone, low updat
 \end{table}
 
 
-
-
-
-
-
-
 \newpage
+
+\section{Technical design}
+ 
+In this section the technical design of the swarm module will be discussed. The same structure that was used in the function design will be used here. The design choices that are made will be explained. The following sections will be looked at: 
+
+
+\begin{itemize}
+\setlength\itemsep{0em}
+\item Swarming module
+\item Power supply and safety
+\item Central operating unit
+\item Wireless communication module
+\item Relative orientation sensor
+\item Orientation sensor
+\item Localisation sensor
+\end{itemize}
+
+\subsection{Swarming module}
+
+The overall design of the technical implementation of the swarming module is shown in figure (nog in te vullen). 
+
+Hier mooi blokschemaatje toevoegen. 
+
+
+\subsubsection{Power Supply and Safety}
+
+\subsubsection{Central Operation Unit}
+
+\subsubsection{Wireless Communication module}
+
+For the wireless communication module the most important function is that it can transmit information over atleast 100 meters. The speed of de communication is not defined yet. The Swarmbee LE module will be used for the wireless communication. Its uses the ISM band, 2.4 GHz to transmit the data. The maximum range of the module relies on the environment in which it is used. Under ideal conditions the Swarmbee can reach a distance of 1200 meters. It depends on how many obstacles, reflections and interference there is to disturb the signal. An experiment from Nanotron showed that until a range of 150 meters the ranging success rate is about 100\%. The host interfaces uses UART with a transmission speed of 155 kbps. Transmitting data between the swarm modules can be configured with a speed of 250 Kbps or 1 Mbps. This module fits all the specifications and is suitable for the use of wireless communication. 
+
+
+\subsubsection{Orientation sensor}
+
+\subsection{Localisation sensors}
+
+
+\subsubsection{Short Range}
+
+
+
+
+\subsubsection{Long Range}
+
+For the long range localization, the distance needs to be determined between atleast 3 to 25 meters, with an accuracy of 1 meter. It should be updated with a frequency of 1 Hz. In the Swarmbee module there is already a localization function implemented. This localization function is not usable for short distances but should suit the requirements for the long distance localization. The localization has an accuracy of atleast 30 centimetres and can update with a frequency of 1 Hz. The only downside of this function that is cant determine what angle the signal comes from, it only estimates the distance from the source to the receiver. The modules uses Time of Arrival to determine the distance. All these specifications meet the requirements that are needed, thus this module suits the functionality. 
+
+
 
 
 \section{Bibliografie}

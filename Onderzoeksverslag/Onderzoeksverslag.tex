@@ -1228,11 +1228,11 @@ Function & Retrieves the relative orientation of the module. Resolution of at le
 \end{tabular}
 \end{table}
 
-\subsection{Localisation sensors}
-\subsubsection{Short range}
+
+\subsection{Short range localisation sensor}
 The principle of the short range localisation sensor is displayed in figure \ref{demodulator}, \ref{modulator} and \ref{pll}.
 
-The audio signal will be modulated with frequency shift keying which is an FM based modulation technique. This modulator exist of an voltage controlled oscillator (VCO) with a center frequency of 4KHz. The VCO sends out 3,9KHz when no voltage is applied to it and 4,1KHz when 5V is applied to it. This gives the VCO a frequency swing of 200Hz at which 3,9KHz means a logic ‘0’ and 4,1KHz means a logic ‘1’. This frequency will be fed to an audio amplifier connected to the speaker.
+
 
 As mentioned earlier the short relative distance measurement will be done acoustically. With acoustic sensing it is required to let the speaker sway to the right oscillation frequency, reaching this oscillation frequency takes time since the speaker won’t oscillate at the right frequency instantly. This complicates the measurement a little bit, since just detecting the to be measured signal won’t always translate into an exact distance due to the time the speakers take to sway into oscillation.
 
@@ -1240,7 +1240,9 @@ A solution to this problem is to create a fixed reference point within the sent 
 
 Without the implementation of this fixed reference point it is possible for a receiver to miss a few periods of the signal, due to the speaker still swaying into oscillation and the time of swaying being unknown. For example take an acoustic signal (Speed of sound 340.29 m/s) with a frequency of 4000Hz, one period of this signal is 0.00025s. Missing one period of this signal translates into a distance error of 8.5cm. Since the sway time of a speaker can change over time due to mechanical stresses a fixed time stamp seems the most suitable solution for the long term.
 
+\subsubsection{Modulation}
 
+The audio signal will be modulated with frequency shift keying which is an FM based modulation technique. This modulator exist of an voltage controlled oscillator (VCO) with a center frequency of 4KHz. The VCO sends out 3,9KHz when no voltage is applied to it and 4,1KHz when 5V is applied to it. This gives the VCO a frequency swing of 200Hz at which 3,9KHz means a logic ‘0’ and 4,1KHz means a logic ‘1’. This frequency will be fed to an audio amplifier connected to the speaker. See figure \ref{modulator} for a schematic representation of the modulator.
 
 \begin{figure}[H]
   \centering
@@ -1249,6 +1251,11 @@ Without the implementation of this fixed reference point it is possible for a re
   \label{modulator}
 \end{figure}
 
+\subsubsection{Demodulation}
+
+A demodulator will be needed to retrieve the digital signal send from one swarm-module to another.  One swarming module will send an acoustic signal to the other modules, this signal will then be picked up by an sensor and will need to be processed properly before it can be used to determine the time it took the acoustic signal to travel from one swarming-module to the other. The signal retrieved by the acoustic sensor will also pick up a lot of noise and other sounds from the environment. Also, when further away the signal might be low in amplitude. To increase the amplitude and lower the noise, the signal will be amplified and bandwidth filtered. These modifications to the signal will improve the signal to noise ratio drastically but a lot of noise might still remain. Therefore the demodulator itself must be insensitive to noise.  
+The main purpose is the demodulator is to identify the reference point. And more importantly, determine the point in time the reference point is spotted. The time determined will be used to calculate the distance. Hence, the precision in which the demodulator determines the reference point in time effects the precision of the distance measurement. Only one swarming module will be sending his acoustic signal at any moment. When there are 10 units in its specified range and a preferred update frequency of 40Hz (see section 1). This gives every swarming-module only a small window in time to send their signal and for the other to receive it. When a frequency of 4kHz is chosen for the signal, every swarming-module will have 10 periods to send their signal. There for the demodulator must be able to lock onto the signal and determine the reference point within a few periods of the acoustic signal. See figure \ref{demodulator} for a schematic representation of the demodulator.
+
 \begin{figure}[H]
   \centering
       \includegraphics[width=1\textwidth]{demodulator.pdf}
@@ -1256,15 +1263,45 @@ Without the implementation of this fixed reference point it is possible for a re
   \label{demodulator}
 \end{figure}
 
-\begin{figure}[H]
-  \centering
-      \includegraphics[width=1\textwidth]{pll.pdf}
-  \caption{PLL}
-  \label{pll}
-\end{figure}
 
-\subsubsection{Long-rage}
-...
+
+\begin{table}[H]
+\centering
+\caption{Demodulation specifications}
+\label{demosensor}
+\begin{tabular}{|p{1,5cm}|p{9,5cm}|}
+\hline
+Module   & Demodulator                                   \\ \hline
+Input    & Modulated signal                                             \\ \hline
+Outputs  & Demodulated signal                                         \\ \hline
+Function & Demodulation \\ \hline
+Features & Noise insensitive, precision (time), Quick demodulation  \\ \hline
+\end{tabular}
+\end{table}
+
+
+\subsection{long range distance measurement}
+The long range distance measurement is defined as 3m to 25m(section 1.2). The main reason for the long range distance measurement is for units out of the close range area to be able to find the swarm again. In section 1.2 its restricted to a maximum distance of 25m, but implementations that can achieve a longer range are preferred. As stated before the long range angle measurement will fall out of the scope of this project. Robots will need to use a smart algorithm to find the right way to the swarm. In section 1.2 the following specification are determined: maximum deadzone of two meters, minimal update frequency of 1Hz and a maximum deviation of +/- 1 meter.
+
+\begin{table}[H]
+\centering
+\caption{long range distance sensor specifications}
+\label{longrangesensor}
+\begin{tabular}{|p{1,5cm}|p{9,5cm}|}
+\hline
+Module   & Long range distance sensor specifications                          \\ \hline
+Input    & 5V DC                                           \\ \hline
+Outputs  & Relative distance from other modules                                        \\ \hline
+Features & Rough estimate of relative distance, relative big deadzone, low update frequency  \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+
+
+
+
 
 \newpage
 

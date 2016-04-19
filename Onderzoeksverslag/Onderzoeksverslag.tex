@@ -1230,7 +1230,7 @@ Function & Retrieves the relative orientation of the module. Resolution of at le
 
 
 \subsection{Short range localisation sensor}
-The principle of the short range localisation sensor is displayed in figure \ref{demodulator}, \ref{modulator} and \ref{pll}.
+The principle of the short range localisation sensor is displayed in figure \ref{demodulator} and \ref{modulator}.
 
 
 
@@ -1238,30 +1238,14 @@ As mentioned earlier the short relative distance measurement will be done acoust
 
 A solution to this problem is to create a fixed reference point within the sent signal. Creating this reference point after a fixed time enables the speaker to sway into oscillation making sure that no faulty measurements occur do to this “swaying time”. When the reference point has been detected by the receiver an accurate distance can be determined by subtracting the fixed “sway time”.
 
-Without the implementation of this fixed reference point it is possible for a receiver to miss a few periods of the signal, due to the speaker still swaying into oscillation and the time of swaying being unknown. For example take an acoustic signal (Speed of sound 340.29 m/s) with a frequency of 4000Hz, one period of this signal is 0.00025s. Missing one period of this signal translates into a distance error of 8.5cm. Since the sway time of a speaker can change over time due to mechanical stresses a fixed time stamp seems the most suitable solution for the long term.
+Without the implementation of this fixed reference point it is possible for a receiver to miss a few periods of the signal, due to the speaker still swaying into oscillation and the time of swaying being unknown. For example take an acoustic signal (Speed of sound 340.29 m/s) with a frequency of 4000Hz, one period of this signal is 0.00025s. Missing one period of this signal translates into a distance error of 8.5cm. Since the sway time of a speaker can change over time due to mechanical stresses a fixed time stamp seems the most suitable solution for the long term. The best way to create this reference point it still to be determined. This will be done by either frequency shift keying or phase shift modulation. Some real like testing will have to determine the best method.
 
-\subsubsection{Modulation}
 
-The audio signal will be modulated with frequency shift keying which is an FM based modulation technique. This modulator exist of an voltage controlled oscillator (VCO) with a center frequency of 4KHz. The VCO sends out 3,9KHz when no voltage is applied to it and 4,1KHz when 5V is applied to it. This gives the VCO a frequency swing of 200Hz at which 3,9KHz means a logic ‘0’ and 4,1KHz means a logic ‘1’. This frequency will be fed to an audio amplifier connected to the speaker. See figure \ref{modulator} for a schematic representation of the modulator.
-
-\begin{figure}[H]
-  \centering
-      \includegraphics[width=1\textwidth]{modulator.pdf}
-  \caption{Modulator}
-  \label{modulator}
-\end{figure}
 
 \subsubsection{Demodulation}
 
 A demodulator will be needed to retrieve the digital signal send from one swarm-module to another.  One swarming module will send an acoustic signal to the other modules, this signal will then be picked up by an sensor and will need to be processed properly before it can be used to determine the time it took the acoustic signal to travel from one swarming-module to the other. The signal retrieved by the acoustic sensor will also pick up a lot of noise and other sounds from the environment. Also, when further away the signal might be low in amplitude. To increase the amplitude and lower the noise, the signal will be amplified and bandwidth filtered. These modifications to the signal will improve the signal to noise ratio drastically but a lot of noise might still remain. Therefore the demodulator itself must be insensitive to noise.  
 The main purpose is the demodulator is to identify the reference point. And more importantly, determine the point in time the reference point is spotted. The time determined will be used to calculate the distance. Hence, the precision in which the demodulator determines the reference point in time effects the precision of the distance measurement. Only one swarming module will be sending his acoustic signal at any moment. When there are 10 units in its specified range and a preferred update frequency of 40Hz (see section 1). This gives every swarming-module only a small window in time to send their signal and for the other to receive it. When a frequency of 4kHz is chosen for the signal, every swarming-module will have 10 periods to send their signal. There for the demodulator must be able to lock onto the signal and determine the reference point within a few periods of the acoustic signal. See figure \ref{demodulator} for a schematic representation of the demodulator.
-
-\begin{figure}[H]
-  \centering
-      \includegraphics[width=1\textwidth]{demodulator.pdf}
-  \caption{Demodulator}
-  \label{demodulator}
-\end{figure}
 
 \begin{table}[H]
 \centering
@@ -1276,6 +1260,29 @@ Function & Demodulation \\ \hline
 Features & Noise insensitive, precision (time), Quick demodulation  \\ \hline
 \end{tabular}
 \end{table}
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=1\textwidth]{demodulator.pdf}
+  \caption{Demodulator}
+  \label{demodulator}
+\end{figure}
+
+\subsubsection{Modulation}
+The modulation method is going to be determined by how well the reference point can be recognized by the demodulator. In the research phase, test were done with an speaker and a microphone. This showed that frequency and phase were well defined over distance but amplitude was not. Because of this the available methods for modulation of the acoustic signal are frequency modulation or phase modulation. The most important feature of the modulator must be consistency, meaning that the reference point should be send at exactly the same point in the signal every time. This is so that no deviation will occur when compensating for the missed periods before the reference point. In theory this can be done by both of the methods. 
+
+Nog veranderen!
+
+See figure \ref{modulator} for a schematic representation of the modulator.
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=0.8\textwidth]{modulator.pdf}
+  \caption{Modulator}
+  \label{modulator}
+\end{figure}
+
+
 
 
 \subsection{long range distance measurement}
@@ -1335,6 +1342,7 @@ For the wireless communication module the most important function is that it can
 
 
 \subsubsection{Short Range}
+As stated in the function specifications 
 
 
 

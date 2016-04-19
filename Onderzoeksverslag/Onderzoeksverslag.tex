@@ -8,6 +8,12 @@
 \usepackage{float}
 \usepackage{gensymb}
 
+\usepackage{listings}
+\usepackage[ampersand]{easylist}
+\usepackage{setspace}
+\usepackage{makeidx}
+\usepackage{wrapfig}
+\usepackage{etoolbox}
 
 \usepackage{eurosym}
  
@@ -56,6 +62,32 @@
     showtabs=false,                  
     tabsize=2
 }
+\lstset{ %
+    backgroundcolor=\color[RGB]{250,250,250},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+    basicstyle=\ttfamily,        % the size of the fonts that are used for the code
+    breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+    breaklines=true,                % sets automatic line breaking
+    captionpos=b,                    % sets the caption-position to bottom
+    commentstyle=\color[RGB]{0,128,0},    % comment style
+    extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+    frame=lines,                    % adds a frame around the code
+    keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+    keywordstyle=\color{blue},       % keyword style
+    language=C,                 % the language of the code
+    numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+    numbersep=10pt,                   % how far the line-numbers are from the code
+    numberstyle=\color[RGB]{50,50,50}, % the style that is used for the line-numbers
+    rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+    showstringspaces=false,          % underline spaces within strings only
+    showtabs=false,                  % show tabs within strings adding particular underscores
+    stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
+    stringstyle=\color[RGB]{128,0,128},     % string literal style
+    tabsize=2,                       % sets default tabsize to 2 spaces
+    title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+\renewcommand{\lstlistingname}{Code}% Listing -> Algorithm
+\renewcommand{\lstlistlistingname}{Codes}
+
 \graphicspath{ {./images/} }
 
 \begin{document}
@@ -1356,7 +1388,7 @@ For the wireless communication module the most important function is that it can
 
 
 \subsubsection{Short Range}
-As stated earlier an short range localization will be implemented using acoustic wave signals. Doing so the sensor will be implemented using microphones and a actuator will be implemented using a speaker. 
+As stated earlier a short range localization will be implemented using acoustic wave signals. Doing so the sensor will be implemented using microphones and an actuator will be implemented using a speaker. 
 
 For Trigonometry angle determination the module must atleast poses three microphones spread in a triangle where all sides have the same distance as shown in figure \ref{module}.
 
@@ -1369,9 +1401,11 @@ For Trigonometry angle determination the module must atleast poses three microph
 
 For the distance between the different microphones a length of 10 cm is chosen because with the velocity propagation of sound being 343.2 m/s (at 20\degree C Celsius) and the underlying distance between de microphones being 10 cm using an 32 MHz micro-controller should grant enough overhead time to process the three different times being detected by the microphones.
 
+The following algorithm shows pseudocode how the distance will be calculated.
+\lstinputlisting[firstline=1,lastline=40,label=code:locationalgo,caption=Algorithm to detect the location]{./code/Location_algorithm.c}
+
 \subsubsection{Long Range}
 For the long range localization, the distance needs to be determined between atleast 3 to 25 meters, with an accuracy of 1 meter. It should be updated with a frequency of 1 Hz. In the Swarmbee module there is already a localization function implemented. This localization function is not usable for short distances but should suit the requirements for the long distance localization. The localization has an accuracy of atleast 30 centimetres and can update with a frequency of 1 Hz. The only downside of this function that is cant determine what angle the signal comes from, it only estimates the distance from the source to the receiver. The modules uses Time of Arrival to determine the distance. All these specifications meet the requirements that are needed, thus this module suits the functionality. 
-
 
 
 

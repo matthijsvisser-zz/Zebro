@@ -8,6 +8,7 @@
 \usepackage{float}
 \usepackage{gensymb}
 
+
 \usepackage{eurosym}
  
 \usepackage{fancyhdr}
@@ -465,13 +466,23 @@ Time Of Flight has been very promising, however using electromagnetic signals (F
 \end{figure}
 
 Determining relative distance does not lead to localization. To do so an angle is required. Angle determination can be done in various ways, most of them implementing the goniometric system. The goniometric system explains different approaches for determining the relative angle. The most common method is determining relative location with the use of three stationary beacons, however this limits several possibilities of the entire swarm, being limited to the triangulation perimeter and autonomous spreading the beacons is a difficult and time consuming task.
-Another method is determining relative angle using movement. While measuring the relative angle a phenomenon called mirroring will occur where the angle of the detected node can be in two different directions, one being the reality and one being mirrored. This phenomenon needs to be resolved, and can be done by moving the nodes in different directions after the first measurement has been done. After the first measurement cycle has been completed, the nodes have to move in a specific location then a second measurement cycle measures the movement of the node relative to the first measured location. Doing so this will eliminates the mirrored angle and the relative angle remains. However determining relative angle using movement techniques is a time consuming task and therefore angular updates cannot be done very often.
+
+Another method is determining relative angle using movement. While measuring the relative angle a phenomenon called mirroring will occur where the angle of the detected node can be in two different directions, one being the reality and one being mirrored. This phenomenon needs to be resolved, and can be done by moving the nodes in different directions after the first measurement has been done.
+
+After the first measurement cycle has been completed, the nodes have to move in a specific location then a second measurement cycle measures the movement of the node relative to the first measured location. Doing so this will eliminates the mirrored angle and the relative angle remains. However determining relative angle using movement techniques is a time consuming task and therefore angular updates cannot be done very often.
+
 However trigonometry seems very promising, since mirroring phenomenons cannot occur any more angular determination can be done without major obstacles. Also with the use of trigonometry it is also possible to determine the distance towards a node. Combining the two measurements should lead to a relative localization.
 
+\subsection{Localization proposal}
+In the previous chapters a comparison has been made between RSSI and TOF for implementing a method to localize different nodes. However all the existing research done in this specific field consisted of relative distance determination using electromagnetic signals.
+
+As mentioned earlier using electromagnetic signals is not desirable because of its velocity propagation. So the proposal is to implement TOF with acoustic waves since its velocity propagation is considerably less than that of electromagnetic waves. 
+
+The choice to implement TOF (Time of Flight) instead of RSSI (Received Signal Strength Indication) is due to the previous research and their results done in this specific field. Even though all the experiments done by others only included electromagnetic signals, TOF showed to be the most promising of both methods. 
+
+However the results may vary if this method is implemented using acoustic waves. Due to the strict deadlines there is unfortunately no time to test both methods on acoustic waves.
 \newpage
-
 \section{Acoustic sensing}
-
 Relative distance sensing can be done by simultaneously sending an RF signal and a sound wave and subtracting the time of arrival.
 This method of sensing is based on the fact that RF signals travel with the speed of light and thence travels much faster than sound through the atmosphere: Light travels at 299.792.458 m/s, whereas the speed of sound is only about 332 m/s, depending on air temperature:
 \begin{equation}
@@ -1345,12 +1356,20 @@ For the wireless communication module the most important function is that it can
 
 
 \subsubsection{Short Range}
+As stated earlier an short range localization will be implemented using acoustic wave signals. Doing so the sensor will be implemented using microphones and a actuator will be implemented using a speaker. 
 
+For Trigonometry angle determination the module must atleast poses three microphones spread in a triangle where all sides have the same distance as shown in figure \ref{module}.
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{Module.pdf}
+\caption{Localization Module}
+\label{module}
+\end{figure}
 
+For the distance between the different microphones a length of 10 cm is chosen because with the velocity propagation of sound being 343.2 m/s (at 20\degree C Celsius) and the underlying distance between de microphones being 10 cm using an 32 MHz micro-controller should grant enough overhead time to process the three different times being detected by the microphones.
 
 \subsubsection{Long Range}
-
 For the long range localization, the distance needs to be determined between atleast 3 to 25 meters, with an accuracy of 1 meter. It should be updated with a frequency of 1 Hz. In the Swarmbee module there is already a localization function implemented. This localization function is not usable for short distances but should suit the requirements for the long distance localization. The localization has an accuracy of atleast 30 centimetres and can update with a frequency of 1 Hz. The only downside of this function that is cant determine what angle the signal comes from, it only estimates the distance from the source to the receiver. The modules uses Time of Arrival to determine the distance. All these specifications meet the requirements that are needed, thus this module suits the functionality. 
 
 

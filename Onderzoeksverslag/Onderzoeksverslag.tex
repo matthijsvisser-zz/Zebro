@@ -1381,7 +1381,6 @@ Hier mooi blokschemaatje toevoegen.
 
 For the wireless communication module the most important function is that it can transmit information over atleast 100 meters. The speed of de communication is not defined yet. The Swarmbee LE module will be used for the wireless communication. Its uses the ISM band, 2.4 GHz to transmit the data. The maximum range of the module relies on the environment in which it is used. Under ideal conditions the Swarmbee can reach a distance of 1200 meters. It depends on how many obstacles, reflections and interference there is to disturb the signal. An experiment from Nanotron showed that until a range of 150 meters the ranging success rate is about 100\%. The host interfaces uses UART with a transmission speed of 155 kbps. Transmitting data between the swarm modules can be configured with a speed of 250 Kbps or 1 Mbps. This module fits all the specifications and is suitable for the use of wireless communication. 
 
-
 \subsubsection{Orientation sensor}
 
 \subsection{Localisation sensors}
@@ -1408,6 +1407,67 @@ The following algorithm shows pseudocode how the distance will be calculated.
 For the long range localization, the distance needs to be determined between atleast 3 to 25 meters, with an accuracy of 1 meter. It should be updated with a frequency of 1 Hz. In the Swarmbee module there is already a localization function implemented. This localization function is not usable for short distances but should suit the requirements for the long distance localization. The localization has an accuracy of atleast 30 centimetres and can update with a frequency of 1 Hz. The only downside of this function that is cant determine what angle the signal comes from, it only estimates the distance from the source to the receiver. The modules uses Time of Arrival to determine the distance. All these specifications meet the requirements that are needed, thus this module suits the functionality. 
 
 
+\subsubsection{Communication}
+The communication software of the swarming module can be seperated in several functions. The flowcharts in figure \ref{fig:status}, \ref{fig:populationupdate}, \ref{fig:getid}, \ref{fig:idset}, \ref{fig:sender} and \ref{fig:receiver}
+describe the implementation.
+
+The population update function flowchart is shown in figure \ref{fig:populationupdate}. The register only changes when there is a change in the population.
+
+The status function flowchart in figure \ref{fig:status}, illustrates how the program gets in the send and receive mode. Each consecutive member of the population gets into the send mode, one by one. The members that have been a sender are marked in the population list.
+
+The get id and set id function are used for identification purposes. The flowcharts of these functions are shown in figure \ref{fig:getid} and \ref{fig:idset}.
+
+When the module is in sending state it will first send out it’s close range sensing signals necessary for all receiving modules to start their localization algorithm. All modules within close range of the sending module should receive this signal. 
+The ID’s that were in the population list at the beginning of the process will all store their location information and send it to the sender at request of the sender. A variable ‘receiver ID’ is introduced to send their location information in turns. If no value is received the receiving module is out of range for the close range localization sensor. When this occurs there will be send a request for the long range relative distance via the swarm bee module. When again no signal is received this specific module is completely out of range for the sender, this module will now be deleted from the current population of the swarm until it is in range again.
+All receiving modules will go through this process. When the last ID of the population list is reached the communication process is finished.
+
+When the module is in receiving state the module waits for a request form the sending module. When a localization request is received the receiver will start the localization algorithm. The information is stored in the population array. And the node ID will be marked so there won’t be double effort. If the module receives a request from the sender for information the requested information will be send.
+If this node ID gets the mutex to be a sender, the process will be terminated.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=.3\textwidth]{populationupdate.pdf}
+   \caption{Flowchart for the 'population update' function.}
+   \label{fig:populationupdate}
+\end{figure}
+
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=.5\textwidth]{status.pdf}
+   \caption{Flowchart for the send or receive status of the communication.}
+   \label{fig:status}
+\end{figure}
+
+
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=.2\textwidth]{getid.pdf}
+   \caption{Flowchart for the 'get id' function.}
+   \label{fig:getid}
+\end{figure}
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=.6\textwidth]{idset.pdf}
+   \caption{Flowchart for the 'id set' function.}
+   \label{fig:idset}
+\end{figure}
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=.8\textwidth]{sender.pdf}
+   \caption{Flowchart for the 'sender' function.}
+   \label{fig:sender}
+\end{figure}
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=.6\textwidth]{receiver.pdf}
+   \caption{Flowchart for the 'receiver' function.}
+   \label{fig:receiver}
+\end{figure}
 
 \section{Bibliografie}
 \bibliography{references}

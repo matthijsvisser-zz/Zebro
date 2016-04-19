@@ -1332,6 +1332,8 @@ Hier mooi blokschemaatje toevoegen.
 
 \subsubsection{Power Supply and Safety}
 
+The swarm module will get an input for the power supply and a fuse to make sure the current does not exceed the limit. The type of fuse that will be used will be determined later on when the maximum current can be calculated. 
+
 \subsubsection{Central Operation Unit}
 
 \subsubsection{Wireless Communication module}
@@ -1340,6 +1342,10 @@ For the wireless communication module the most important function is that it can
 
 
 \subsubsection{Orientation sensor}
+
+The module needs to have some kind of orientation to calculate the relative position to the other modules. The Swarmbee module contains a MEMS module, but it is not defined whether it can determine the position or any orientation. Thus another accelerometer could be implemented with an integrated magnetometer. For example the MMA8453Q. This IC has an implemented orientation detection. All angels are accurate to +/- 2 degrees. This accelerometer fits the specification. First the Swarmbee needs to be tested if it includes a function to determine the orientation. If it does not the MMA8453Q is a good alternative. 
+
+
 
 \subsection{Localisation sensors}
 

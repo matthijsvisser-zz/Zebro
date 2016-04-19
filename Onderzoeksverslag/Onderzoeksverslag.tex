@@ -1381,6 +1381,8 @@ Hier mooi blokschemaatje toevoegen.
 
 \subsubsection{Power Supply and Safety}
 
+The swarm module will get an input for the power supply and a fuse to make sure the current does not exceed the limit. The type of fuse that will be used will be determined later on when the maximum current can be calculated. 
+
 \subsubsection{Central Operation Unit}
 
 \subsubsection{Wireless Communication module}
@@ -1388,6 +1390,10 @@ Hier mooi blokschemaatje toevoegen.
 For the wireless communication module the most important function is that it can transmit information over atleast 100 meters. The speed of de communication is not defined yet. The Swarmbee LE module will be used for the wireless communication. Its uses the ISM band, 2.4 GHz to transmit the data. The maximum range of the module relies on the environment in which it is used. Under ideal conditions the Swarmbee can reach a distance of 1200 meters. It depends on how many obstacles, reflections and interference there is to disturb the signal. An experiment from Nanotron showed that until a range of 150 meters the ranging success rate is about 100\%. The host interfaces uses UART with a transmission speed of 155 kbps. Transmitting data between the swarm modules can be configured with a speed of 250 Kbps or 1 Mbps. This module fits all the specifications and is suitable for the use of wireless communication. 
 
 \subsubsection{Orientation sensor}
+
+The module needs to have some kind of orientation to calculate the relative position to the other modules. The Swarmbee module contains a MEMS module, but it is not defined whether it can determine the position or any orientation. Thus another accelerometer could be implemented with an integrated magnetometer. For example the MMA8453Q. This IC has an implemented orientation detection. All angels are accurate to +/- 2 degrees. This accelerometer fits the specification. First the Swarmbee needs to be tested if it includes a function to determine the orientation. If it does not the MMA8453Q is a good alternative. 
+
+
 
 \subsection{Localisation sensors}
 

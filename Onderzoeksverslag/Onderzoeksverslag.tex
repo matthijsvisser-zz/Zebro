@@ -8,6 +8,13 @@
 \usepackage{float}
 \usepackage{gensymb}
 
+\usepackage{listings}
+\usepackage[ampersand]{easylist}
+\usepackage{setspace}
+\usepackage{makeidx}
+\usepackage{wrapfig}
+\usepackage{etoolbox}
+
 \usepackage{eurosym}
  
 \usepackage{fancyhdr}
@@ -55,6 +62,32 @@
     showtabs=false,                  
     tabsize=2
 }
+\lstset{ %
+    backgroundcolor=\color[RGB]{250,250,250},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+    basicstyle=\ttfamily,        % the size of the fonts that are used for the code
+    breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+    breaklines=true,                % sets automatic line breaking
+    captionpos=b,                    % sets the caption-position to bottom
+    commentstyle=\color[RGB]{0,128,0},    % comment style
+    extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+    frame=lines,                    % adds a frame around the code
+    keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+    keywordstyle=\color{blue},       % keyword style
+    language=C,                 % the language of the code
+    numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+    numbersep=10pt,                   % how far the line-numbers are from the code
+    numberstyle=\color[RGB]{50,50,50}, % the style that is used for the line-numbers
+    rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+    showstringspaces=false,          % underline spaces within strings only
+    showtabs=false,                  % show tabs within strings adding particular underscores
+    stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
+    stringstyle=\color[RGB]{128,0,128},     % string literal style
+    tabsize=2,                       % sets default tabsize to 2 spaces
+    title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+\renewcommand{\lstlistingname}{Code}% Listing -> Algorithm
+\renewcommand{\lstlistlistingname}{Codes}
+
 \graphicspath{ {./images/} }
 
 \begin{document}
@@ -251,7 +284,7 @@ Looking at the specifications of each protocol and comparing those, there can be
 \section{Localization}
 Building a swarm of robots, location awareness may be required to ensure an more efficient operation. Implementing location awareness into a swarm of robots could result in better cooperation. For example: exploration based tasks can be executed on a much lower time scale. With location awareness the swarm can spread out evenly making sure that every part of the perimeter will be explored thoroughly. 
 
-With location awareness it is also possible to divide the swarm into multiple groups. Because the location of every individual is available these individual groups can be formed very quickly by selecting the nearest unit. This also enables quick assists when an individual robot gets stuck or needs to execute a task that require more than one unit.
+With location awareness it is also possible to divide the swarm into multiple groups. Because the location of every individual is available these individual groups can be formed very quickly by selecting the nearest unit. This also enables quick assists when an individual robot gets stuck or needs to execute a task that requires more than one unit.
 
 For mapping the various positions of all robots in a swarm a localization technique needs to be implemented. The robots can use information as relative position and relative orientation of their neighbours and fuse the information collected by other robots to interpret the relative location. With relative position the units can define the distance relative to each other. When all robots in the swarm are aware of the distance opposite to each other, a map of the current formation can be created. However this can result in multiple solutions because there are no orientations involved. 
 
@@ -259,7 +292,7 @@ For mapping the various positions of all robots in a swarm a localization techni
 Determining the relative orientation with respect to each other can be done in various ways. some methods involve larger limitations than others. In general angular measurements are done using goniometric equations.
 
 \subsubsection{Goniometric angle determination}
-The goniometric system shows how the different angles of a triangle within a circle can be calculated. Determining angles of a triangle within a circle using goniometric formulas, a mirroring phenomenon can occur this happens because of the following relation between the angles see figure \ref{circle}.
+The goniometric system shows how the different angles of a triangle within a circle can be calculated. Determining angles of a triangle within a circle using goniometric formulas, a mirroring phenomenon can occur this happens because of the following relation between the angles see figure \ref{circle}. This mirroring will be explained in more detail below.
 
 \begin{figure}[H]
 \centering
@@ -278,14 +311,14 @@ Because\ Yq = -Yp,\ sin(-\alpha) = -sin(\alpha)\ applies
 
 This mirroring phenomenon is something that needs to be resolved. Mirroring of the angle means that the robot(s) which is being detected could be in two different direction relative to the interpreter. Figure \ref{detectie} shows how the different robots determine the relative distance to each other. 
 
-% \begin{figure}[H]
-% \centering
-% \includegraphics[angle=90,width=0.7\textwidth]{Detectie.pdf}
-% \caption{Relative location interpretation}
-% \label{detectie}
-% \end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[angle=90,width=0.7\textwidth]{Detectie.pdf}
+\caption{Relative location interpretation}
+\label{detectie}
+\end{figure}
 
-In figure \ref{detectie} a scenario is given where the relative distance between the different nodes (N1, N2 \& N3) is known but their position within the circle is unknown. Because the relative direction (angle) from the interpreters (different nodes) needs to be determined. According to the goniometric equations the direction (angle) within a circle could be mirrored as shown in equation 1 and 2. This could lead to two different interpretations one being the reality as shown in figure \ref{mirror} and one being mirrored as shown in figure \ref{mirror1} (where N1 is the interpreter). 
+In figure \ref{detectie} a scenario is given where the relative distance between the different nodes (N1, N2 \& N3) is known but their position within the circle is unknown. According to the goniometric equations the direction (angle) within a circle could be mirrored as shown in equation 1 and 2. This could lead to two different interpretations one being the reality as shown in figure \ref{mirror} and one being mirrored as shown in figure \ref{mirror1} (where N1 is the interpreter). 
 
 \begin{figure}[H]
 \centering
@@ -305,7 +338,7 @@ In a more practical scenario instead of a mathematical scenario this mirroring p
 
 For the robots to know in what direction the measured distance is applicable to, they can analyze the change in distance after a robot has moved a specific direction. In order to leverage the previous trilateration procedure requires coordinating the motion of the robots in a manner that gives every robot a chance to move and ensures that when a robot is moving its neighbours remain stationary. \cite{Angle}
 
-This method is very impractical because several robots need to abort their current task to move around. This method takes a lot of time to complete and therefore angular updates cannot be done very often. For previous research in this specific field, determining oriantation with movement see.\cite{delft}
+This method is very impractical because several robots need to abort their current task to move around. This method takes a lot of time to complete and therefore angular updates cannot be done very often. For previous research in this specific field, determining oriantation with movement see \cite{delft}.
 
 This can also be achieved by the use of stationary beacons. When a minimum of three beacons is placed on the field the location of the robots within this field can be measured, this is called triangulation. Triangulation is the process of determining the location of a point by measuring angles to it from known points. This is illustrated in figure \ref{driehoek}.
 
@@ -329,7 +362,7 @@ B^2 = C^2 + A^2 - 2\cdot C\cdot A\cdot cos(\beta)
 C^2 = A^2 + B^2 - 2\cdot A\cdot B\cdot cos(\gamma)
 \end{equation}
 
-With the cosine rule exact location of the different nodes can be determined. While using three stationary beacons mirroring cannot occur any more. Because if one beacon measures a distance to a node that is greater than the mutual-distance to another beacon the node is no longer located within the triangulation field.
+With the cosine rule exact location of the different nodes can be determined. Using three stationary beacons mirroring cannot occur any more. Because if one beacon measures a distance to a node that is greater than the mutual-distance to another beacon the node is no longer located within the triangulation field.
 
 \begin{figure}[H]
 \centering
@@ -358,7 +391,9 @@ cos(\alpha) = \frac{(B^2 + C^2 - A^2)}{(2\cdot B\cdot C)}
 cos^{-1}(0,7935) = 37,48\degree
 \end{equation}
 
-Implementing localization using three stationary beacons involves several limitations to the swarm. These limitations are that the swarm cannot operate outside of the triangulation field and therefore is limited to a specific perimeter. Also spreading three stationary beacons autonomously is a difficult task to accomplish.  
+The equations above results in a vector (C) pointing towards the node. doing this for every line (A,B \& C) results in three vectors, all three pointing towards the node from different origins, this leads to the exact location of the node. 
+
+Implementing localization using three stationary beacons involves several limitations to the swarm. These limitations are that the swarm cannot operate far away from the triangulation field and therefore is limited to a specific perimeter, because if the units move to far away from the beacons they become out of range. Also spreading three stationary beacons autonomously is a difficult task to accomplish.  
 
 A more efficient solution is to retrieve the relative orientation opposite to each other. In combination with the relative distance every robot knows the exact relative position of all the other robots in range of the network.
 
@@ -369,16 +404,25 @@ A more efficient solution is to retrieve the relative orientation opposite to ea
 \label{orientation}
 \end{figure}
 
-As seen in figure \ref{orientation} each node has a common reference direction (X,Y), the direction relative to this reference is called the relative orientation of the robot and can be visualized as shown in figure \ref{orientation}. With the known distances, the mapping of the swarm can be completed.
+As seen in figure \ref{orientation} each node has a common reference direction (X,Y), the direction relative to this reference is called the relative orientation of the robot and can be visualized as shown in figure \ref{orientation}. This relative orientation can be achieved using a compass of some sort. With the known distances, the mapping of the swarm can be completed.
+\newpage
+
+\subsubsection{Trigonometry}
+Another method of angle determination is using trigonometry. With trigonometry there is no mirroring due to the fact that all the circles only intersect at one point see figure \ref{trigonometry}. The base functionality of trigonometry is based upon triangulation, except of implementing three stationary beacons on the ground the beacons are placed in one mobile module placed upon a node (robot) for example.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{trigonometry.pdf}
+\caption{Angle determination using trigonometry}
+\label{trigonometry}
+\end{figure}
 \newpage
 
 \subsection{Relative Distance}
 Relative distance can be measured using various methods. The most common methods are \textit{"Received Signal Strength Indication"} and \textit{"Time Of Flight"} abbreviated as RSSI and TOF. 
 
 \subsubsection{Received Signal Strength}
-A method to determine distance can be implemented using Received Signal Strength abbreviated as "RSSI". Typically RSSI is a measure of dBm, which is ten times the logarithm of the ratio of the power (P) at the receiving end and the reference power (Pref). Power at the receiving end is inversely proportional to the square of distance.\cite{RSSI} Hence RSSI could potentially be used as an indicator of the distance at which the sending unit (robot) is located from the receiving unit.\cite{RSSI}
-
-RSSI is defined as ten times the logarithm of the ratio of power of the received signal and a reference power (for example 1mW). It is known that power dissipates from its source as it moves further out. As mentioned earlier the relationship between power and distance is that power is inversely proportional to the square of the distance travelled. \cite{RSSI}
+A method to determine distance can be implemented using Received Signal Strength abbreviated as "RSSI". Typically RSSI of WIFI is a measure of dBm, which is ten times the logarithm of the ratio of the power (P) at the receiving end and the reference power (Pref). Power at the receiving end is inversely proportional to the square of distance.\cite{RSSI} Hence RSSI could potentially be used as an indicator of the distance at which the sending unit (robot) is located from the receiving unit.\cite{RSSI}
 
 In theory it seems as a suitable implementation for the purpose, determining relative distance between different units. However various test results have shown that RSSI is only reliable under certain circumstances. Test results have shown that if the orientation of the sending or receiving unit changes it becomes very unreliable. The graphs below show the reliability of RSSI when the direction is being altered.\cite{RSSI}
 
@@ -414,7 +458,7 @@ Even though RSSI was very promising in many studies, through multi directional e
 \subsubsection{Time Of Flight}
 Another common method to determine relative distance is Time Of Flight abbreviated as "TOF". Time Of Flight describes a method that measures the time that an particular wave takes to travel a distance trough a medium. The wave can be acoustic, electromagnetic and light.
 
-For relative distance measurements Time Of Flight is often combined with Time Difference Over Arrival abbreviated as "TDOA". Combining these methods enables relative distance measurements to specific units/nodes. TDOA measures the time difference between the transmission and arrival of a wave. With the velocity of propagation times the travelled time de relative distance between two or more nodes can be determined. However TOF also features certain limitations being clock synchronization, noise, sampling and multipath channel effects.\cite{TOF} 
+For relative distance measurements Time Of Flight is often combined with Time Difference Over Arrival abbreviated as "TDOA". Combining these methods enables relative distance measurements to specific units/nodes. TDOA measures the time difference between the transmission and arrival of a wave. With the velocity of propagation times the travelled time the relative distance between two or more nodes can be determined. However TOF also features certain limitations being clock synchronization, noise, sampling and multipath channel effects.\cite{TOF} Where the most important limitations for our purpose are clock synchronization and sampling, which will be addressed below.
 \\\\
 \textit{Clock Synchronization}
 TOF ranging systems need to estimate the time of transmission and arrival and comparing this with a common time reference.\cite{TOF} If the different time references are not perfectly synchronized a time offset error occurs. With the faster the propagation speed, the greater the error in distance. 
@@ -424,12 +468,12 @@ Using Light or electromagnetic waves to determine the relative distance can add 
 
 in the 1960's, Tektronix invented a sampling method with a oscilloscope that could measure signals in the GHz range without using high speed clocks. This method is called Sequential Equivalent Time Sampling abbreviated as "SETS". The SETS acquires one sample per trigger see figure \ref{SETS}. When a trigger is detected a sample is taken after a very short, but well defined delay. When the next trigger occurs a small time increment "Delta T" is added to this delay and the digitizer takes another sample. This process is repeated many times with "Delta T" added to each previous acquisition, until the time windows is filled.\cite{SETS} In figure \ref{SETS2} another example of an sinusoidal signal is displayed using the SETS method. 
 
-Using the SETS method enables the use of waveform with an velocity propagation nearly equal to equal to the speed of light. However implementing a advanced SETS circuit is required to reach accuracy of less than 1 meter indoors.\cite{TOF} However using waveforms with a high velocity propagation enables faster data transfers and a larger range.\cite{TOF}
+Using the SETS method enables the use of waveform with an velocity propagation nearly equal to equal to the speed of light. However implementing an advanced SETS circuit is required to reach accuracy of less than 1 meter indoors.\cite{TOF} The benefit of waveforms with a high velocity propagation is faster data transfers and a larger range.\cite{TOF} Even though the SETS method seems as a suitable solution for the problem it is only functional for repeating signal patterns. It is possible to "see" that a signal has been received, but its unable to determine a "time stamp" of the signal.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.9\textwidth]{SETS.png}
-\caption{In sequential equivalent time sampling a singel sample is taken for each recognized trigger after a delay which is incremented after each cycle.\cite{SETS}} 
+\caption{In sequential equivalent time sampling a single sample is taken for each recognized trigger after a delay which is incremented after each cycle.\cite{SETS}} 
 \label{SETS}
 \end{figure}
 
@@ -453,15 +497,24 @@ Time Of Flight has been very promising, however using electromagnetic signals (F
 \label{RSSIvsTOF}
 \end{figure}
 
-Determining relative distance does not lead to localization to do so a angle is required. Angle determination can be done in various ways, most of them implementing the goniometric system. The goniometric system explains different approaches for determining the relative angle. The most common method is determining relative location with the use of three stationary beacons, however this limits several possibilities of the entire swarm, being limited to the triangulation perimeter and autonomous spreading the beacons is a difficult and time consuming task.
-Another method is determining relative angle using movement. While measuring the relative angle a phenomenon called mirroring will occur where the angle of the detected node can be in two different directions, one being the reality and one being mirrored. This phenomenon needs to be resolved, and can be done by moving the nodes in different directions after the first measurement has been done. After the first measurement cycle has been completed, the nodes have to move in a specific location then a second measurement cycle measures the movement of the node relative to the first measured location. Doing so this will eliminates the mirrored angle and the relative angle remains. However determining relative angle using movement techniques is a time consuming task and therefore angular updates cannot be done very often.
+Determining relative distance does not lead to localization. To do so an angle is required. Angle determination can be done in various ways, most of them implementing the goniometric system. The goniometric system explains different approaches for determining the relative angle. The most common method is determining relative location with the use of three stationary beacons, however this limits several possibilities of the entire swarm, being limited to the triangulation perimeter and autonomous spreading the beacons is a difficult and time consuming task.
 
-Driehoeksmeting uitleg en conlusie moet nog komen.
+Another method is determining relative angle using movement. While measuring the relative angle a phenomenon called mirroring will occur where the angle of the detected node can be in two different directions, one being the reality and one being mirrored. This phenomenon needs to be resolved, and can be done by moving the nodes in different directions after the first measurement has been done.
 
+After the first measurement cycle has been completed, the nodes have to move in a specific location then a second measurement cycle measures the movement of the node relative to the first measured location. Doing so this will eliminates the mirrored angle and the relative angle remains. However determining relative angle using movement techniques is a time consuming task and therefore angular updates cannot be done very often.
+
+However trigonometry seems very promising, since mirroring phenomenons cannot occur any more angular determination can be done without major obstacles. Also with the use of trigonometry it is also possible to determine the distance towards a node. Combining the two measurements should lead to a relative localization.
+
+\subsection{Localization proposal}
+In the previous chapters a comparison has been made between RSSI and TOF for implementing a method to localize different nodes. However all the existing research done in this specific field consisted of relative distance determination using electromagnetic signals.
+
+As mentioned earlier using electromagnetic signals is not desirable because of its velocity propagation. So the proposal is to implement TOF with acoustic waves since its velocity propagation is considerably less than that of electromagnetic waves. 
+
+The choice to implement TOF (Time of Flight) instead of RSSI (Received Signal Strength Indication) is due to the previous research and their results done in this specific field. Even though all the experiments done by others only included electromagnetic signals, TOF showed to be the most promising of both methods. 
+
+However the results may vary if this method is implemented using acoustic waves. Due to the strict deadlines there is unfortunately no time to test both methods on acoustic waves.
 \newpage
-
 \section{Acoustic sensing}
-
 Relative distance sensing can be done by simultaneously sending an RF signal and a sound wave and subtracting the time of arrival.
 This method of sensing is based on the fact that RF signals travel with the speed of light and thence travels much faster than sound through the atmosphere: Light travels at 299.792.458 m/s, whereas the speed of sound is only about 332 m/s, depending on air temperature:
 \begin{equation}
@@ -1341,9 +1394,18 @@ For the wireless communication module the most important function is that it can
 
 
 \subsubsection{Short Range}
-The short range sensor will be implemented by the 
+As stated earlier a short range localization will be implemented using acoustic wave signals. Doing so the sensor will be implemented using microphones and an actuator will be implemented using a speaker. 
 
-\subsection{demodulation}
+For Trigonometry angle determination the module must atleast poses three microphones spread in a triangle where all sides have the same distance as shown in figure \ref{module}.
+
+For the distance between the different microphones a length of 10 cm is chosen because with the velocity propagation of sound being 343.2 m/s (at 20\degree C Celsius) and the underlying distance between de microphones being 10 cm using an 32 MHz micro-controller should grant enough overhead time to process the three different times being detected by the microphones.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{Module.pdf}
+\caption{Localization Module}
+\label{module}
+\end{figure}
 
 
 \subsection{Modulation and Demodulation}
@@ -1357,9 +1419,11 @@ The demodulator will be developed using a HEF4046 PLL. The center frequency will
 
 
 
+The following algorithm shows pseudocode how the distance will be calculated.
+\lstinputlisting[firstline=1,lastline=40,label=code:locationalgo,caption=Algorithm to detect the location]{./code/Location_algorithm.c}
+
 \subsubsection{Long Range}
 For the long range localization, the distance needs to be determined between atleast 3 to 25 meters, with an accuracy of 1 meter. It should be updated with a frequency of 1 Hz. In the Swarmbee module there is already a localization function implemented. This localization function is not usable for short distances but should suit the requirements for the long distance localization. The localization has an accuracy of atleast 30 centimetres and can update with a frequency of 1 Hz. The only downside of this function that is cant determine what angle the signal comes from, it only estimates the distance from the source to the receiver. The modules uses Time of Arrival to determine the distance. All these specifications meet the requirements that are needed, thus this module suits the functionality. 
-
 
 
 

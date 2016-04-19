@@ -1271,7 +1271,6 @@ Features & Noise insensitive, precision (time), Quick demodulation  \\ \hline
 \subsubsection{Modulation}
 The modulation method is going to be determined by how well the reference point can be recognized by the demodulator. In the research phase, test were done with an speaker and a microphone. This showed that frequency and phase were well defined over distance but amplitude was not. Because of this the available methods for modulation of the acoustic signal are frequency modulation or phase modulation. The most important feature of the modulator must be consistency, meaning that the reference point should be send at exactly the same point in the signal every time. This is so that no deviation will occur when compensating for the missed periods before the reference point. In theory this can be done by both of the methods. 
 
-Nog veranderen!
 
 See figure \ref{modulator} for a schematic representation of the modulator.
 
@@ -1342,13 +1341,23 @@ For the wireless communication module the most important function is that it can
 
 
 \subsubsection{Short Range}
-As stated in the function specifications 
+The short range sensor will be implemented by the 
 
+\subsection{demodulation}
+
+
+\subsection{Modulation and Demodulation}
+As discussed before in the functional design the signal has to contain a so called reference point. The signal will be modulated to create this reference point. The modulation methods looked at are: amplitude modulation, frequency modulation, and phase modulation. Earlier tests done in the research phase, show that the amplitude over distance of a acoustic wave is non-linear, also the signal to noise ratio is pretty bad in most cases. This makes amplitude modulation far from ideal. FM and PM are more suitable. When demodulating a low frequency signal digital signal processing also becomes an option. The experience in the group is more focussed on analogue signal processing. To save time the choice is made to go with the analogue solution. 
+
+A PLL is used to demodulate the signal. With this demodulation method frequency shifts are easily detected. By the change in the duty cycle on the output of the phase detector which in turn causes a higher voltage coming out of the loop filter. Phase shifts can also be detected but only cause a really short "peak" in the voltage which are harder to detect. The argument against frequency modulation is that the PLL takes a certain amount of time to follow the shift in frequency. However this time is dependent on the integration time of the filter which is a constant. This can be easily compensated later. Previous tests conclude that a 4 kHz signal has the best possible range. This will be the center frequency of the PLL. A frequency of 3,9 kHz will represent a digital '0' and a frequency of 4,1 kHz will represent a digital '1'.\\\\
+\textbf{modulation}\\
+Lower frequencies like the 4 kHz are easily created by the DAC of an microprocessor. We use the DAC of the Xmega128a4u which has a 12-bit resolution and can make up to 1 million samples \cite{xmegadata}. The sinus created by the DAC will be amplified by a op-amp amplifier that drives the speaker.\\\\
+\textbf{demodulation}\\
+The demodulator will be developed using a HEF4046 PLL. The center frequency will be set at 4 kHz. And Phase Comparator 1 is used because of its noise insensitive properties\cite{plldesign}. The design of the filter will determine the bandwith and speed of the pll loop.\cite{plldavid} The bandwidth of the filter is chosen 400Hz so its wide enough to capture the frequency shift from 3,9 kHz to 4,1 kHz. In appendix A(will be added later) the calculations made to properly configure the PLL and the loop filter are shown. A window comparator is used to convert the voltage out of the loop filter into a digital '0' or a '1'. Appendix B contains the schematic of the PLL demodulator.
 
 
 
 \subsubsection{Long Range}
-
 For the long range localization, the distance needs to be determined between atleast 3 to 25 meters, with an accuracy of 1 meter. It should be updated with a frequency of 1 Hz. In the Swarmbee module there is already a localization function implemented. This localization function is not usable for short distances but should suit the requirements for the long distance localization. The localization has an accuracy of atleast 30 centimetres and can update with a frequency of 1 Hz. The only downside of this function that is cant determine what angle the signal comes from, it only estimates the distance from the source to the receiver. The modules uses Time of Arrival to determine the distance. All these specifications meet the requirements that are needed, thus this module suits the functionality. 
 
 

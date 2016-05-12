@@ -1493,6 +1493,38 @@ If this node ID gets the mutex to be a sender, the process will be terminated.
    \label{fig:receiver}
 \end{figure}
 
+\section{Implementation}
+\subsection{Analog Phase locked loop}
+As discussed in section 9.3 of the technical design a PLL is used to demodulate the signal. A window comparator translates the VCO-in voltage into binary code. To test the precision in time a test set-up was build. Two xmega128a4u were used, one for the demodulator side and one for de modulator side see figure \ref{fig:testup} . During tests the PLL was able to lock on the acoustic signal from a maximum distance of 4 meters which is well within the specification of 3 meters.  The PLL was also able to demodulate the FSK signal at this range. So now the reference point could be identified by the demodulator.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\textwidth]{testopstelling.jpg}
+   \caption{Test set-up, the right breadboard is de modulator with a speaker, the left breadboard is the demodulator with an microphone and the PLL}
+   \label{fig:testup}
+\end{figure}
+
+% Please add the following required packages to your document preamble:
+% \usepackage{graphicx}
+\begin{table}[h]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|}
+\hline
+Measure point & 1       & 2       & 3       & 4       & 5       & 6       & 7       & 8       & 9       & 10      \\ \hline
+0,1m        & 3115769 & 3011495 & 3048980 & 3048133 & 3113623 & 3049715 & 3112041 & 3114898 & 3041495 & 3115769 \\ \hline
+1m          & 3112100 & 3012334 & 3102004 & 3159832 & 3068347 & 3123548 & 3110398 & 3119478 & 3062395 & 3119325 \\ \hline
+3m          & 3130596 & 3105236 & 3120056 & 3125069 & 3140686 & 3101498 & 3130295 & 3049821 & 3101956 & 3120549 \\ \hline
+\end{tabular}%
+}
+\caption{Measured times in clock pulses, pre scaler is set to 1024 }
+\label{measuretime}
+\end{table}
+
+The modulator and the demodulator are connected with a wire. The modulator sends a bit when it starts to send the acoustic signal. This bit interrupts the demodulator which starts a timer. When the reference point in the acoustic signal is detected by the PLL the windows comparator sends a binary '1' to the micro-controller which stops the timer. The timer values were then printed in a terminal and are documented in table \ref{measuretime} The measured times are printed in clock pulses with a pre-scaler of 1024. At close range the measured times seem the most stable. However some big deviations of around 500.000 clock pulses still exist. When these times are used to calculate the distance this would mean a deviation is distance of around 5 meters, which is unacceptable. The digital part of the demodulator is tested by connecting a frequency generator to it and observing the time deviation. The time deviation was at a maximum of 200 clock pulses, which is acceptable. The timing deviation is clearly created by the PLL. The assumption was made in section 9.3 that the PLL would introduce a constant time deviation because of the RC time introduced by the loop filter. The exact reasons for this alternating deviation is yet to be determined.
+
+
+
 \section{Bibliografie}
 \bibliography{references}
 \bibliographystyle{IEEEtran}

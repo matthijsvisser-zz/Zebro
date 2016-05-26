@@ -198,7 +198,7 @@ Number of Units & \multicolumn{1}{c|}{3} & \multicolumn{1}{c|}{$\infty$} & \mult
 The choice is made to divide the the specifications for localization into two categories: Close range, and long range. This choice was made because at close range more precision precision is needed to prevent the robots from crashing into each other. While at long range the localization will be used not to loose the swarm. The maximum number at close range is derived from the theoretical number of units that can physically fit in a 3 meter radius. And the preferred number of units for demonstration purpose is used to set a goal for the project. For further clarification how these specifications are determined see chapter one of the research document.
 
 \section{Research}
-This section will a summary of the findings during the research phase. From the full version of the research done during this project we refer to the "Research Document". \\
+This section will a summary of the findings during the research phase. For the full research done during this project we refer to the "Research Document". \\
 The research is split up in the following different subjects: Localization, Hardware communication protocol, Software communication protocol.
 
 \subsection{Localization}
@@ -213,13 +213,6 @@ A system is proposed that combines the two signals (radio and acoustic) in one s
 
 \subsection{Relative angle}
 Determining the relative orientation with respect to each other can be done in various ways. some methods involve larger limitations than others. In general angular measurements are done using goniometric equations. It was found that calculating the angle with a single measuring point on every swarming module has one big problem. Because geometric functions are used to calculate the angle, there will always be two solutions to the equation (see figure \ref{circle} and section 3.1.1 of the Research document). To solve this the units would have to move and recalculate again to get the right answer. This would limit the units in their movement and functionality and is non desirable.
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.7\textwidth]{Cirkel.pdf}
-\caption{Unit circle where points P and Q are mirrored on the X-axes}
-\label{circle}
-\end{figure}
-
 \begin{equation}
 Because\ Xp = Xq,\ cos(-\alpha) = cos(\alpha)\ applies
 \end{equation}
@@ -233,12 +226,21 @@ To solve this problem a system is proposed with three or more acoustic receivers
 
 \begin{figure}[H]
 \centering
+\includegraphics[width=0.7\textwidth]{Cirkel.pdf}
+\caption{Unit circle where points P and Q are mirrored on the X-axes}
+\label{circle}
+\end{figure}
+
+
+
+\begin{figure}[H]
+\centering
 \includegraphics[width=1\textwidth]{trigonometry.pdf}
 \caption{Angle determination using trigonometry}
 \label{trigonometry}
 \end{figure}
 
-\subsection{Demodulation method}
+\subsection{Demodulation methods}
 As talked about before the signal will be modulated and demodulated to introduce a reference point in the signal. This reference point is used to  determine the exact time the signal has travelled. Also the incoming signal from the microphone will suffer from noise and interference. Because of this the demodulator should be noise resistant. Also its part of the specification of the swarming module that it should be a robust system. Therefore the use of high clock micro controllers and complicated software are not preferred.
 
 Project members had experience with frequency demodulation using an analog PLL, and were confident this could be easily tested relatively quick. This will be discussed in the next subsection.
@@ -272,11 +274,11 @@ Measure point & 1       & 2       & 3       & 4       & 5       & 6       & 7   
 
 The modulator and the demodulator are connected with a wire. The modulator sends a bit when it starts to send the acoustic signal. This bit interrupts the demodulator which starts a timer. When the reference point in the acoustic signal is detected by the PLL the windows comparator sends a binary '1' to the micro-controller which stops the timer. The timer values were then printed in a terminal and are documented in table \ref{measuretime} The measured times are printed in clock pulses with a pre-scaler of 1024. At close range the measured times seem the most stable. However some big deviations of around 500.000 clock pulses still exist. When these times are used to calculate the distance this would mean a deviation is distance of around 5 meters, which is unacceptable. The digital part of the demodulator is tested by connecting a frequency generator to it and observing the time deviation. The time deviation was at a maximum of 200 clock pulses, which is acceptable. The timing deviation is clearly created by the PLL. In section 9.3 of the research document was stated that the PLL would introduce a constant time deviation because of the RC time introduced by the loop filter. We suspect that the reason for the deviation is caused by the window comparator. The time the windows comparator takes to switch from 0 to 5 volt might deviate, which in turn causes the deviation in time. We have not found a way to test or measure this assumption though. Because if this problem the analog PLL approach is not usable for this project.
 
-\label{Demodulating with a Microproccessor}
-Its been established that the analog solution does not meet the criteria. The other option is to process the signal digitally, with an microprocessor. This still needs to be worked out further.
+\subsubsection{Demodulating with a Microproccessor}
+Its been established that the analog solution does not meet the criteria. The other option is to process the signal digitally, with an microprocessor. The ADC of the Xmega contain an comparator. This can be used to detect how many times the incoming signal goes trough a certain threshold. From this information the frequency can be derived.
 
 \subsection{Acoustic Sensing}
-In this section the behaviour of acoustic sensing will be researched. This was done in real life experiments using a microphone, speaker and scope to analyse the received signals. During experiments the following points where analysed:
+In this section the behaviour of acoustic signals will be researched. This was done in real life experiments using a microphone, speaker and scope to analyse the received signals. During experiments the following points where analysed:
 
 \begin{itemize}
 \item Sound has to spread in every direction (omnidirectional).

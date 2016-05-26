@@ -402,7 +402,14 @@ The demodulator has to be able to detect the frequency of the incoming signal. T
 
 \subsubsection{Distance measurement}
 The distance is derived from the time it takes the acoustic signal to travel from module A to module B. 
-Suppose that module A is about to send its signal. Just before it starts sending the acoustic signal, it sends a message over the 
+Suppose that module A is about to send its signal. Just before it starts sending the acoustic signal, it sends a message over the radio communication, which is almost instant compared to the speed of the sound waves. Module B starts its timer and wait for the signal to arrive. When it arrives it stops it's timer and takes off some pre-defined corrections based on tests done earlier. The distance can now be derived multiplying the speed of sound with the measured time.
+\textbf{ADD state-diagram distance measurement}
+
+\subsubsection{Angle measurement}
+The Swarming module has three microphones placed with known distances between them. The relative angle is derived from the time measured with each microphone, and the distance between the microphones. In section 3.2 there's more information on how this is done.
+
+The following algorithm shows pseudo-code how the angle will be calculated.
+\lstinputlisting[firstline=1,lastline=40,label=code:locationalgo,caption=Algorithm to detect the location]{./code/Location_algorithm.c}
 
 
 

@@ -16,6 +16,7 @@
 \usepackage{etoolbox}
 
 \usepackage{eurosym}
+\usepackage{siunitx}
  
 \usepackage{fancyhdr}
 
@@ -211,6 +212,7 @@ Now that this is established there are still two ways to implement a distance me
 
 A system is proposed that combines the two signals (radio and acoustic) in one system. Swarming modules each get their place in time to send their acoustic signal. At the moment the module starts sending the acoustic signal, he sends a message over the radio communication channel saying "im going to send my signal", the radio signal arrives close to instantly compared to the acoustic signal. At this point all the other modules start their timers, and stop them when the acoustic signal arrives a few moments later. The distance can now be calculated to multiply the time with the speed of sound.
 
+
 \subsection{Relative angle}
 Determining the relative orientation with respect to each other can be done in various ways. some methods involve larger limitations than others. In general angular measurements are done using goniometric equations. It was found that calculating the angle with a single measuring point on every swarming module has one big problem. Because geometric functions are used to calculate the angle, there will always be two solutions to the equation (see figure \ref{circle} and section 3.1.1 of the Research document). To solve this the units would have to move and recalculate again to get the right answer. This would limit the units in their movement and functionality and is non desirable.
 \begin{equation}
@@ -287,7 +289,169 @@ In this section the behaviour of acoustic signals will be researched. This was d
 \end{itemize}
 
 More details about the experiment and the setup are shown in section 4 of the Research document. The first experiment had the speakers facing the microphone directly, this was clearly the best situation, higher frequencies showed higher amplitude and the signal was well defined. However the most ideal situation would be for one speaker to be omnidirectional instead of having to use multiple speakers.  \\
-Another test was done with the speaker and microphone both facing upwards. It was observed that higher frequency sound (around 5kHz) becomes more directional. The best results were achieved around 3 - 4 kHz, this was the point where the highest amplitude was achieved and the minimum distance of three meters was easily met.
+Another test was done with the speaker and microphone both facing upwards. It was observed that higher frequency sound (around 5 kHz) becomes more directional. The best results were achieved around 3 - 4 kHz, this was the point where the highest amplitude was achieved and the minimum distance of three meters was easily met.
+
+
+\subsection{Functional specifications}
+
+\subsubsection{Wireless communication} 
+
+The specifications of the wireless communication are  discussed in our framework, but will be shortly summarized. 
+
+\begin{table}[H]
+\centering
+\caption{Wireless communication module}
+\label{wirelesscommunication}
+\begin{tabular}{|l|l|}
+\hline
+Module    & Wireless communication module \\ \hline
+Input  & \begin{tabular}[c]{@{}l@{}}Communication with the system\\ Communication with the other robots in the swarm          
+\end{tabular}   \\ \hline
+Output & \begin{tabular}[c]{@{}l@{}}Communication with the system\\ Communication with the other robots in the swarm         
+\end{tabular}   \\ \hline
+Functions   & \begin{tabular}[c]{@{}l@{}}establishes the communication between the modules swarm \\ Obtains information regarding the distance between the different robots\end{tabular}            \\ \hline
+\end{tabular}
+\end{table}
+
+To communicate between different units a communication network should
+be set up with a common protocol . In addition, the protocol must be able to
+provide additional information such as localization. See Table \ref{wirelesscommunication}. 
+
+\subsubsection{Central control unit}
+
+The central control unit handles all communication between the various modules that are present on the robot. See Table \ref{control}
+
+\begin{table}[H]
+\centering
+\caption{Central control unit}
+\label{control}
+\begin{tabular}{|l|l|}
+\hline
+Module    & Central control unit \\ \hline
+Input  & All information from the system  \\ \hline
+Output & All control of the modules in the robot \\ \hline
+Functions  & All the communication comes together and controls the inputs and outputs            \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+
+
+\subsection{Specifications}
+
+\subsubsection{Wireless communication}
+
+In Table \ref{wcm} a more detailed version of the specifications are written down. From these specifications the module will be implemented as is shown in the next section. 
+
+\begin{table}[H]
+\centering
+\caption{Wireless communication module}
+\label{wcm}
+\begin{tabular}{|p{1,5cm}|p{9,5cm}|}
+\hline
+Module   & Wireless communication module                                       \\ \hline
+Input    & 5 VDC\\ 
+        & Swarm data\\
+        & RF signal                                              \\ \hline
+Outputs  & RF signal                                           \\ 
+& Swarm data \\ \hline
+Function & Processes information to and from other swarm modules. Transmission speed is not defined yet. The transmission range must be around 100 meters or more. \\ \hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Central operating unit}
+The central operating unit processes data from the sensors and swarm network. This unit uses the external wireless swarm communication, the local communication bus and the debug interface as an communication channel. The local communication bus uses a TWI (Two Wire Interface) protocol and is used for the communication with the robots peripherals i.e. actuators. The debug interface of the central operating unit uses an UART protocol to communicate with external systems for debug purposes.
+
+\begin{table}[H]
+\centering
+\caption{Central operating unit}
+\label{cou}
+\begin{tabular}{|p{1,5cm}|p{9,5cm}|}
+\hline
+Module   & Central operating unit                                        \\ \hline
+Input    & 3,3 VDC \\
+         & Data streams (TWI, UART)                                           \\ \hline
+Outputs  & Data streams (TWI, UART)                                             \\ \hline
+Function & Calculates the relative position to other swarming modules. Distributes local and external data streams. Analyses and uses sensor information.\\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Implementation}
+
+\subsubsection{Central operating unit}
+
+In Table \ref{cou} the basic specifications of the AtXmega128A4U are shown. This is the microcontroller used in as the central operating unit. The microcontroller from Atmel complies with all the specifications. An overview of all the specification can be found on the website of Atmel. 
+
+
+\begin{table}[]
+\centering
+\caption{Central operating unit}
+\label{cou}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Parameter}			& \textbf{Value} \\ \hline
+Flash (kBytes):             & 128 kBytes \\ \hline
+Pin Count:                  & 44         \\ \hline
+Max. Operating Freq. (MHz): & 32 MHz     \\ \hline
+CPU:                        & 8-bit AVR  \\ \hline
+Max I/O pins:               & 34         \\ \hline
+USB Interface:              & Device     \\ \hline
+SPI:                        & 7          \\ \hline
+TWI (I2C):                  & 2          \\ \hline
+UART:                       & 5          \\ \hline
+ADC Channels:               & 12         \\ \hline
+ADC Resolution (bits):      & 12         \\ \hline
+ADC Speed (ksps):           & 2000       \\ \hline
+DAC Channels:               & 2          \\ \hline
+SRAM (kBytes):              & 8          \\ \hline
+EEPROM (Bytes)              & 2048       \\ \hline
+Operating Voltage (Vcc):    & 1.6 to 3.6 \\ \hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Functions}
+
+The Central operating unit handles multiple functions to make the group of robots a swarm. Those functions will be explained in this section.
+There are four major functions that are implemented in the microcontroller. Controlling communication that goes in and out, storage and maintain data, calculating the population of the swarm and send and receive message that are used for localization. The 
+
+\subsubsection{Wireless communication}
+
+\begin{table}[]
+\centering
+\caption{Swarmbee LE module} 
+\label{SwarmbeeLE}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|ll|}
+\hline
+\multicolumn{1}{|l|}{\textbf{Parameter}}                                                                                                 & \textbf{Value}                                                                                                                 \\ \hline
+\multicolumn{1}{|l|}{Frequency range}                                                                                                    & ISM band 2.4 GHz (2.4 - 2.4835 GHz)                                                                                            \\ \hline
+\multicolumn{1}{|l|}{Modulation}                                                                                                         & Chirp Spread Spectrum (CSS)                                                                                                    \\ \hline
+\multicolumn{1}{|l|}{Transmission modes}                                                                                                 & \begin{tabular}[c]{@{}l@{}}80 MHz, 1 Mbps or 250 Kbps\\ (80/1 or 80/4 mode)\end{tabular}                                       \\ \hline
+\multicolumn{1}{|l|}{TOA capture accuracy}                                                                                               & \textless 1 ns (better than 30 cm)                                                                                             \\ \hline
+\multicolumn{1}{|l|}{Typical air time per ranging cycle}                                                                                 & 1.8 ms                                                                                                                         \\ \hline
+\multicolumn{1}{|l|}{RF output power}                                                                                                    & configurable - 22 t0 16 dBm                                                                                                    \\ \hline
+\multicolumn{1}{|l|}{RF sensitivity}                                                                                                     & \begin{tabular}[c]{@{}l@{}}-89 dBm typ. @80/1 mode\\ -95 dBm typ. @80/4 mode\end{tabular}                                      \\ \hline
+\multicolumn{1}{|l|}{RF interface}                                                                                                       & 50 Ohm RF port (for external antenna)                                                                                          \\ \hline
+\multicolumn{1}{|l|}{Host interface (UART)}                                                                                              & 500bps $\sim$ 2 Mbps                                                                                                           \\ \hline
+\multicolumn{1}{|l|}{Power supply}                                                                                                       & 3 - 5.5 V                                                                                                                      \\ \hline
+\multicolumn{1}{|l|}{Max. supply voltage ripple}                                                                                         & 20 mVpp                                                                                                                        \\ \hline
+\multicolumn{1}{|l|}{Active power consumption*}                                                                                          & 120 mA during transmission, 60 mA during receive in 80/1 mode                                                                  \\ \hline
+\multicolumn{1}{|l|}{Power consumption in sleep mode*}                                                                                   & 5.5 mA (transceiver disabled, all peripherals on)                                                                              \\ \hline
+\multicolumn{1}{|l|}{Power consumption in snooze mode*}                                                                                  & 4.5 \si{micro}A (transceiver disabled, all peripherals off, wake-up by timer)                                                           \\ \hline
+\multicolumn{1}{|l|}{Power consumption in nap mode**}                                                                                    & \begin{tabular}[c]{@{}l@{}}4.5 $\sim$ 600 \si{micro}A (transceiver disabled, all peripherals off, wake-up by \\ interrupt)\end{tabular} \\ \hline
+\multicolumn{1}{|l|}{Power consumption in deep-sleep mode*}                                                                              & \textless 1 \si{micro}A (device completely disabled)                                                                                    \\ \hline
+\multicolumn{1}{|l|}{Operating temperature range}                                                                                        & -30 - 85 $^{\circ}$C                                                                                                                    \\ \hline
+\multicolumn{1}{|l|}{Dimensions}                                                                                                         & 40 mm x 24 mm x 3.5 mm                                                                                                         \\ \hline
+\multicolumn{1}{|l|}{Weight}                                                                                                             & 7 g                                                                                                                            \\ \hline
+\begin{tabular}[c]{@{}l@{}}*Power consumption in all modes is \\ measured at 20$^{\circ}$C, 3.3 V.\end{tabular}                                   &                                                                                                                                \\ \hline
+\begin{tabular}[c]{@{}l@{}}**Power consumption in nap mode \\ depends  on interrupt sources (GPIO \\ pins or MEMS or both).\end{tabular} &                                                                                                                                \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+For the wireless communication module the most important function is that it can transmit information over atleast 100 meters. The speed of de communication is not defined yet. The Swarmbee LE module will be used for the wireless communication. Its uses the ISM band, 2.4 GHz to transmit the data. The maximum range of the module relies on the environment in which it is used. Under ideal conditions the Swarmbee can reach a distance of 1200 meters. It depends on how many obstacles, reflections and interference there is to disturb the signal. An experiment from Nanotron showed that until a range of 150 meters the ranging success rate is about 100%. The host interfaces uses UART
+with a transmission speed of 155 kbps. Transmitting data between the swarm modules can be configured with a speed of 250 Kbps or 1 Mbps. This module fits all the specifications and is suitable for the use of wireless communication.
 
 \newpage
 

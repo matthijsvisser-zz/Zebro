@@ -380,7 +380,7 @@ Function & Calculates the relative position to other swarming modules. Distribut
 
 \subsubsection{Central operating unit}
 
-In Table \ref{cou} the basic specifications of the AtXmega128A4U are shown. This is the microcontroller used in as the central operating unit. The microcontroller from Atmel complies with all the specifications. An overview of all the specification can be found on the website of Atmel. 
+In Table \ref{cou} the basic specifications of the AtXmega128A4U are shown. This is the microcontroller used in as the central operating unit. The microcontroller from Atmel complies with all the specifications. There are also newer micro controllers available, but are not yet implemented for this project, since the older versions can handle the workload and work fine. There are two $I^2$C connections available on the microcontroller which are needed to connect the module to the robot. Also the multiple ADC and DAC connections can come in handy if any sensors or actuators need to be added to the module. Overall the AtXmega128A4U fits all the specification that are required, and there is room to expand the functionality when it is necessary. An overview of all the specification can be found on the website of Atmel.
 
 
 \begin{table}[]
@@ -410,21 +410,22 @@ Operating Voltage (Vcc):    & 1.6 to 3.6 \\ \hline
 \end{table}
 
 The Central operating unit handles multiple functions to make the group of robots a swarm. Those functions will be explained in this section.
-There are four major functions that are implemented in the microcontroller. Controlling communication that goes in and out, storage and maintain data, calculating the population of the swarm and send and receive message that are used for localization. First of all we will discuss the implementation of the communication.
+There are four major functions that are implemented in the microcontroller. Controlling communication that goes in and out, storage and maintain data, calculating the population of the swarm and send and receive message that are used for localization. The communication will be mainly about the communication with the Swarmbee module. The connection to the robot is just as important but will not be thoroughly discussed in this document. First of all we will discuss the implementation of the communication.
 
 \subsubsection{Communication}
 
 The central operating unit needs to send request and receive data from the Swarmbee module. This information is transmitted using the UART protocol. The communication is mainly used for sending API commands to the Swarmbee module. The UART connecting uses a baudrate of 115200 bps since this is the transmission speed of the Swarmbee module. The Xmega uses two pins, RX (PC2), TX PC3) to achieve a wired connection with the Swarmbee. The module needs to be able to communicate with a robot platform. To communicate with this platform the module uses $I^2$C communication. This should be standard for every robot, so that the module can easily be placed on any type of robot platform.
+For debugging pin C7 en C8 are reserved. The debugging connecting can be established with a terminal such as Putty.
 
 \begin{figure}[H]
    \centering
-   \includegraphics[scale=0.5]{mainal.pdf}
+   \includegraphics[scale=0.45]{mainal.pdf}
    \caption{main algorithm for updating the swarm population including range requests}
    \label{fig:mainal}
 \end{figure}
 
 \subsubsection{Swarm population}
-To update the swarm population all modules need to receive all node ID's from other modules in range of the swarm bee module. This is the first step in the flowchart of the main algorithm shown in figure  \ref{fig:mainal}. The swarm bee automatically assigns a unique ID to all nodes. A list of all nodes and the corresponding ranges can be requested from the swarm by a API broadcast message: "GRWL", or, "get ranging white list". This broadcast message can be requested at a certain interval which depends on the demand of this information. When the swarm bee receives a ranging request its response will look somewhat like this:
+To update the swarm population all modules need to receive all node ID's from other modules in range of the Swarmbee module. This is the first step in the flowchart of the main algorithm shown in figure  \ref{fig:mainal}. The swarm bee automatically assigns a unique ID to all nodes. A list of all nodes and the corresponding ranges can be requested from the swarm by a API broadcast message: "GRWL", or, "get ranging white list". This broadcast message can be requested at a certain interval which depends on the demand of this information. When the swarm bee receives a ranging request its response will look somewhat like this:
 
 \lstinputlisting[firstline=1,lastline=1,label=code:rrn,caption=]{./code/swarmbeeex.c}
 
@@ -444,8 +445,7 @@ When the swarm module is in sending mode it will send out a sound signal and ret
 
 \subsubsection{Wireless communication}
 
-For the wireless communication module the most important function is that it can transmit information over atleast 100 meters. The speed of de communication is not defined yet. The Swarmbee LE module will be used for the wireless communication. Its uses the ISM band, 2.4 GHz to transmit the data. The maximum range of the module relies on the environment in which it is used. Under ideal conditions the Swarmbee can reach a distance of 1200 meters. It depends on how many obstacles, reflections and interference there is to disturb the signal. An experiment from Nanotron showed that until a range of 150 meters the ranging success rate is about 100%. The host interfaces uses UART
-with a transmission speed of 155 kbps. Transmitting data between the swarm modules can be configured with a speed of 250 Kbps or 1 Mbps. This module fits all the specifications and is suitable for the use of wireless communication.
+For the wireless communication module the most important function is that it can transmit information over atleast 100 meters. Since the specification states that the swarm must be detected within this range. The speed of de communication is not defined yet, but needs to be fast enough to handle all the messages. The Swarmbee LE module will be used for the wireless communication. Its uses the ISM band, 2.4 GHz to transmit and receive the data. The maximum range of the module relies on the environment in which it is used. Under ideal conditions the Swarmbee can reach a distance of 1200 meters. It depends on how many obstacles, reflections and interference there is to disturb the signal. An experiment from Nanotron showed that until a range of 150 meters the ranging success rate is about 100\% with a transmission speed of 155 kbps. Experiments we have done ourself show that the antenna on the device does not respond very well inside a building. Test outdoors should still be done, but there is a possibility that an external antenna is needed to reach these distances. The actual speed is also not tested yet, but could be done in the future. Transmitting data between the swarm modules can be configured with a speed of 250 Kbps or 1 Mbps. Experience shows that these speeds are more then enough to fit the needs. This module fits all the specifications and is suitable for the use of wireless communication.
 
 \begin{table}[]
 \centering
@@ -479,7 +479,6 @@ with a transmission speed of 155 kbps. Transmitting data between the swarm modul
 \end{tabular}%
 }
 \end{table}
-
 
 \newpage
 

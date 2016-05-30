@@ -290,6 +290,41 @@ In this section the behaviour of acoustic signals will be researched. This was d
 
 More details about the experiment and the setup are shown in section 4 of the Research document. The first experiment had the speakers facing the microphone directly, this was clearly the best situation, higher frequencies showed higher amplitude and the signal was well defined. However the most ideal situation would be for one speaker to be omnidirectional instead of having to use multiple speakers.  \\
 Another test was done with the speaker and microphone both facing upwards. It was observed that higher frequency sound (around 5 kHz) becomes more directional. The best results were achieved around 3 - 4 kHz, this was the point where the highest amplitude was achieved and the minimum distance of three meters was easily met.
+\subsection{Swarm communication network}
+This chapter is a summarizing of chapter 'Swarm communication' in the research document of this project. The is a global research of (wireless) swarm communication networks. This research was done to determine the needed protocol(s), algorithms and the use of hardware for creating swarm networks. This chapter cites the conclusions and recommendations from the research document.
+
+\subsubsection{Network criteria}
+There are several requirements to realise a robot swarm. Chapter 'Swarm communication' in the research document and some items in chapter 'Swarming' in this document name these requirements. 
+
+Each member of the population needs to communicate with the rest of the swarm. A communication network is needed to make the members of the population interact with each other.
+
+The requirements relevant for swarm communication:
+\begin{itemize}
+\setlength\itemsep{0em}
+    \item Scalability of the swarm - It is important that the population size of the swarm is
+    dynamic, because of the scalability of the swarm.
+    \item Distributed communication - The use of a global channel for the coordination would influence the autonomy of the units.\cite{swarmintelligence}
+    \item Wireless communication - To give the members full freedom of movement it is useful for the   communication to be wireless.
+    \item Autonomy - A swarm doesn't have a master. Each member needs to be capable of maintaining the  network. These networks also must be able to reroute around nodes that have
+    been lost.
+\end{itemize}
+Each item has additional sub criteria, this and additional information can be found in the research document.
+
+
+\subsubsection{Recommendation and conclusion}
+The results of the sub-study in the research document have resulted in recommendations for the implementation of the
+swarming module. An enumeration of the most important recommendations is given below:
+\begin{itemize}
+\setlength\itemsep{0em}
+    \item From all of the available network topologies, a partially connected mesh network satisfies the desired network requirements.
+    \item With the use of routing protocols the network can be rerouted around nodes that have been lost. The most suitable protocol for re-routing in this situation is greedy routing or simular.
+    \item Wireless communication is not only useful, it must be a requirement. Due to the mobility of the swarm members, wired communication is feasible.
+    \item As stated in the research, UWB, Wi-Fi and ZigBee protocols are all suitable to create a wireless mesh swarm network. Six potential protocols have been investigated and eventually four of them are compared in the conclusion. The comparison is based on transmitting range, scalability, data coding efficiency, protocol complexity, data distribution per square meter and power consumption. The results from the comparison of the protocols don't differ much from each other, only Bluetooth stands out.
+\end{itemize}
+The other additional recommendations and conclusions can be found in the research document.
+
+\subsubsection{Communication implementation}
+During the research, we came across some plug and play wireless swarm communication implementations. One of these implementations is the SwarmBEE LE module from Nanotron. The SwarmBEE LE module meets the given network criteria and most of the recommendations. The module uses a radio frequency 2,4 GHz signal as a communication channel. The module is not only a communication module, but can also be used to determine relative distances to each swarming module. It also has a API with predefined functions which can be used to set up the wireless network.
 
 
 \subsection{Functional specifications}
@@ -587,23 +622,23 @@ The signal received by the microphone, translates in just a few millivolts. This
 \subsubsection{Demodulator}
 The DAC of the Xmega128a4u is used to create a 4 kHz sine wave signal. The signal will be sent out for a pre-defined period of time (for example 10 periods) and then the signal will pause for a pre-defined period and continue for the same pre-defined period of time sent before (10 periods) see figure\cite{fig:Signal}. The pause will be the reference point within the signal. This reference point is to eliminate various uncertainties like the time it takes for the speaker to start resonating and to increase reliability. Because the chosen frequency lies within the speech range, the measurement can be easily disturbed by regular sounds. A reference point within this signal is difficult, maybe even impossible to reproduce in the form of environmental noise.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1\textwidth]{sinesignal.pdf}
-    \caption{Example sent signal }
-    \label{fig:Signal}
-\end{figure}
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=1\textwidth]{sinesignal.pdf}
+%     \caption{Example sent signal }
+%     \label{fig:Signal}
+% \end{figure}
 
 De-modulating this signal will be done with the following block diagram see figure\cite{fig:demodulatorblock}. The sound is being captured by a microphone and this signal is being filtered with a bandpass filter to narrow the frequency range to limit the noise. The filtered signal is being amplified with a instrumentation amplifier to eliminate the common DC offset of the microphone. The analog comparator is a feature built in the xmega128a4u microcontroller it detects every rising edges of the signal. Measuring the time between every rising edge translates with a simple formula into a frequency.
 
 By counting every rising edge it is also possible to track every period of the received signal. Which enables us to implement a reference point within the signal using the method mentioned above increasing reliability. 
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1\textwidth]{De-modulator.pdf}
-    \caption{Demodulator block diagram }
-    \label{fig:demodulatorblock}
-\end{figure}
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=1\textwidth]{De-modulator.pdf}
+%     \caption{Demodulator block diagram }
+%     \label{fig:demodulatorblock}
+% \end{figure}
 
 \subsubsection{Modulator}
 The signal shown in figure\cite{fig:Signal} needs to be modulated to then be sent through a speaker. The signal is being generated within a microcontroller and sent to the speaker through a digital to analog converter. This signal is first being amplified to make sure it is loud enough. The block diagram for modulating this signal is shown in figure \cite{fig:modulatorblock}. The “blank” spaces in the signal is done by stop sending for period equal to the pre-defined time for a blank.

@@ -557,11 +557,38 @@ The acoustic signal is send by a speaker facing upward. A metal plate is placed 
 
 
 The signal received by the microphone, translates in just a few millivolts. This signal is amplified for a total of 9600 by several stages of amplifiers, so that the signal clips on the supply voltage. This ruins the shape of the signal. However we're only interested in the frequency which will remain the same. After that the signal is bandpass filtered, to get rid of most of the noise. After this the signal is fed into the ADC of the Xmega128a4u. The modulator and demodulator will now be discussed in detail.\\\\
-\textbf{Modulator}\\
-The DAC of the Xmega128a4u is used to create a 4 kHz square wave signal. The signal will be send out for a pre-defined period of time and then the signal will pause for one period and continue. The pause will be the reference signal. The reference point is to eliminate certain uncertainties like the time it takes for the speaker to start resonating. The signal send looks like this 10 periods of signal, 2 periods nothing 10 periods of signal.\\ \textbf{ADD block diagram of modulator}\\\\
-\textbf{Demodulator}
-The demodulator has to be able to detect the frequency of the incoming signal. The demodulator has to differentiate between the wanted signal and other signal coming from the environment. This is done by looking at the characteristics of the signal, most importantly the frequency. The comparator in the ADC of the Xmega is used to count how many times the signal crosses a certain threshold. The frequency is derived from the simple fact that two crossings, should mean one period has passed. The reference-point is found when the micro-controller detect the send-pause-send sequence that's send by the modulator. Important to note is that the micro-controller looks at the time of the pause moment to make sure its the actual signal.\\
-\textbf{ADD block diagram of demodulator} 
+\subsubsection{Demodulator}
+The DAC of the Xmega128a4u is used to create a 4 kHz sine wave signal. The signal will be sent out for a pre-defined period of time (for example 10 periods) and then the signal will pause for a pre-defined period and continue for the same pre-defined period of time sent before (10 periods) see figure\cite{fig:Signal}. The pause will be the reference point within the signal. This reference point is to eliminate various uncertainties like the time it takes for the speaker to start resonating and to increase reliability. Because the chosen frequency lies within the speech range, the measurement can be easily disturbed by regular sounds. A reference point within this signal is difficult, maybe even impossible to reproduce in the form of environmental noise.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{sinesignal.pdf}
+    \caption{Example sent signal }
+    \label{fig:Signal}
+\end{figure}
+
+De-modulating this signal will be done with the following block diagram see figure\cite{fig:demodulatorblock}. The sound is being captured by a microphone and this signal is being filtered with a bandpass filter to narrow the frequency range to limit the noise. The filtered signal is being amplified with a instrumentation amplifier to eliminate the common DC offset of the microphone. The analog comparator is a feature built in the xmega128a4u microcontroller it detects every rising edges of the signal. Measuring the time between every rising edge translates with a simple formula into a frequency.
+
+By counting every rising edge it is also possible to track every period of the received signal. Which enables us to implement a reference point within the signal using the method mentioned above increasing reliability. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{De-modulator.pdf}
+    \caption{Demodulator block diagram }
+    \label{fig:demodulatorblock}
+\end{figure}
+
+\subsubsection{Modulator}
+The signal shown in figure\cite{fig:Signal} needs to be modulated to then be sent through a speaker. The signal is being generated within a microcontroller and sent to the speaker through a digital to analog converter. This signal is first being amplified to make sure it is loud enough. The block diagram for modulating this signal is shown in figure \cite{fig:modulatorblock}. The “blank” spaces in the signal is done by stop sending for period equal to the pre-defined time for a blank.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{Modulator.pdf}
+    \caption{Modulator block diagram }
+    \label{fig:modulatorblock}
+\end{figure}
+
+
 
 \subsubsection{Distance measurement}
 The distance is derived from the time it takes the acoustic signal to travel from module A to module B. 

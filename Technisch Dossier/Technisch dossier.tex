@@ -198,6 +198,45 @@ Number of Units & \multicolumn{1}{c|}{3} & \multicolumn{1}{c|}{$\infty$} & \mult
 
 The choice is made to divide the the specifications for localization into two categories: Close range, and long range. This choice was made because at close range more precision precision is needed to prevent the robots from crashing into each other. While at long range the localization will be used not to loose the swarm. The maximum number at close range is derived from the theoretical number of units that can physically fit in a 3 meter radius. And the preferred number of units for demonstration purpose is used to set a goal for the project. For further clarification how these specifications are determined see chapter one of the research document.
 
+
+
+\subsubsection{Wireless communication}
+
+In Table \ref{wcm} a more detailed version of the specifications are written down. From these specifications the module will be implemented as is shown in the next section. 
+
+\begin{table}[H]
+\centering
+\caption{Wireless communication module}
+\label{wcm}
+\begin{tabular}{|p{1,5cm}|p{9,5cm}|}
+\hline
+Module   & Wireless communication module                                       \\ \hline
+Input    & 5 VDC\\ 
+        & Swarm data\\
+        & RF signal                                              \\ \hline
+Outputs  & RF signal                                           \\ 
+& Swarm data \\ \hline
+Function & Processes information to and from other swarm modules. Transmission speed is not defined yet. The transmission range must be around 100 meters or more. \\ \hline
+\end{tabular}
+\end{table}
+\subsubsection{Central operating unit}
+The central operating unit processes data from the sensors and swarm network. This unit uses the external wireless swarm communication, the local communication bus and the debug interface as an communication channel. The local communication bus uses a TWI (Two Wire Interface) protocol and is used for the communication with the robots peripherals i.e. actuators. The debug interface of the central operating unit uses an UART protocol to communicate with external systems for debug purposes.
+
+\begin{table}[H]
+\centering
+\caption{Central operating unit}
+\label{cou}
+\begin{tabular}{|p{1,5cm}|p{9,5cm}|}
+\hline
+Module   & Central operating unit                                        \\ \hline
+Input    & 3,3 VDC \\
+         & Data streams (TWI, UART)                                           \\ \hline
+Outputs  & Data streams (TWI, UART)                                             \\ \hline
+Function & Calculates the relative position to other swarming modules. Distributes local and external data streams. Analyses and uses sensor information.\\ \hline
+\end{tabular}
+\end{table}
+
+
 \section{Research}
 This section will a summary of the findings during the research phase. For the full research done during this project we refer to the "Research Document". \\
 The research is split up in the following different subjects: Localization, Hardware communication protocol, Software communication protocol.
@@ -323,11 +362,78 @@ swarming module. An enumeration of the most important recommendations is given b
 \end{itemize}
 The other additional recommendations and conclusions can be found in the research document.
 
-\subsubsection{Communication implementation}
-During the research, we came across some plug and play wireless swarm communication implementations. One of these implementations is the SwarmBEE LE module from Nanotron. The SwarmBEE LE module meets the given network criteria and most of the recommendations. The module uses a radio frequency 2,4 GHz signal as a communication channel. The module is not only a communication module, but can also be used to determine relative distances to each swarming module. It also has a API with predefined functions which can be used to set up the wireless network.
 
 
-\subsection{Functional specifications}
+
+\section{Functional specification}
+This chapter describes the functional design of the swarming module. An overview of the swarming module is given in figure \ref{overall}. The module is designed in such a way that it is modular. This module can be placed on an object (i.e. a robot) and can be used by the object to send and receive relevant information about other in-range swarming modules.\\
+
+This chapter discusses the following subjects:
+\begin{itemize}
+\setlength\itemsep{0em}
+\item Swarming module
+\item Power supply and safety
+\item Central operating unit
+\item Wireless communication module
+\item Relative orientation sensor
+\item Orientation sensor
+\item Localisation sensor
+\end{itemize}
+
+\subsection{Swarming module}
+The overall design of the swarming module is shown in figure \ref{overall}. Each block of the overall design is described in the following figures. The central operating unit is at the hearth off the swarming module, and takes care of the localization algorithm.
+\begin{figure}[h]
+  \centering
+      \includegraphics[width=1\textwidth]{overall.pdf}
+  \caption{Overview of the swarm module design}
+  \label{overall}
+\end{figure}
+
+\subsection{Short range localisation sensor}
+The principle of the short range localisation sensor is displayed in figure \ref{demodulator} and \ref{modulator}. As mentioned earlier the short relative distance measurement will be done acoustically. With acoustic sensing it is required to let the speaker sway to the right oscillation frequency, reaching this oscillation frequency takes time since the speaker won't oscillate at the right frequency instantly. This complicates the measurement a little bit, since just detecting the to be measured signal won't always translate into an exact distance due to the time the speakers take to sway into oscillation.
+
+A solution to this problem is to create a fixed reference point within the sent signal. Creating this reference point after a fixed time enables the speaker to sway into oscillation making sure that no faulty measurements occur do to this “swaying time”. When the reference point has been detected by the receiver an accurate distance can be determined by subtracting the fixed “sway time”.
+
+Without the implementation of this fixed reference point it is possible for a receiver to miss a few periods of the signal, due to the speaker still swaying into oscillation and the time of swaying being unknown. For example take an acoustic signal (Speed of sound 340.29 m/s) with a frequency of 4000Hz, one period of this signal is 0.00025s. Missing one period of this signal translates into a distance error of 8.5cm. Since the sway time of a speaker can change over time due to mechanical stresses a fixed time stamp seems the most suitable solution for the long term. The best way to create this reference point it still to be determined. This will be done by either frequency shift keying or phase shift modulation. Some real like testing will have to determine the best method.
+
+\subsubsection{Modulation}
+The modulation method is going to be determined by how well the reference point can be recognized by the demodulator. In the research phase, test were done with an speaker and a microphone. This showed that frequency and phase were well defined over distance but amplitude was not. Because of this the available methods for modulation of the acoustic signal are frequency modulation or phase modulation. The most important feature of the modulator must be consistency, meaning that the reference point should be send at exactly the same point in the signal every time. This is so that no deviation will occur when compensating for the missed periods before the reference point. In theory this can be done by both of the methods. 
+
+
+See figure \ref{modulator2} for a schematic representation of the modulator.
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=0.8\textwidth]{modulator.pdf}
+  \caption{Modulator2}
+  \label{modulator}
+\end{figure}
+
+\subsubsection{Demodulation}
+
+A demodulator will be needed to retrieve the digital signal send from one swarm-module to another.  One swarming module will send an acoustic signal to the other modules, this signal will then be picked up by an sensor and will need to be processed properly before it can be used to determine the time it took the acoustic signal to travel from one swarming-module to the other. The signal retrieved by the acoustic sensor will also pick up a lot of noise and other sounds from the environment. Also, when further away the signal might be low in amplitude. To increase the amplitude and lower the noise, the signal will be amplified and filtered. These modifications to the signal will improve the signal to noise ratio drastically but a lot of noise might still remain. Therefore the demodulator itself must be insensitive to noise.  
+The main purpose is the demodulator is to identify the reference point. And more importantly, determine the point in time the reference point is spotted. The time determined will be used to calculate the distance. Hence, the precision in which the demodulator determines the reference point in time effects the precision of the distance measurement. Only one swarming module will be sending his acoustic signal at any moment. When there are 10 units in its specified range and a preferred update frequency of 40Hz (see section 1). This gives every swarming-module only a small window in time to send their signal and for the other to receive it. When a frequency of 4kHz is chosen for the signal, every swarming-module will have 10 periods to send their signal. There for the demodulator must be able to lock onto the signal and determine the reference point within a few periods of the acoustic signal. See figure \ref{demodulator} for a schematic representation of the demodulator.
+
+\begin{table}[H]
+\centering
+\caption{Demodulation specifications}
+\label{demosensor}
+\begin{tabular}{|p{1,5cm}|p{9,5cm}|}
+\hline
+Module   & Demodulator                                   \\ \hline
+Input    & FSK Signal                                             \\ \hline
+Outputs  & Reference point                                         \\ \hline
+Function & Demodulation, Reference point detection \\ \hline
+Features & Noise insensitive, precision (time), Quick demodulation  \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=1\textwidth]{demodulator.pdf}
+  \caption{Demodulator}
+  \label{demodulator}
+\end{figure}
 
 \subsubsection{Wireless communication} 
 
@@ -372,46 +478,79 @@ Functions  & All the communication comes together and controls the inputs and ou
 
 
 
+\section{Implementation}
+Now that specifications of the functional blocks are defined, a implementation for these blocks will be found, using the information from the research phase. Just like section Functional specifications every block will be discussed independently. How all of the functional blocks fit together will be discussed in the section for the central processing unit.
 
-\subsection{Specifications}
 
-\subsubsection{Wireless communication}
+\subsection{Short range localization sensor}
+The short range localization consist of multiple smaller parts: Acoustic actuator/sensor, modulation/demodulation, distance measurement, and angle algorithm. 
 
-In Table \ref{wcm} a more detailed version of the specifications are written down. From these specifications the module will be implemented as is shown in the next section. 
+\subsubsection{Acoustic actuator sensor}
+As stated earlier a short range localization will be implemented using acoustic wave signals. The sensor will be implemented using microphones and an actuator will be implemented using a speaker. 
 
-\begin{table}[H]
+For Trigonometry angle determination the module must atleast poses three microphones spread in a triangle where all sides have the same distance as shown in figure \ref{module}.
+
+For the distance between the different microphones a length of 10 cm is chosen because with the velocity propagation of sound being 343.2 m/s (at 20\degree C Celsius) and the underlying distance between de microphones being 10 cm using an 32 MHz micro-controller should grant enough overhead time to process the three different times being detected by the microphones. 
+
+\begin{figure}[H]
 \centering
-\caption{Wireless communication module}
-\label{wcm}
-\begin{tabular}{|p{1,5cm}|p{9,5cm}|}
-\hline
-Module   & Wireless communication module                                       \\ \hline
-Input    & 5 VDC\\ 
-        & Swarm data\\
-        & RF signal                                              \\ \hline
-Outputs  & RF signal                                           \\ 
-& Swarm data \\ \hline
-Function & Processes information to and from other swarm modules. Transmission speed is not defined yet. The transmission range must be around 100 meters or more. \\ \hline
-\end{tabular}
-\end{table}
-\subsubsection{Central operating unit}
-The central operating unit processes data from the sensors and swarm network. This unit uses the external wireless swarm communication, the local communication bus and the debug interface as an communication channel. The local communication bus uses a TWI (Two Wire Interface) protocol and is used for the communication with the robots peripherals i.e. actuators. The debug interface of the central operating unit uses an UART protocol to communicate with external systems for debug purposes.
+\includegraphics[width=1\textwidth]{Module.pdf}
+\caption{Localization Module}
+\label{module}
+\end{figure}
 
-\begin{table}[H]
-\centering
-\caption{Central operating unit}
-\label{cou}
-\begin{tabular}{|p{1,5cm}|p{9,5cm}|}
-\hline
-Module   & Central operating unit                                        \\ \hline
-Input    & 3,3 VDC \\
-         & Data streams (TWI, UART)                                           \\ \hline
-Outputs  & Data streams (TWI, UART)                                             \\ \hline
-Function & Calculates the relative position to other swarming modules. Distributes local and external data streams. Analyses and uses sensor information.\\ \hline
-\end{tabular}
-\end{table}
+The acoustic signal is send by a speaker facing upward. A metal plate is placed a 3 mm above the speaker, tests during the research phase showed this greatly improved the omnidirectional spread of the signal. The signal that's send it chosen to have a frequency of 4 kHz which has the best omnidirectional and range properties (section 4 of the research document).
 
-\subsection{Implementation}
+
+The signal received by the microphone, translates in just a few millivolts. This signal is amplified for a total of 9600 by several stages of amplifiers, so that the signal clips on the supply voltage. This ruins the shape of the signal. However we're only interested in the frequency which will remain the same. After that the signal is bandpass filtered, to get rid of most of the noise. After this the signal is fed into the ADC of the Xmega128a4u. The modulator and demodulator will now be discussed in detail.\\\\
+\subsubsection{Demodulator}
+The DAC of the Xmega128a4u is used to create a 4 kHz sine wave signal. The signal will be sent out for a pre-defined period of time (for example 10 periods) and then the signal will pause for a pre-defined period and continue for the same pre-defined period of time sent before (10 periods) see figure\cite{fig:Signal}. The pause will be the reference point within the signal. This reference point is to eliminate various uncertainties like the time it takes for the speaker to start resonating and to increase reliability. Because the chosen frequency lies within the speech range, the measurement can be easily disturbed by regular sounds. A reference point within this signal is difficult, maybe even impossible to reproduce in the form of environmental noise.
+
+ \begin{figure}[h]
+     \centering
+     \includegraphics[width=1\textwidth]{sinesignal.pdf}
+     \caption{Example sent signal }
+     \label{fig:Signal}
+ \end{figure}
+
+De-modulating this signal will be done with the following block diagram see figure\cite{fig:demodulatorblock}. The sound is being captured by a microphone and this signal is being filtered with a bandpass filter to narrow the frequency range to limit the noise. The filtered signal is being amplified with a instrumentation amplifier to eliminate the common DC offset of the microphone. The analog comparator is a feature built in the xmega128a4u microcontroller it detects every rising edges of the signal. Measuring the time between every rising edge translates with a simple formula into a frequency.
+
+By counting every rising edge it is also possible to track every period of the received signal. Which enables us to implement a reference point within the signal using the method mentioned above increasing reliability. 
+
+ \begin{figure}[h]
+     \centering
+     \includegraphics[width=1\textwidth]{De-modulator.pdf}
+     \caption{Demodulator block diagram }
+     \label{fig:demodulatorblock}
+ \end{figure}
+
+\subsubsection{Modulator}
+The signal shown in figure\cite{fig:Signal} needs to be modulated to then be sent through a speaker. The signal is being generated within a microcontroller and sent to the speaker through a digital to analog converter. This signal is first being amplified to make sure it is loud enough. The block diagram for modulating this signal is shown in figure \cite{fig:modulatorblock}. The “blank” spaces in the signal is done by stop sending for period equal to the pre-defined time for a blank.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{Modulator.pdf}
+    \caption{Modulator block diagram }
+    \label{fig:modulatorblock}
+\end{figure}
+
+
+
+\subsubsection{Distance measurement}
+The distance is derived from the time it takes the acoustic signal to travel from module A to module B. 
+Suppose that module A is about to send its signal. Just before it starts sending the acoustic signal, it sends a message over the radio communication, which is almost instant compared to the speed of the sound waves. Module B starts its timer and wait for the signal to arrive. When it arrives it stops it's timer and takes off some pre-defined corrections based on tests done earlier. The distance can now be derived multiplying the speed of sound with the measured time.
+\textbf{ADD state-diagram distance measurement}
+
+\subsubsection{Angle measurement}
+The Swarming module has three microphones placed with known distances between them. The relative angle is derived from the time measured with each microphone, and the distance between the microphones. In section 3.2 there's more information on how this is done.
+
+The following algorithm shows pseudo-code how the angle will be calculated.
+\lstinputlisting[firstline=1,lastline=40,label=code:locationalgo,caption=Algorithm to detect the location]{./code/Location_algorithm.c}
+
+\subsubsection{Communication implementation}
+During the research, we came across some plug and play wireless swarm communication implementations. One of these implementations is the SwarmBEE LE module from Nanotron. The SwarmBEE LE module meets the given network criteria and most of the recommendations. The module uses a radio frequency 2,4 GHz signal as a communication channel. The module is not only a communication module, but can also be used to determine relative distances to each swarming module. It also has a API with predefined functions which can be used to set up the wireless network.
+
+
 
 \subsubsection{Central operating unit}
 
@@ -518,150 +657,6 @@ For the wireless communication module the most important function is that it can
 \newpage
 
 
-
-
-\section{Functional specification}
-This chapter describes the functional design of the swarming module. An overview of the swarming module is given in figure \ref{overall}. The module is designed in such a way that it is modular. This module can be placed on an object (i.e. a robot) and can be used by the object to send and receive relevant information about other in-range swarming modules.\\
-
-This chapter discusses the following subjects:
-\begin{itemize}
-\setlength\itemsep{0em}
-\item Swarming module
-\item Power supply and safety
-\item Central operating unit
-\item Wireless communication module
-\item Relative orientation sensor
-\item Orientation sensor
-\item Localisation sensor
-\end{itemize}
-
-\subsection{Swarming module}
-The overall design of the swarming module is shown in figure \ref{overall}. Each block of the overall design is described in the following figures. The central operating unit is at the hearth off the swarming module, and takes care of the localization algorithm.
-\begin{figure}[h]
-  \centering
-      \includegraphics[width=1\textwidth]{overall.pdf}
-  \caption{Overview of the swarm module design}
-  \label{overall}
-\end{figure}
-
-\subsection{Short range localisation sensor}
-The principle of the short range localisation sensor is displayed in figure \ref{demodulator} and \ref{modulator}. As mentioned earlier the short relative distance measurement will be done acoustically. With acoustic sensing it is required to let the speaker sway to the right oscillation frequency, reaching this oscillation frequency takes time since the speaker won't oscillate at the right frequency instantly. This complicates the measurement a little bit, since just detecting the to be measured signal won't always translate into an exact distance due to the time the speakers take to sway into oscillation.
-
-A solution to this problem is to create a fixed reference point within the sent signal. Creating this reference point after a fixed time enables the speaker to sway into oscillation making sure that no faulty measurements occur do to this “swaying time”. When the reference point has been detected by the receiver an accurate distance can be determined by subtracting the fixed “sway time”.
-
-Without the implementation of this fixed reference point it is possible for a receiver to miss a few periods of the signal, due to the speaker still swaying into oscillation and the time of swaying being unknown. For example take an acoustic signal (Speed of sound 340.29 m/s) with a frequency of 4000Hz, one period of this signal is 0.00025s. Missing one period of this signal translates into a distance error of 8.5cm. Since the sway time of a speaker can change over time due to mechanical stresses a fixed time stamp seems the most suitable solution for the long term. The best way to create this reference point it still to be determined. This will be done by either frequency shift keying or phase shift modulation. Some real like testing will have to determine the best method.
-
-\subsubsection{Modulation}
-The modulation method is going to be determined by how well the reference point can be recognized by the demodulator. In the research phase, test were done with an speaker and a microphone. This showed that frequency and phase were well defined over distance but amplitude was not. Because of this the available methods for modulation of the acoustic signal are frequency modulation or phase modulation. The most important feature of the modulator must be consistency, meaning that the reference point should be send at exactly the same point in the signal every time. This is so that no deviation will occur when compensating for the missed periods before the reference point. In theory this can be done by both of the methods. 
-
-
-See figure \ref{modulator2} for a schematic representation of the modulator.
-
-\begin{figure}[H]
-  \centering
-      \includegraphics[width=0.8\textwidth]{modulator.pdf}
-  \caption{Modulator2}
-  \label{modulator}
-\end{figure}
-
-\subsubsection{Demodulation}
-
-A demodulator will be needed to retrieve the digital signal send from one swarm-module to another.  One swarming module will send an acoustic signal to the other modules, this signal will then be picked up by an sensor and will need to be processed properly before it can be used to determine the time it took the acoustic signal to travel from one swarming-module to the other. The signal retrieved by the acoustic sensor will also pick up a lot of noise and other sounds from the environment. Also, when further away the signal might be low in amplitude. To increase the amplitude and lower the noise, the signal will be amplified and filtered. These modifications to the signal will improve the signal to noise ratio drastically but a lot of noise might still remain. Therefore the demodulator itself must be insensitive to noise.  
-The main purpose is the demodulator is to identify the reference point. And more importantly, determine the point in time the reference point is spotted. The time determined will be used to calculate the distance. Hence, the precision in which the demodulator determines the reference point in time effects the precision of the distance measurement. Only one swarming module will be sending his acoustic signal at any moment. When there are 10 units in its specified range and a preferred update frequency of 40Hz (see section 1). This gives every swarming-module only a small window in time to send their signal and for the other to receive it. When a frequency of 4kHz is chosen for the signal, every swarming-module will have 10 periods to send their signal. There for the demodulator must be able to lock onto the signal and determine the reference point within a few periods of the acoustic signal. See figure \ref{demodulator} for a schematic representation of the demodulator.
-
-\begin{table}[H]
-\centering
-\caption{Demodulation specifications}
-\label{demosensor}
-\begin{tabular}{|p{1,5cm}|p{9,5cm}|}
-\hline
-Module   & Demodulator                                   \\ \hline
-Input    & FSK Signal                                             \\ \hline
-Outputs  & Reference point                                         \\ \hline
-Function & Demodulation, Reference point detection \\ \hline
-Features & Noise insensitive, precision (time), Quick demodulation  \\ \hline
-\end{tabular}
-\end{table}
-
-\begin{figure}[H]
-  \centering
-      \includegraphics[width=1\textwidth]{demodulator.pdf}
-  \caption{Demodulator}
-  \label{demodulator}
-\end{figure}
-
-
-
-
-
-\section{Implementation}
-Now that specifications of the functional blocks are defined, a implementation for these blocks will be found, using the information from the research phase. Just like section Functional specifications every block will be discussed independently. How all of the functional blocks fit together will be discussed in the section for the central processing unit.
-
-
-\subsection{Short range localization sensor}
-The short range localization consist of multiple smaller parts: Acoustic actuator/sensor, modulation/demodulation, distance measurement, and angle algorithm. 
-
-\subsubsection{Acoustic actuator sensor}
-As stated earlier a short range localization will be implemented using acoustic wave signals. The sensor will be implemented using microphones and an actuator will be implemented using a speaker. 
-
-For Trigonometry angle determination the module must atleast poses three microphones spread in a triangle where all sides have the same distance as shown in figure \ref{module}.
-
-For the distance between the different microphones a length of 10 cm is chosen because with the velocity propagation of sound being 343.2 m/s (at 20\degree C Celsius) and the underlying distance between de microphones being 10 cm using an 32 MHz micro-controller should grant enough overhead time to process the three different times being detected by the microphones. 
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=1\textwidth]{Module.pdf}
-\caption{Localization Module}
-\label{module}
-\end{figure}
-
-The acoustic signal is send by a speaker facing upward. A metal plate is placed a 3 mm above the speaker, tests during the research phase showed this greatly improved the omnidirectional spread of the signal. The signal that's send it chosen to have a frequency of 4 kHz which has the best omnidirectional and range properties (section 4 of the research document).
-
-
-The signal received by the microphone, translates in just a few millivolts. This signal is amplified for a total of 9600 by several stages of amplifiers, so that the signal clips on the supply voltage. This ruins the shape of the signal. However we're only interested in the frequency which will remain the same. After that the signal is bandpass filtered, to get rid of most of the noise. After this the signal is fed into the ADC of the Xmega128a4u. The modulator and demodulator will now be discussed in detail.\\\\
-\subsubsection{Demodulator}
-The DAC of the Xmega128a4u is used to create a 4 kHz sine wave signal. The signal will be sent out for a pre-defined period of time (for example 10 periods) and then the signal will pause for a pre-defined period and continue for the same pre-defined period of time sent before (10 periods) see figure\cite{fig:Signal}. The pause will be the reference point within the signal. This reference point is to eliminate various uncertainties like the time it takes for the speaker to start resonating and to increase reliability. Because the chosen frequency lies within the speech range, the measurement can be easily disturbed by regular sounds. A reference point within this signal is difficult, maybe even impossible to reproduce in the form of environmental noise.
-
-% \begin{figure}[h]
-%     \centering
-%     \includegraphics[width=1\textwidth]{sinesignal.pdf}
-%     \caption{Example sent signal }
-%     \label{fig:Signal}
-% \end{figure}
-
-De-modulating this signal will be done with the following block diagram see figure\cite{fig:demodulatorblock}. The sound is being captured by a microphone and this signal is being filtered with a bandpass filter to narrow the frequency range to limit the noise. The filtered signal is being amplified with a instrumentation amplifier to eliminate the common DC offset of the microphone. The analog comparator is a feature built in the xmega128a4u microcontroller it detects every rising edges of the signal. Measuring the time between every rising edge translates with a simple formula into a frequency.
-
-By counting every rising edge it is also possible to track every period of the received signal. Which enables us to implement a reference point within the signal using the method mentioned above increasing reliability. 
-
-% \begin{figure}[h]
-%     \centering
-%     \includegraphics[width=1\textwidth]{De-modulator.pdf}
-%     \caption{Demodulator block diagram }
-%     \label{fig:demodulatorblock}
-% \end{figure}
-
-\subsubsection{Modulator}
-The signal shown in figure\cite{fig:Signal} needs to be modulated to then be sent through a speaker. The signal is being generated within a microcontroller and sent to the speaker through a digital to analog converter. This signal is first being amplified to make sure it is loud enough. The block diagram for modulating this signal is shown in figure \cite{fig:modulatorblock}. The “blank” spaces in the signal is done by stop sending for period equal to the pre-defined time for a blank.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\textwidth]{Modulator.pdf}
-    \caption{Modulator block diagram }
-    \label{fig:modulatorblock}
-\end{figure}
-
-
-
-\subsubsection{Distance measurement}
-The distance is derived from the time it takes the acoustic signal to travel from module A to module B. 
-Suppose that module A is about to send its signal. Just before it starts sending the acoustic signal, it sends a message over the radio communication, which is almost instant compared to the speed of the sound waves. Module B starts its timer and wait for the signal to arrive. When it arrives it stops it's timer and takes off some pre-defined corrections based on tests done earlier. The distance can now be derived multiplying the speed of sound with the measured time.
-\textbf{ADD state-diagram distance measurement}
-
-\subsubsection{Angle measurement}
-The Swarming module has three microphones placed with known distances between them. The relative angle is derived from the time measured with each microphone, and the distance between the microphones. In section 3.2 there's more information on how this is done.
-
-The following algorithm shows pseudo-code how the angle will be calculated.
-\lstinputlisting[firstline=1,lastline=40,label=code:locationalgo,caption=Algorithm to detect the location]{./code/Location_algorithm.c}
 
 
 

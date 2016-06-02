@@ -133,7 +133,14 @@ This document describes the technical aspect of the "Swarming Module". This modu
 
 This project contributes to the program by developing a so called "Swarming Module". This module will allow units in a swarm to determine the relative location to one another. When the units know their relative location, multiple complex tasks can be achieved like: path finding, payload transfer from one unit to another, autonomous recharging, and much more. 
 
-\textbf{Methode beschijven!! ook opbouw van het document}
+\subsection{Project methodology}
+We will use the V-model to give structure to the design approach. The V-model uses multiple phases to make this project successful. The first three phases are: 
+\begin{itemize}
+\item User requirement specification
+\item Functional specification
+\item Design specification
+\end{itemize}
+At the end of these phases the design stage has ended with all corresponding documents. For each stage that is mentioned above a test phase is present. This is to justify the specifications and decisions that have been made. The test plan can be found the qualification document. When all these stages have been carried out correctly a well tested product will be the result. In the first phase the wishes of the customer will be mapped. From these a research framework will be set up, including a research questions and multiple sub questions. These questions needs to be researched and written down. This will be done in a separate research document. From this document specifications will be made with well supported arguments explaining why. And test conditions for these specifications If everything is complete the next stage will begin: "the Functional specification". From the specification that have been set up the functional specifications will be made. The design is orthogonalised so that is easier to design the separate functions. At the end the separate functions can be added together to make one big flowchart. Again at the end of the stage new test conditions should be made. In the third stage: "the Design specifications" the previous specifications and functional designs will be implemented. All design specifications should be as detailed as possible. For example the dimensions of the components need to be written down. If this phase is completed the next step is the "system build". During the system build the  functions of the product will be build separately so that every group member can continue to work. When all separate functions are build they will be tested. If all separate blocks work fine, they can be added to each other so that one product will remain. Thereafter the complete system will be tested. As noted before the test plan will be written down in the qualification document. 
 
 \section{Project Definition}
 In this section the project will be further defined. The problem and context will be analysed. The problem will then be defined and goals for the project will be set.
@@ -242,13 +249,13 @@ This section will cover the following subjects: Relative distance measurement, a
 \subsubsection{Relative distance}
 Before any calculations can be done to derive the angle of other units a distance must first be determined. The first choice that has to be made is what type of signal is used to do this. The most commonly used type of signal to measure distance are radio waves, which propagate with the speed of light. Hardware to measure these  signals over short distances, would require clock-speeds of in the GHz, hence be expensive and unstable. Therefore the choice is made to use acoustic signals to measure the distance. This drastically lowers the requirements for the hardware that detects the signal.
 
-Now that this is established there are still two ways to implement a distance measurement. These are: Time of flight (TOF), and Received signal strength (RSSI). During experiments (found in section 4.3 of the Research document) we found that the received amplitude of the acoustic signal was not proportional to the distance. We also found that the signal was still well defined over the specified distance of three meters. Because of this the signal can be detected and used for TOF.
+Now that this is established there are still two ways to implement a distance measurement. These are: Time of flight (TOF)\cite{TOF}, and Received signal strength (RSSI)\cite{RSSI}. During experiments (found in section 4.3 of the Research document) we found that the received amplitude of the acoustic signal was not proportional to the distance. We also found that the signal was still well defined over the specified distance of three meters. Because of this the signal can be detected and used for TOF.
 
 A system is proposed that combines the two signals (radio and acoustic) in one system. Swarming modules each get their place in time to send their acoustic signal. At the moment the module starts sending the acoustic signal, he sends a message over the radio communication channel saying "im going to send my signal", the radio signal arrives close to instantly compared to the acoustic signal. At this point all the other modules start their timers, and stop them when the acoustic signal arrives a few moments later. The distance can now be calculated to multiply the time with the speed of sound.
 
 
 \subsection{Relative angle}
-Determining the relative orientation with respect to each other can be done in various ways. some methods involve larger limitations than others. In general angular measurements are done using goniometric equations. It was found that calculating the angle with a single measuring point on every swarming module has one big problem. Because geometric functions are used to calculate the angle, there will always be two solutions to the equation (see figure \ref{circle} and section 3.1.1 of the Research document). To solve this the units would have to move and recalculate again to get the right answer. This would limit the units in their movement and functionality and is non desirable.
+Determining the relative orientation with respect to each other can be done in various ways. some methods involve larger limitations than others. In general angular measurements are done using goniometric equations. It was found that calculating the angle with a single measuring point on every swarming module has one big problem\cite{Angle}. Because geometric functions are used to calculate the angle, there will always be two solutions to the equation (see figure \ref{circle} and section 3.1.1 of the Research document). To solve this the units would have to move and recalculate again to get the right answer. This would limit the units in their movement and functionality and is non desirable.
 \begin{equation}
 Because\ Xp = Xq,\ cos(-\alpha) = cos(\alpha)\ applies
 \end{equation}
@@ -325,7 +332,7 @@ In this section the behaviour of acoustic signals will be researched. This was d
 More details about the experiment and the set-up are shown in section 4 of the Research document. The first experiment had the speakers facing the microphone directly, this was clearly the best situation, higher frequencies showed higher amplitude and the signal was well defined. However the most ideal situation would be for one speaker to be omnidirectional instead of having to use multiple speakers.  \\
 Another test was done with the speaker and microphone both facing upwards. It was observed that higher frequency sound (around 5 kHz) becomes more directional. The best results were achieved around 3 - 4 kHz, this was the point where the highest amplitude was achieved and the minimum distance of three meters was easily met.
 \subsection{Swarm communication network}
-This chapter is a summarizing of chapter 'Swarm communication' in the research document of this project. The is a global research of (wireless) swarm communication networks. This research was done to determine the needed protocol(s), algorithms and the use of hardware for creating swarm networks. This chapter cites the conclusions and recommendations from the research document.
+This chapter is a summarizing of chapter 'Swarm communication' in the research document of this project. The is a global research of (wireless) swarm communication networks. This research was done to determine the needed protocol(s), algorithms and the use of hardware for creating swarm networks. This chapter cites the conclusions and recommendations from the research document. Some of the important references are: \cite{combook} \cite{multi-hopwirelessnetworks} \cite{meshnetworking} \cite{position-based}.
 
 \subsubsection{Network criteria}
 There are several requirements to realise a robot swarm. Chapter 'Swarm communication' in the research document and some items in chapter 'Swarming' in this document name these requirements. 
@@ -694,7 +701,7 @@ When the swarm module is in sending mode it will send out a sound signal and ret
 
 \subsubsection{Wireless communication}
 
-For the wireless communication module the most important function is that it can transmit information over atleast 100 meters. Since the specification states that the swarm must be detected within this range. The speed of de communication is not defined yet, but needs to be fast enough to handle all the messages. The Swarmbee LE module will be used for the wireless communication. Its uses the ISM band, 2.4 GHz to transmit and receive the data. The maximum range of the module relies on the environment in which it is used. Under ideal conditions the Swarmbee can reach a distance of 1200 meters. It depends on how many obstacles, reflections and interference there is to disturb the signal. An experiment from Nanotron showed that until a range of 150 meters the ranging success rate is about 100\% with a transmission speed of 155 kbps. Experiments we have done ourself show that the antenna on the device does not respond very well inside a building. Test outdoors should still be done, but there is a possibility that an external antenna is needed to reach these distances. The actual speed is also not tested yet, but could be done in the future. Transmitting data between the swarm modules can be configured with a speed of 250 Kbps or 1 Mbps. Experience shows that these speeds are more then enough to fit the needs. This module fits all the specifications and is suitable for the use of wireless communication.
+For the wireless communication module the most important function is that it can transmit information over atleast 100 meters. Since the specification states that the swarm must be detected within this range. The speed of de communication is not defined yet, but needs to be fast enough to handle all the messages. The Swarmbee LE module will be used for the wireless communication. Its uses the ISM band, 2.4 GHz to transmit and receive the data. The maximum range of the module relies on the environment in which it is used. Under ideal conditions the Swarmbee can reach a distance of 1200 meters. It depends on how many obstacles, reflections and interference there is to disturb the signal. An experiment from Nanotron showed that until a range of 150 meters the ranging success rate is about 100\% with a transmission speed of 155 kbps. Experiments we have done ourself show that the antenna on the device does not respond very well inside a building. Test outdoors should still be done, but there is a possibility that an external antenna is needed to reach these distances. The actual speed is also not tested yet, but could be done in the future. Transmitting data between the swarm modules can be configured with a speed of 250 Kbps or 1 Mbps. Tests will show if this will be enough. This module fits all the specifications and is suitable for the use of wireless communication.
 
 \begin{table}[]
 \centering
@@ -728,6 +735,13 @@ For the wireless communication module the most important function is that it can
 \end{tabular}%
 }
 \end{table}
+
+\section{Results and Discussion}
+
+\section{Conclusion}
+
+\section{Recommendations}
+
 
 \newpage
 

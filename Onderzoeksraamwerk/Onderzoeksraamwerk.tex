@@ -163,13 +163,6 @@ The following questions need to be answered to come to a good conclusion to our 
         \item "What is de minimal required communication speed?"
         \item "What hardware is needed to implement the communication?"
     \end{itemize}
-    \item "What methods are there to propel the robot?"
-    \begin{itemize}
-        \item "What actuators can be used to drive the robot?"
-        \item "How would the energy of the actuator be used to make the robot drive?"
-        \item "What kind of effectors should be used?"
-    \end{itemize}
-    \item "What energy supply should be used to distribute the energy in the robot?"
     \begin{itemize}
         \item "How can the energy supply be managed?"
         \item "Is it possible to implement a recharge point?"
@@ -196,7 +189,6 @@ In this chapter the functional requirements for building a robot which can perfo
 
 
 \subsection{Must haves}
-
 
 M1 - Modular system architecture - Modules developed during this project must be modular so they can be used in future projects.\\\\
 M2 - Units must be able to communicate with each other - The units in the swarm must be able to exchange information to properly funtion as a swarm. This is discussed in the problem defention\cite{multidomaincom}.  \\\\
@@ -276,20 +268,6 @@ Functions   & \begin{tabular}[c]{@{}l@{}}establishes the communication between t
 
 To communicate between different units a communication network should be set up with a common protocol . In addition, the protocol must be able to provide additional information such as localization. See Table \ref{communication} \\
 
-\begin{table}[H]
-\centering
-\caption{effectors}
-\label{Effectors}
-\begin{tabular}{|l|l|}
-\hline
-Module    & Effectors \\ \hline
-Input  & motor drivers  \\ \hline
-Output & mechanical power   \\ \hline
-Functions  & Drives the robot , and is able to turn on command            \\ \hline
-\end{tabular}
-\end{table}
-
-The operator must , in addition to the functioning in the testenvironment , also function well on Mars . See Table \ref{Effectors} \\
 
 \begin{table}[H]
 \centering
@@ -328,12 +306,20 @@ Jennic has made a Wireless Microcontroller. Which could operate as a swarm modul
 Other then these two modules, there are no specific swarm modules that could be found. But there are a lot of research that have made there own localisation in a swarm, and/or their own communication. 
 
 \newpage
-\section{Conclusion}
+\section{Conclusion}	
 Since this project is still in the early stages of research the specifications are still limited and not fully substantiated. Parallel to writing this document a lot of research has been done into different implementations of localization and communication in swarming networks. This research can be found in the project folder. When the research is concluded precise specifications can be composed. 
 
 \newpage
 
+\subsection{Design approach}
 
+To give guidance to this project, a design approach is needed. We will use the V-model to give structure to the design approach. The V-model uses multiple phases to make this project successful. The first three phases are: 
+\begin{itemize}
+\item User requirement specification
+\item Functional specification
+\item Design specification
+\end{itemize}
+At the end of these phases the design stage has ended with all corresponding documents. For each stage that is mentioned above a test phase is present. This is to justify the specifications and decisions that have been made. The test plan can be found the qualification document. When all these stages have been carried out correctly a well tested product will be the result. In the first phase the wishes of the customer will be mapped. From these a research framework will be set up, including a research questions and multiple sub questions. These questions needs to be researched and written down. This will be done in a separate research document. From this document specifications will be made with well supported arguments explaining why. And test conditions for these specifications If everything is complete the next stage will begin: "the Functional specification". From the specification that have been set up the functional specifications will be made. The design is orthogonalised so that is easier to design the separate functions. At the end the separate functions can be added together to make one big flowchart. Again at the end of the stage new test conditions should be made. In the third stage: "the Design specifications" the previous specifications and functional designs will be implemented. All design specifications should be as detailed as possible. For example the dimensions of the components need to be written down. If this phase is completed the next step is the "system build". During the system build the  functions of the product will be build separately so that every group member can continue to work. When all separate functions are build they will be tested. If all separate blocks work fine, they can be added to each other so that one product will remain. Thereafter the complete system will be tested. As noted before the test plan will be written down in the qualification document. 
 
 \section{Bibliography}
 \bibliography{references}

@@ -698,6 +698,8 @@ There are four major functions that are implemented in the microcontroller. Cont
 The central operating unit needs to send request and receive data from the Swarmbee module. This information is transmitted using the UART protocol. The communication is mainly used for sending API commands to the Swarmbee module. The UART connecting uses a baudrate of 115200 bps since this is the transmission speed of the Swarmbee module. The Xmega uses two pins, RX (PC2), TX PC3) to achieve a wired connection with the Swarmbee. The module needs to be able to communicate with a robot platform. To communicate with this platform the module uses $I^2$C communication. This should be standard for every robot, so that the module can easily be placed on any type of robot platform.
 For debugging pin C7 en C8 are reserved. The debugging connecting can be established with a terminal such as Putty.
 
+
+
 \begin{figure}[H]
    \centering
    \includegraphics[scale=0.45]{mainal.pdf}
@@ -706,14 +708,35 @@ For debugging pin C7 en C8 are reserved. The debugging connecting can be establi
 \end{figure}
 
 \subsubsection{Swarm population}
-To update the swarm population all modules need to receive all node ID's from other modules in range of the Swarmbee module. This is the first step in the flowchart of the main algorithm shown in figure  \ref{fig:mainal}. The swarm bee automatically assigns a unique ID to all nodes. A list of all nodes and the corresponding ranges can be requested from the swarm by a API broadcast message: "GRWL", or, "get ranging white list". This broadcast message can be requested at a certain interval which depends on the demand of this information. When the swarm bee receives a ranging request its response will look somewhat like this:
+To update the swarm population all modules need to receive all node ID's from other modules in range of the Swarmbee module. This is the first step in the flowchart of the main algorithm shown in figure  \ref{fig:mainal}. The swarm bee automatically assigns a unique ID to all nodes. A list of all nodes and the corresponding ranges can be requested from the swarm by a API broadcast message "*RRN". This broadcast message can be requested at a certain interval which depends on the demand of this information. The broadcast interval can be set via a command; "sbiv 1000", where sbiv stands for "set broadcast interval" and the time is set at 1000ms, or 1 second. When the swarm bee receives a ranging request its response will look somewhat like this:
 
 \lstinputlisting[firstline=1,lastline=1,label=code:rrn,caption=]{./code/swarmbeeex.c}
 
 Where the first two hexadecimal values represent the source ID (sending module), and the destination ID (receiving module). This is followed up by an error code and the range relative in centimetres to the destination node. The end of the message contains a custom value which can be set by a "notification configuration"-request. For example, this value can represent different sensor values like; x,y,z acceleration, the measured RSSI value or the current battery level.
 
+To fill the population list with including ranges first the module needs to know its own ID. This can be received by a command, "GNID", or "get node ID". A volatile variable "myid" will be set to this string.
+
+Now that the node knows its own id the population list can be filled with information. A frame in the list will look like this:
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[scale=0.30]{popframe.pdf}
+   \caption{One population list frame}
+   \label{fig:frame}
+\end{figure}
+
+Where the ID and the longrange can be received from the swarmbee module, the x and y coordinates are from the acoustic sensing algorithm and the status is set by the main algorithm.
+
+The following code describes how this function will be executed.
+\lstinputlisting[firstline=1,lastline=41,label=code:fillpop,caption=]{./code/fillpop.c}
+
+This function will be executed when the received message is a ranging request notification, because this is the message that will be the argument of this function. At line 16 a while loop starts filling: srcid, destid and distance with the corresponding information from the ranging request notification. A comma indicates that a new value starts. at line 34 and 37 the received id's are compared to its own id so that the right id will be set with the range. The id's and longranges are now filled in the population list.  
+
 \subsubsection{Acoustic sensing send/ receive}
-Using the information obtained by this message, the population list can be filled with ID's. after this is done the first swarm unit in queue will get the mutual exclusion to be the only sender in the acoustic ranging process, it will enter the "send acoustic"-process, figure \ref{fig:sendre}.1. since only one member can be the sending module, it will broadcast that the mutex is taken, now the rest of the swarm will enter the "process receive" algorithm, figure \ref{fig:sendre}.2. 
+After all node ID's are known the first swarm unit in queue will get the mutual exclusion to be the only sender in the acoustic ranging process, it will enter the "send acoustic"-process, figure \ref{fig:sendre}.1. since only one member can be the sending module the rest of the swarm will enter the "process receive" algorithm, figure \ref{fig:sendre}.2. When a node is done sending it will set a mark and send a broadcast to the rest of swarm. The status bit in the frame (\ref{fig:frame}) will be set as one, now all members know that this ID is done. The "order"-function(pseudocode) will keep checking who is the lowest in queue. when all id's' status bits are marked the complete algorithm is completed.
+
+\lstinputlisting[firstline=1,lastline=10,label=code:order,caption=]{./code/order.c}
+
 When the swarm module is in sending mode it will send out a sound signal and retrieve the ranging results form the receiving modules one by one. The receiving modules will start the localization algorithm when a request from the sender is received. When there is no result a node will be marked as "out of range". when a sender retrieved all ranges this node gets marked as 'done'. The main algorithm, figure \ref{fig:mainal}, will now give the mutex to the next swarm member until all units are marked. When all nodes are marked, each module will create its own node map. when there are any missing ranges these gap will be filled by the ranges received by the swarm bee in the ranging request broadcast message.
 
 \begin{figure}[H]
@@ -722,6 +745,9 @@ When the swarm module is in sending mode it will send out a sound signal and ret
    \caption{1:"send acoustic" when the swarm module is in sensing state 2:"process receive", when the swarm module is in receiving state}
    \label{fig:sendre}
 \end{figure}
+
+\lstinputlisting[firstline=1,lastline=26,label=code:sender,caption=]{./code/sender.c}
+\lstinputlisting[firstline=1,lastline=21,label=code:receiver,caption=]{./code/receiver.c}
 
 
 \subsubsection{Wireless communication}

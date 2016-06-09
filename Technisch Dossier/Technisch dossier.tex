@@ -324,8 +324,12 @@ H(p)=\frac{1+ p\tau_2}{\tau_1\tau_c(p^2+p\frac{\tau_2}{\tau1\tau2}+\frac{1}{\tau
 
 The transfer function shows that delays can only be caused by the time constants $\tau_1,\tau_2,\tau_3$. This eliminates the PLL-loop as the source of the deviation in delays. The comparator is the only possible source left. It was determined that the deviation in time is created by the deviation in rise and fall time of the window comparator. In conclusion it's not the PLL itself but that causes the problems but the analog to digital conversion circuit. The deviation in time observed is far too large to function as an implementation for the demodulator.
 
-\subsubsection{Demodulating with a Microproccessor}
-Its been established that the analog solution does not meet the criteria. The other option is to process the signal digitally, with an microprocessor. The ADC of the Xmega contain an comparator. This can be used to detect how many times the incoming signal goes trough a certain threshold. From this information the frequency can be derived. Experiments are still running to this point(08-06-2016).
+\subsubsection{Demodulating using the comparator of a Microprocessor}
+Its been established that the analog solution does not meet the criteria. The other option is to process the signal digitally, with an microprocessor. The ADC of the Xmega contain an comparator. This can be used to detect how many times the incoming signal goes trough a certain threshold. From this information the frequency can be derived. 
+
+
+
+
 
 \subsection{Acoustic Sensing}
 In this section the behaviour of acoustic signals will be researched. This was done in real life experiments using a microphone, speaker and scope to analyse the received signals. During experiments the following points where analysed:

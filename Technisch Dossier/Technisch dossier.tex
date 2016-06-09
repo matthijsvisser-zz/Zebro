@@ -325,8 +325,22 @@ H(p)=\frac{1+ p\tau_2}{\tau_1\tau_c(p^2+p\frac{\tau_2}{\tau1\tau2}+\frac{1}{\tau
 The transfer function shows that delays can only be caused by the time constants $\tau_1,\tau_2,\tau_3$. This eliminates the PLL-loop as the source of the deviation in delays. The comparator is the only possible source left. It was determined that the deviation in time is created by the deviation in rise and fall time of the window comparator. In conclusion it's not the PLL itself but that causes the problems but the analog to digital conversion circuit. The deviation in time observed is far too large to function as an implementation for the demodulator.
 
 \subsubsection{Demodulating using the comparator of a Microprocessor}
-Its been established that the analog solution does not meet the criteria. The other option is to process the signal digitally, with an microprocessor. The ADC of the Xmega contain an comparator. This can be used to detect how many times the incoming signal goes trough a certain threshold. From this information the frequency can be derived. 
+Its been established that the analog solution does not meet the criteria. The other option is to process the signal digitally, with an microprocessor. The ADC of the Xmega contains an comparator. This can be used to detect how many times the incoming signal goes trough a certain threshold. From this information the frequency can be derived. 
 
+However after several tests and tweaks this method seems to be very unreliable in area's where there is some environmental noise. While testing this method we came to the conclusion that the results that were presented by the test-unit were to inconsistent. And therefore discarded this method.
+
+The time delay measurement between the sent signal and the received signal gave in some circumstances promising results, however when there is just a little bit environmental noise the comparator of the Xmega picks up these sound waves disrupting the entire measurement process. This could be resolved by implementing a very narrow bandpass filter, however whereas a bandpass filter does not effect the frequency domain it does effect the time domain of a signal.
+
+Also reflections play a huge part in the inconsistent measurements. We were able to measure up to 48 centimetres. Increasing the distance by a little bit resulted in very high values. Values that were not expected and had no relation with previous measurements, meaning that it was of no good use for a accurate distance determination.
+
+In the code below the measurement implementation using the comparator of the Xmega is shown. Where on line 6 to 14 an interrupt service routine is used to start the measurement and set all timers to 0. This happens when the sending unit starts sending the sound signal.
+
+On line 22 to 38 the interrupt service routine of the comparator is used to detect every rising edge that the Xmega micro controller detects. In this interrupt the time between every edge that is detected is also measured, translating into a frequency.
+
+On line 66 to 78 a continuous while loop has been implemented to transmit the measured frequency and the total time from the point the measurement has started till the point the measurement has stopped. The if statement checks if the frequency is of a value way below the 4 kHz and if the start-measurement flag has been set to 1, the measure value has to be equal or more than 1000 to make sure that atleast 1000 equal repeated periods have been detected.
+\\\\
+
+\lstinputlisting[firstline=1,lastline=78,label=code:codecomparator,caption=Implementation distance measurement using the Xmega comparator]{./code/comparator.c}
 
 
 

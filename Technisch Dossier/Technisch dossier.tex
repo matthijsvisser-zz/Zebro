@@ -708,36 +708,36 @@ For debugging pin C7 en C8 are reserved. The debugging connecting can be establi
 \end{figure}
 
 \subsubsection{Swarm population}
-To update the swarm population all modules need to receive all node ID's from other modules in range of the Swarmbee module. This is the first step in the flowchart of the main algorithm shown in figure  \ref{fig:mainal}. The swarm bee automatically assigns a unique ID to all nodes. A list of all nodes and the corresponding ranges can be requested from the swarm by a API broadcast message "*RRN". This broadcast message can be requested at a certain interval which depends on the demand of this information. The broadcast interval can be set via a command; "sbiv 1000", where sbiv stands for "set broadcast interval" and the time is set at 1000ms, or 1 second. When the swarm bee receives a ranging request its response will look somewhat like this:
+To update the swarm population all modules need to receive the ID's from other modules in range of the Swarmbee module. This is the first step in the flowchart of the main algorithm shown in figure  \ref{fig:mainal}. The swarmbee automatically assigns a unique ID to all nodes. A list of all nodes and the corresponding ranges can be requested from the swarm by a API broadcast message "*RRN". This broadcast message can be requested at a certain interval which depends on the demand of this information. The broadcast interval can be set via a command; "sbiv 1000", where sbiv stands for "set broadcast interval" and the time is set at 1000ms, or 1 second. When the swarmbee receives a ranging request its response will look somewhat like this:
 
 \lstinputlisting[firstline=1,lastline=1,label=code:rrn,caption=]{./code/swarmbeeex.c}
 
 Where the first two hexadecimal values represent the source ID (sending module), and the destination ID (receiving module). This is followed up by an error code and the range relative in centimetres to the destination node. The end of the message contains a custom value which can be set by a "notification configuration"-request. For example, this value can represent different sensor values like; x,y,z acceleration, the measured RSSI value or the current battery level.
 
-To fill the population list with including ranges first the module needs to know its own ID. This can be received by a command, "GNID", or "get node ID". A volatile variable "myid" will be set to this string.
+To fill the population list with including ranges first, the module needs to know its own ID. This can be received by a command, "GNID", or "get node ID". A volatile variable "myid" will be set to this string.
 
 Now that the node knows its own id the population list can be filled with information. A frame in the list will look like this:
 
-\begin{figure}[H]
-   \centering
-   \includegraphics[scale=0.30]{popframe.pdf}
-   \caption{One population list frame}
-   \label{fig:frame}
-\end{figure}
+% \begin{figure}[H]
+%    \centering
+%    \includegraphics[scale=0.30]{popframe.pdf}
+%    \caption{One population list frame}
+%    \label{fig:frame}
+% \end{figure}
 
 Where the ID and the longrange can be received from the swarmbee module, the x and y coordinates are from the acoustic sensing algorithm and the status is set by the main algorithm.
 
 The following code describes how this function will be executed.
-\lstinputlisting[firstline=1,lastline=41,label=code:fillpop,caption=]{./code/fillpop.c}
+% \lstinputlisting[firstline=1,lastline=41,label=code:fillpop,caption=]{./code/fillpop.c}
 
-This function will be executed when the received message is a ranging request notification, because this is the message that will be the argument of this function. At line 16 a while loop starts filling: srcid, destid and distance with the corresponding information from the ranging request notification. A comma indicates that a new value starts. at line 34 and 37 the received id's are compared to its own id so that the right id will be set with the range. The id's and longranges are now filled in the population list.  
+This function will be executed when the received message is a ranging request notification, because this is the message that will be the argument of this function. At line 16 a while loop starts filling: srcid, destid and distance with the corresponding information from the ranging request notification. A comma indicates that a new value starts. At line 34 and 37 the received id's are compared to its own id so that the right id will be set with the range. The id's and longranges are now filled in the population list.  
 
 \subsubsection{Acoustic sensing send/ receive}
-After all node ID's are known the first swarm unit in queue will get the mutual exclusion to be the only sender in the acoustic ranging process, it will enter the "send acoustic"-process, figure \ref{fig:sendre}.1. since only one member can be the sending module the rest of the swarm will enter the "process receive" algorithm, figure \ref{fig:sendre}.2. When a node is done sending it will set a mark and send a broadcast to the rest of swarm. The status bit in the frame (\ref{fig:frame}) will be set as one, now all members know that this ID is done. The "order"-function(pseudocode) will keep checking who is the lowest in queue. when all id's' status bits are marked the complete algorithm is completed.
+After all node ID's are known the first swarm unit in queue will get the mutual exclusion to be the only sender in the acoustic ranging process, it will enter the "send acoustic"-process, figure \ref{fig:sendre}.1. since only one member can be the sending module the rest of the swarm will enter the "process receive" algorithm, figure \ref{fig:sendre}.2. When a node is done sending it will set a mark and send a broadcast to the rest of swarm. The status bit in the frame (\ref{fig:frame}) will be set as one, now all members know that this ID is done. The "order"-function(pseudocode) will keep checking who is the lowest in queue. When all id's status bits are marked the complete algorithm is completed.
 
-\lstinputlisting[firstline=1,lastline=10,label=code:order,caption=]{./code/order.c}
+% \lstinputlisting[firstline=1,lastline=10,label=code:order,caption=]{./code/order.c}
 
-When the swarm module is in sending mode it will send out a sound signal and retrieve the ranging results form the receiving modules one by one. The receiving modules will start the localization algorithm when a request from the sender is received. When there is no result a node will be marked as "out of range". when a sender retrieved all ranges this node gets marked as 'done'. The main algorithm, figure \ref{fig:mainal}, will now give the mutex to the next swarm member until all units are marked. When all nodes are marked, each module will create its own node map. when there are any missing ranges these gap will be filled by the ranges received by the swarm bee in the ranging request broadcast message.
+When the swarm module is in sending mode it will send out a sound signal and retrieve the ranging results form the receiving modules one by one. The receiving modules will start the localization algorithm when a request from the sender is received. When there is no result a node will be marked as "out of range". When a sender retrieved all ranges this node gets marked as 'done'. The main algorithm, figure \ref{fig:mainal}, will now give the mutex to the next swarm member until all units are marked. When all nodes are marked, each module will create its own node map. When there are any missing ranges these gaps will be filled by the (long) ranges received by the swarm bee in the ranging request broadcast message.
 
 \begin{figure}[H]
    \centering
@@ -746,8 +746,61 @@ When the swarm module is in sending mode it will send out a sound signal and ret
    \label{fig:sendre}
 \end{figure}
 
-\lstinputlisting[firstline=1,lastline=26,label=code:sender,caption=]{./code/sender.c}
-\lstinputlisting[firstline=1,lastline=21,label=code:receiver,caption=]{./code/receiver.c}
+% \lstinputlisting[firstline=1,lastline=26,label=code:sender,caption=]{./code/sender.c}
+% \lstinputlisting[firstline=1,lastline=21,label=code:receiver,caption=]{./code/receiver.c}
+
+The communication module uses two UART connection. One for the communication with the swarmbee module and one for debug purposes. Two functions have been made to keep those data channels separated from eachother.
+
+The validatemessage compares the received message with a defined type of message length. The type of messsage is defined by another function, "DetermineCommandType". This function separates the first characters of the message (the command characters) from the rest. Based on the first separated command characters it executes the intented function.
+\lstinputlisting[firstline=24,lastline=44,label=code:validatemessage,caption=Validates the integrity of the received message.]{./code/transceive.c}
+\lstinputlisting[firstline=141,lastline=177,label=code:determinemessage,caption=Determines the meaning of the message.]{./code/transceive.c}
+
+
+The translateMessage function receives byte for byte from the swarmbee modules and forms the intended messages.
+\lstinputlisting[firstline=187,lastline=203,label=code:determinemessage,caption=Translates the received message. Converts characters to a single string]{./code/transceive.c}
+
+
+
+\subsubsection{Population list}
+As the specifications stated, the swarm population must be dynamic. This means that the gathered data must be stored in a dynamic list. Just as the other parts of the code, this is implemented in C code.
+
+The dynamic list is based on the linked list principle, where the next item is linked to the previous item. Each 'item' consists of a one dimensional array with string values. This principle is equivalent to an two dimensional array, but makes it a lot more complex. 
+
+A structure 'node' is defined and consits of a pointer to next node and the data located at the current item adress. The first item that gets inserted starts at the head (beginning of the adress range).
+
+\lstinputlisting[firstline=18,lastline=21,label=code:structnode,caption=Linked list node structure.]{./code/list.h}
+
+Not every function writen is used in the final code for the swarmbee. For future use and the development and debug purposes, these functions are still usefull. The following enumeration summarizes the purpose of each function:
+\begin{itemize}
+\setlength\itemsep{0em}
+    \item SizeOfList - Amount of modules in the list
+    \item PrintHeaderList - Used for debug purposes
+    \item PrintList - Used for debug purposes
+    \item AppendList - Inserts a data array row to the end of the list
+    \item InsertList - Inserts a data array row at the beginning of the list
+    \item PopListByNumber - Reads a data array row at the given index number and removes it afterwards
+    \item PopListByValue - Reads a data array row with the given first value of the current row and removes it afterwards
+    \item PopList - Reads a data array row at the beginning of the list and removes it afterwards
+    \item ViewListByNumber - Reads the data array row at the given index number
+\end{itemize}
+
+The following is the implementation of the insert and append function. In the final code only the insert function is implemented. This is done to create a first in first out buffer, this is explained later with the pop functions.
+
+\lstinputlisting[firstline=64,lastline=74,label=code:appendlist,caption=Inserts a data array row to the end of the list]{./code/list.c}
+
+\lstinputlisting[firstline=87,lastline=99,label=code:insertlist,caption=Inserts a data array row at the beginning of the list]{./code/list.c}
+
+The code for the pop functions can be found in the following three code snippets. The pop by number is implemented because of the chronologic order. It retrieves the total amount of rows in the list and begins to pop at the last and finishes at the first row.
+
+\lstinputlisting[firstline=113,lastline=127,label=code:poplist,caption=Reads a data array row at the beginning of the list and removes it afterwards]{./code/list.c}
+\lstinputlisting[firstline=141,lastline=165,label=code:poplistbynumber,caption=Reads a data array row at the given index number and removes it afterwards]{./code/list.c}
+\lstinputlisting[firstline=178,lastline=200,label=code:poplistbyvalue,caption=Reads a data array row with the given first value of the current row and removes it afterwards]{./code/list.c}
+\lstinputlisting[firstline=209,lastline=218,label=code:sizeoflist,caption=Amount of modules in the list]{./code/list.c}
+
+
+An example of the debug interface output. There is not data (displayed with x's) in the this example. Each 'Data[]' represents an value for example, the first one is the node ID.
+\lstinputlisting[firstline=1,lastline=7,label=code:populationlist,caption=Example of the population list with x's at the place of swarm data.]{./code/populationlist.text}
+
 
 
 \subsubsection{Wireless communication}

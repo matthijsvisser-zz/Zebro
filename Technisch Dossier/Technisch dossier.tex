@@ -729,16 +729,16 @@ Now that the node knows its own id the population list can be filled with inform
 Where the ID and the longrange can be received from the swarmbee module, the x and y coordinates are from the acoustic sensing algorithm and the status is set by the main algorithm.
 
 The following code describes how this function will be executed.
-\lstinputlisting[firstline=1,lastline=41,label=code:fillpop,caption=]{./code/fillpop.c}
+\lstinputlisting[firstline=1,lastline=41,label=code:fillpop,caption= function that fills the population list.]{./code/fillpop.c}
 
 This function will be executed when the received message is a ranging request notification, because this is the message that will be the argument of this function. At line 16 a while loop starts filling: srcid, destid and distance with the corresponding information from the ranging request notification. A comma indicates that a new value starts. At line 34 and 37 the received id's are compared to its own id so that the right id will be set with the range. The id's and longranges are now filled in the population list.  
 
 \subsubsection{Acoustic sensing send/ receive}
 After all node ID's are known the first swarm unit in queue will get the mutual exclusion to be the only sender in the acoustic ranging process, it will enter the "send acoustic"-process, figure \ref{fig:sendre}.1. since only one member can be the sending module the rest of the swarm will enter the "process receive" algorithm, figure \ref{fig:sendre}.2. When a node is done sending it will set a mark and send a broadcast to the rest of swarm. The status bit in the frame (\ref{fig:frame}) will be set as one, now all members know that this ID is done. The "order"-function(pseudocode) will keep checking who is the lowest in queue. When all id's status bits are marked the complete algorithm is completed.
 
-\lstinputlisting[firstline=1,lastline=10,label=code:order,caption=]{./code/order.c}
+\lstinputlisting[firstline=1,lastline=10,label=code:order,caption= Determines which node is the sender.]{./code/order.c}
 
-When the swarm module is in sending mode it will send out a sound signal and retrieve the ranging results form the receiving modules one by one. The receiving modules will start the localization algorithm when a request from the sender is received. When there is no result a node will be marked as "out of range". When a sender retrieved all ranges this node gets marked as 'done'. The main algorithm, figure \ref{fig:mainal}, will now give the mutex to the next swarm member until all units are marked. When all nodes are marked, each module will create its own node map. When there are any missing ranges these gaps will be filled by the (long) ranges received by the swarm bee in the ranging request broadcast message.
+When the swarm module is in sending mode it will send out a sound signal and retrieve the ranging results form the receiving modules one by one. The receiving modules will start the localization algorithm when a request from the sender is received. When there is no result a node will be marked as "out of range". When a sender retrieved all ranges this node gets marked as 'done'. The main algorithm, figure \ref{fig:mainal}, will now give the mutex to the next swarm member until all units are marked. When all nodes are marked, each module will create its own node map. 
 
 \begin{figure}[H]
    \centering
@@ -747,8 +747,13 @@ When the swarm module is in sending mode it will send out a sound signal and ret
    \label{fig:sendre}
 \end{figure}
 
-\lstinputlisting[firstline=1,lastline=26,label=code:sender,caption=]{./code/sender.c}
-\lstinputlisting[firstline=1,lastline=21,label=code:receiver,caption=]{./code/receiver.c}
+When the "sender" function is executed, the xmega of this node will toggle an output pin that is connected to the acoustic sensing xmega. This is the trigger to start sending the sound signal. At the same time the swarm bee will send out a broadcast to all other swarm members that the sensing had began. When the process is finished the node will retrieve all ranging data en fill the population list with it. then the sender is completely done, the specific node will update the status bit in the population list of all swarm members. At last it will return to the "order function".
+
+\lstinputlisting[firstline=1,lastline=26,label=code:sender,caption= function when the module is the sender in the network.]{./code/sender.c}
+
+When the "receiver" function is executed the node will just wait until it retrieved the boradcast from the sending node. When the broadcast has been received it will notify the xmega of the acoustic sensing part. with this information the ranging data can be calculated and it will be send back to the sending node.
+
+\lstinputlisting[firstline=1,lastline=21,label=code:receiver,caption= function when te module is the receiver in the network.]{./code/receiver.c}
 
 The communication module uses two UART connection. One for the communication with the swarmbee module and one for debug purposes. Two functions have been made to keep those data channels separated from eachother.
 

@@ -101,7 +101,7 @@
 
    
     {\small Project document}\\
-    {\small Version 1.1}\\
+    {\small Version 1.2}\\
     {\small \today}\\
         
         \vskip2cm
@@ -537,7 +537,7 @@ Features & Noise insensitive, precision (time), Quick demodulation  \\ \hline
   \label{demodulator}
 \end{figure}
 
-\subsubsection{Wireless communication} 
+\subsection{Wireless communication} 
 
 The specifications of the wireless communication are  discussed in our framework, but will be shortly summarized. 
 
@@ -655,7 +655,7 @@ Suppose that module A is about to send its signal. Just before it starts sending
 The Swarming module has three microphones placed with known distances between them. The relative angle is derived from the time measured with each microphone, and the distance between the microphones. In section 3.2 there's more information on how this is done. The following algorithm shows pseudo-code how the angle and relative location is derived from the three measured distances.
 \lstinputlisting[firstline=1,lastline=40,label=code:locationalgo,caption=Algorithm to derive the relative location]{./code/Location_algorithm.c}
 
-\subsubsection{Communication implementation}
+\subsection{Swarm communication implementation}
 During the research, we came across some plug and play wireless swarm communication implementations. One of these implementations is the SwarmBEE LE module from Nanotron. The SwarmBEE LE module meets the given network criteria and most of the recommendations. The module uses a radio frequency 2,4 GHz signal as a communication channel. The module is not only a communication module, but can also be used to determine relative distances to each swarming module. It also has a API with predefined functions which can be used to set up the wireless network.
 
 
@@ -844,26 +844,42 @@ For the wireless communication module the most important function is that it can
 \newpage
 
 \section{Results and Discussion}
+It is essential that the communication is reliable and can handle the workload. If the communication is not working properly the whole system will fail. In the previous sections all the design choices are written down and explained. The result is a working swarm module that can be controlled in the way you want the swarm to work. All incoming and outgoing messages are handled reliable and can be easily accessed. The communication uses UART to handle internal communication with micro-controller and uses $I^2$C to handle the communication to the platform where the module will be installed. An added feature is that the communication now keeps track of the population. This was not a feature on the Swarmbee yet, but now the tracking is accurate and reliable. The Swarmbee modules are not tested to work like an actual swarm yet, but the only reason is that because there is not any swarm objective implemented. If the instructions are send to the swarm modules these can be send to the central operating unit of the robot where the robot can give a fitting response. The module can also determine the distance between each swarming module. This should work fine but there are some minor issues , which can be worked on in the future. The test with these feature where mainly done inside, but should work fine outdoors. Also the standard antenna is used, but a more powerful antenna could be easily implemented.
 
+Three implementations of relative localisation are proposed. Two of which did not meet the expected specifications. The first method using the analog PLL was supported by thorough research but the theory did not meet the experiments in practice. The problem was found to be the comparator circuit which would cause differences in the delay caused by the circuit. This made the circuit unfit for our cause. It was then decided to use digital signal processing to find the reference point in the acoustic signal. This first method used a comparator of the micro-controllers ADC. Without noise this method worked well enough to measure the signals frequency. But with just small amounts of noise like people talking the frequency could not be measured. Attempts were made to reduce the noise using a small banded filter but this did not help enough to make the measurements constant. The third attempt is were the project stands now and uses convolution to determine the time delay in the signal. This research is still in the early stages, results might be added in a later version of the document.
 
 \section{Conclusion}
 The conclusion is divided into two subsections, Swarm communication and Relative localization. 
 
 \subsection{Swarm communication}
-It is essential that the communication is reliable and can handle the workload. If the communication is not working properly the whole system will fail. In the previous sections all the design choices are written down and explained. The result is a working swarm module that can be controlled in the way you want the swarm to work. All incoming and outgoing messages are handled reliable and can be easily accessed. The communication uses UART to handle internal communication with micro-controller and uses $I^2$C to handle the communication to the platform where the module will be installed. An added feature is that the communication now keeps track of the population. This was not a feature on the Swarmbee yet, but now the tracking is accurate and reliable. The Swarmbee modules are not tested to work like an actual swarm yet, but the only reason is that because there is not any swarm objective implemented. If the instructions are send to the swarm modules these can be send to the central operating unit of the robot where the robot can give a fitting response. The module can also determine the distance between each swarming module. This should work fine but there are some minor issues , which can be worked on in the future. The test with these feature where mainly done inside, but should work fine outdoors. Also the standard antenna is used, but a more powerful antenna could be easily implemented. The only function that is lacking, is the communication with the acoustic sensor which has not been realized yet. This is definitely necessary for the module to work as an unity, so this should be working in future. Overall most of the choices that where made in the implementation where correct choices and they worked out fine. Not all goals are met, but the most important functions are working properly.
+The following research questions for swarming communication were drafted:
+   
+    \begin{itemize}
+        \item "What software protocol should be used?"
+        \item "How do the units communicate within the swarm?"
+        \item "What is de minimal required communication speed?"
+        \item "What hardware is needed to implement the communication?"
+    \end{itemize}
+    
+During this project all of the questions were answered. A unit can communiaite with the swarming via the Central operating unit, which in turn communicates with the Swarmbee module that maintains the swarm network. The Swarmbee module is used to set up the swarm network. This uses a 2,4Ghz protocol. The software used determine the swarm population is self written and explained in the design section of this document. The minimal required speed
+
+With all the questions answered the swarm communication is mostly done. Practice tests still need to determine whether or not the system works properly.
 
 \subsection{relative localization} 
+The important research questions for the relative localization are:
 
+    \begin{itemize}
+        \item "What is the definition of swarming?"
+        \item "How do robots in the swarm know their location?"
+    \end{itemize}
 
-
-It is essential that the communication is reliable and can handle the workload. If the communication is not working properly the whole system will fail. In the previous sections all the design choices are written down and explained. The result is a working swarm module that can be controlled in the way you want the swarm to work. All incoming and outgoing messages are handled reliable and can be easily accessed. The communication uses UART to handle internal communication with microcontroller and uses $I^2$C to handle the communication to the platform where the module will be installed. Another nice feature is the code that can keep track of the size of the population. This was not a feature on the Swarmbee yet, but now the tracking is accurate and reliable. The Swarmbee modules are not tested to work like an actual swarm yet, but the only reason is that because there is not any swarm objective implemented. If the instructions are send to the swarm modules these can be send to the central operating unit of the robot where the robot can give a fitting response. The module can also determine the distance between each swarming module. This should work fine but there are some minor issues , which can be worked on in the future. The test with these feature where mainly done inside, but should work fine outdoors. Also the standard antenna is used, but a more powerful antenna could be easily implemented. The only function that is lacking, is the communication with the acoustic sensor which has not been realized yet. This is definitely necessary for the module to work as an unity, so this should be working in future. Overall most of the choices that where made in the implementation where correct choices and they worked out fine. Not all goals are met, but the most important functions are working properly. 
-
+Swarming was first defined to determine the specifications for the relative localization. It was found that the angle measurement did not have to be real precise for the localization to be useful for the swarm. Algorithms were drafted to determine the location of other units using three microphones on predefines locations on the module itself. However implementation of the distance measurement precise enough to meet specifications, proved difficult and experiments are still running to implement this. The running experiment now involves using digital signal processing implementing convolution to determine the time delay. Any progress during the coming two weeks will be added to this document.
 
 \section{Recommendations}
 The progress of this project is not as far as we had hoped for, and there are many things that can be improved to make the module as complete as possible. As far for the communication part, most of the functions are completed, except for a few. If there was more time we would have tried an implementation for the swarm to test if the modules would really work in a swarm, and then swarming behaviour could be confirmed. This is something that should be done in the next phase of this project. As said before the communication with the acoustic sensor is not established yet. This is a vital part for the module in order to make it work as a whole. This is definitely a must in a next phase, but it could not fit our timetable in this phase, and we had prioritize our tasks. The distance determination of the Swarmbee module is not tested thoroughly and is critical if you want a reliable Swarm. If the distances are not correct, it could have sever consequences. There are still some tasks that need to be done. The tasks just mentioned should be done first in a next stage of this project.
 
-The progress of this project is not as far as we had hoped for, and there are many things that can be improved to make the module as complete as possible. As far for the communication part, most of the functions are completed, except for a few. If there was more time we would have tried an implementation for the swarm to test if the modules would really work in a swarm, and then swarming behaviour could be confirmed. This is something that should be done in the next phase of this project. As said before the communication with the acoustic sensor is not established yet. This is a vital part for the module in order to make it work as a whole. This is definitely a must in a next phase, but it could not fit our timetable in this phase, and we had prioritize our tasks. The distance determination of the Swarmbee module is not tested thoroughly and is critical if you want a reliable Swarm. If the distances are not correct, it could have sever consequences. There are still some tasks that need to be done. The tasks just mentioned should be done first in a next stage of this project.
-
+We still recommend trying acoustic signal to determine the distance. Two solutions to our problem are proposed. The first one is still using signals in the hear-able spectrum because of their omnidirectional properties. This involves finding a way to deal with the great amounts of noise in this spectrum. We found that analog solutions cause to many deviations in time to create a usable implementation. Digital signal processing seems the best way to deal with the problem. The properties of the signal that was to be received are already known. Because of this we propose the use of convolution (discussed in chapter 5.3). Convolution allows for noise-heavy signals to be detected and used. 
+The other method would involve using acoustic signal in the ultrasonic spectrum. This part of the spectrum is alot less populated by noise. The drawback of using this kind of signals is that they are extremely directional so multiple speakers will have to be used to send the signal. Our preference goes out to the first method, because is allows for one bigger speaker to be used, that will generate higher amplitudes.
 
 \newpage
 

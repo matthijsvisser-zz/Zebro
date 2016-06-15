@@ -328,7 +328,7 @@ The transfer function shows that delays can only be caused by the time constants
 \subsubsection{Demodulating using the comparator of a Microprocessor}
 Its been established that the analog solution does not meet the criteria. The other option is to process the signal digitally, with an microprocessor. The ADC of the Xmega contains an comparator. This can be used to detect how many times the incoming signal goes trough a certain threshold. From this information the frequency can be derived. 
 
-However after several tests and tweaks this method seems to be very unreliable in area's where there is some environmental noise. While testing this method we came to the conclusion that the results that were presented by the test-unit were to inconsistent. And therefore discarded this method.
+However after several tests and tweaks this method seems to be very unreliable in area's where there is some environmental noise. While testing this method we came to the conclusion that the results that were presented by the test-unit were too inconsistent. And therefore discarded this method.
 
 The time delay measurement between the sent signal and the received signal gave in some circumstances promising results, however when there is just a little bit environmental noise the comparator of the Xmega picks up these sound waves disrupting the entire measurement process. This could be resolved by implementing a very narrow bandpass filter, however whereas a bandpass filter does not effect the frequency domain it does effect the time domain of a signal.
 
@@ -502,7 +502,7 @@ Without the implementation of this fixed reference point it is possible for a re
 The modulation method is going to be determined by how well the reference point can be recognized by the demodulator. In the research phase, test were done with an speaker and a microphone. This showed that frequency and phase were well defined over distance but amplitude was not. Because of this the available methods for modulation of the acoustic signal are frequency modulation or phase modulation. The most important feature of the modulator must be consistency, meaning that the reference point should be send at exactly the same point in the signal every time. This is so that no deviation will occur when compensating for the missed periods before the reference point. In theory this can be done by both of the methods. 
 
 
-See figure \ref{modulator2} for a schematic representation of the modulator.
+See figure \ref{modulator} for a schematic representation of the modulator.
 
 \begin{figure}[H]
   \centering
@@ -640,7 +640,7 @@ The signal shown in figure \ref{fig:Signal} needs to be modulated to then be sen
 
 \subsubsection{Distance measurement}
 The distance is derived from the time it takes the acoustic signal to travel from module A to module B. 
-Suppose that module A is about to send its signal. Just before it starts sending the acoustic signal, it sends a message over the radio communication, which is almost instant compared to the speed of the sound waves. Module B starts its timer and wait for the signal to arrive. When it arrives it stops it's timer and takes off some pre-defined corrections based on tests done earlier. The distance can now be derived multiplying the speed of sound with the measured time. The state diagram for the distance measurement is shown in \ref{fig:distancem}.
+Suppose that module A is about to send its signal. Just before it starts sending the acoustic signal, it sends a message over the radio communication, which is almost instant compared to the speed of the sound waves. Module B starts its timer and wait for the signal to arrive. When it arrives it stops it's timer and takes off some pre-defined corrections based on tests done earlier. The distance can now be derived multiplying the speed of sound with the measured time. The state diagram for the distance measurement is shown in \ref{fig:distancemk}.
 
 \begin{figure}[H]
     \centering

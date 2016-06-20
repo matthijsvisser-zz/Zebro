@@ -225,14 +225,14 @@ The following questions need to be answered to come to a good conclusion to our 
     \begin{itemize}
         \item "What software protocol should be used?"
         \item "What hardware protocol should be used?"
-        \item "What is de minimal required communication speed?"
+        \item "What is the minimal required communication speed?"
         \item "What hardware is needed to implement the communication?"
     \end{itemize}
      \item "Communication between modules"
     \begin{itemize}
         \item "What software protocol should be used?"
         \item "What hardware protocol should be used?"
-        \item "What is de minimal required communication speed?"
+        \item "What is the minimal required communication speed?"
         \item "What hardware is needed to implement the communication?"
     \end{itemize}
  \end{itemize}
@@ -287,15 +287,16 @@ To solve this problem a system is proposed with three or more acoustic receivers
 \subsection{Demodulation methods}
 As talked about before the signal will be modulated and demodulated to introduce a reference point in the signal. This reference point is used to  determine the exact time the signal has travelled. Also the incoming signal from the microphone will suffer from noise and interference. Because of this the demodulator should be noise resistant. Also its part of the specification of the swarming module that it should be a robust system. Therefore the use of high clock micro-controllers and complicated software are not preferred.
 
-Project members have experience with frequency demodulation using an analog PLL, and were confident this could be easily tested relatively quick. In section 9.3 of the research document it was stated that in theory, the time delay created by the PLL should be constant. This is because the delay is created by the RC time of the filter, which is a constant. A constant delay it easily compensated and will not limit the system. The PLL approach will de discussed in the next section.
+Project members have experience with frequency demodulation using an analog PLL, and were confident this could be easily tested relatively quick. The PLL can be configured for high noise insensitivity using phase comparator one of the 4046CD chip, this is stated in the PLL designer guide /cite{plldisgn}. In section 9.3 of the research document it was stated that in theory, the time delay created by the PLL should be constant. This is because the delay is created by the RC time of the filter, which is a constant. A constant delay it easily compensated and will not limit the system. The PLL approach will discussed in the next section.
 
 \subsubsection{Analog Phase locked loop}
-In this experiment a 4046CD PLL is used to demodulate an acoustic signal. Time measurements are done to analyse the behaviour of the PLL, and test its potential to be used for this project. A window comparator translates the VCO-in voltage into binary code. To test the precision in time a test set-up was build. Two Xmega128a4u were used, one for the demodulator side and one for the modulator side see figure \ref{fig:testup} . During tests the PLL was able to lock on the acoustic signal from a maximum distance of 4 meters which is well within the specification of 3 meters.  The PLL was also able to demodulate the FSK signal at this range. So now the reference point could be identified by the demodulator.
+In this experiment a 4046CD PLL is used to demodulate an acoustic signal. Time measurements are done to analyse the behaviour of the PLL, and test its potential to be used for this project. A window comparator translates the VCO-in voltage into binary code. The comparator was used instead of the ADC of the microprocessor to reduce overhead created by the sampling of the ADC. The timer on the micro-controller is now triggered by a binary '1' created by the comparator.
+To test the precision in time a test set-up was build. Two Xmega128a4u were used, one for the demodulator side and one for the modulator side see figure \ref{fig:testup} . During tests the PLL was able to lock on the acoustic signal from a maximum distance of 4 meters which is well within the specification of 3 meters.  The PLL was also able to demodulate the FSK signal at this range. So now the reference point can be identified by the demodulator.
 
 \begin{figure}[H]
    \centering
    \includegraphics[width=\textwidth]{testopstelling.jpg}
-   \caption{Test set-up, the right breadboard is de modulator with a speaker, the left breadboard is the demodulator with an microphone and the PLL}
+   \caption{Test set-up, the right breadboard is the modulator with a speaker, the left breadboard is the demodulator with an microphone and the PLL}
    \label{fig:testup}
 \end{figure}
 
@@ -312,11 +313,22 @@ Measure point & 1       & 2       & 3       & 4       & 5       & 6       & 7   
 3m          & 3130596 & 3105236 & 3120056 & 3125069 & 3140686 & 3101498 & 3130295 & 3049821 & 3101956 & 3120549 \\ \hline
 \end{tabular}%
 }
-\caption{Measured times in clock pulses, pre scaler is set to 1024 }
+\caption{Measured times in clock pulses, pre scaler is set to 1 }
 \label{measuretime}
 \end{table}
 
-The modulator and the demodulator are connected with a wire. The modulator sends a bit when it starts to send the acoustic signal. This bit interrupts the demodulator which starts a timer. When the reference point in the acoustic signal is detected by the PLL the window comparator sends a binary '1' to the micro-controller which stops the timer. The timer values were then printed in a terminal and are documented in table \ref{measuretime} The measured times are printed in clock pulses with a pre-scaler of 1024. At close range the measured times seem the most stable. However some big deviations of around 500.000 clock pulses still exist. When these times are used to calculate the distance this would mean a deviation is distance of around 5 meters, which is unacceptable. The digital part of the demodulator is tested by connecting a frequency generator to it and observing the time deviation. The time deviation was at a maximum of 200 clock pulses, which is acceptable. It was observed that, when in lock the VCO-in voltage would be at a constant a stable level of 2,5V. When the frequency jump was made from 4kHz to 4,4kHz the VCO-in voltage would always rise to the same voltage of 2,78V. This means that the loop filter always has to integrate same voltage hop. The transfer function of the filter is given by equation \ref{eq:transferfunction}\cite{plldavid}.
+The modulator and the demodulator are connected with a wire. The modulator sends a bit when it starts to send the acoustic signal. This bit interrupts the demodulator which starts a timer. When the reference point in the acoustic signal is detected by the PLL the window comparator sends a binary '1' to the micro-controller which stops the timer. The timer values were then printed in a terminal and are documented in table \ref{measuretime} The measured times are printed in clock pulses with a pre-scaler of 1. The test results are plotted in table \ref{testplotpll}.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\textwidth]{pllgrafiek.pdf}
+   \caption{The test results of the PLL plotted against the expected results}
+   \label{fig:testplotpll}
+\end{figure}
+
+
+At close range the measured times seem the most stable. However some big deviations of around 500.000 clock pulses still exist. This translates in a deviations close to 5 meters, which is unacceptable. 
+The digital/micro-controller side of the demodulator is tested by connecting a frequency generator to it and observing the time deviation. The time deviation was at its maximum 200 clock pulses, which is acceptable. It was observed that, when in lock the VCO-in voltage would be at a constant a stable level of 2,5V. When the frequency jump was made from 4kHz to 4,4kHz the VCO-in voltage would always rise to the same voltage of 2,78V. This means that the loop filter always has to integrate same voltage hop. The transfer function of the filter is given by equation \ref{eq:transferfunction}\cite{plldavid}.
 
 \begin{equation}
 H(p)=\frac{1+ p\tau_2}{\tau_1\tau_c(p^2+p\frac{\tau_2}{\tau1\tau2}+\frac{1}{\tau_1\tau_c})}
@@ -335,6 +347,7 @@ The time delay measurement between the sent signal and the received signal gave 
 Also reflections play a huge part in the inconsistent measurements. We were able to measure up to 48 centimetres. Increasing the distance by a little bit resulted in very high values. Values that were not expected and had no relation with previous measurements, meaning that it was of no good use for a accurate distance determination.
 
 In the code below the measurement implementation using the comparator of the Xmega is shown. Where on line 6 to 14 an interrupt service routine is used to start the measurement and set all timers to 0. This happens when the sending unit starts sending the sound signal.
+
 
 On line 22 to 38 the interrupt service routine of the comparator is used to detect every rising edge that the Xmega micro controller detects. In this interrupt the time between every edge that is detected is also measured, translating into a frequency.
 
@@ -355,7 +368,7 @@ x(t) and y(t) is a function of time;\\
 $\tau$ is the time delay;\\
 R is the cross correlation, which is a function of the time delay $\tau$\\
 
-With correlation we can determine de distance as follows, consider two functions \textbf{\textit{f}} and \textbf{\textit{g}} which only differ from each other by an unknown shift along the x-axis. Using cross-correlation we can find how much \textbf{\textit{g}} must be shifted along the x-axis to make it perfectly identical to \textbf{\textit{f}}. Essentially the formula slides the function \textbf{\textit{g}} along the x-axis calculating the integral at each position. When the function are identical at each other (match), the value of \textbf{\textit{(f $\times$ g)}} is the highest number. this is because when the peaks of the signal are aligned, they make a very large contribution to the integral which should result in the highest value. 
+With correlation we can determine the distance as follows, consider two functions \textbf{\textit{f}} and \textbf{\textit{g}} which only differ from each other by an unknown shift along the x-axis. Using cross-correlation we can find how much \textbf{\textit{g}} must be shifted along the x-axis to make it perfectly identical to \textbf{\textit{f}}. Essentially the formula slides the function \textbf{\textit{g}} along the x-axis calculating the integral at each position. When the function are identical at each other (match), the value of \textbf{\textit{(f $\times$ g)}} is the highest number. this is because when the peaks of the signal are aligned, they make a very large contribution to the integral which should result in the highest value. 
 
 Doing so also allows us to extract the time delay of the signal $\tau$ see figure \ref{fig:timedelay}, which in our case means the delay between sending the acoustic signal and receiving it. However keep in mind that cross-correlation only works if the sent signal is known, which in our case is a 4 kHz sine wave signal. 
 
@@ -622,7 +635,7 @@ As stated earlier a short range localization will be implemented using acoustic 
 
 For Trigonometry angle determination the module must atleast poses three microphones spread in a triangle where all sides have the same distance as shown in figure \ref{module}.
 
-For the distance between the different microphones a length of 10 cm is chosen because with the velocity propagation of sound being 343.2 m/s (at 20\degree C Celsius) and the underlying distance between de microphones being 10 cm using an 32 MHz micro-controller should grant enough overhead time to process the three different times being detected by the microphones. 
+For the distance between the different microphones a length of 10 cm is chosen because with the velocity propagation of sound being 343.2 m/s (at 20\degree C Celsius) and the underlying distance between the microphones being 10 cm using an 32 MHz micro-controller should grant enough overhead time to process the three different times being detected by the microphones. 
 
 \begin{figure}[H]
 \centering
@@ -836,7 +849,7 @@ An example of the debug interface output. There is not data (displayed with x's)
 
 \subsubsection{Wireless communication}
 
-For the wireless communication module the most important function is that it can transmit information over atleast 100 meters. Since the specification states that the swarm must be detected within this range. The speed of de communication is not defined yet, but needs to be fast enough to handle all the messages. We estimated the speed that is necessary to handle all communication. We estimated that the maximum size of a message is 1kBytes. Since the long distance communication had an update frequency of 1Hz, the minimum communication speed that is required is 8kpbs. The Swarmbee LE module will be used for the wireless communication. The Swarmbee LE module will be used for the wireless communication. It uses the ISM band, 2.4 GHz to transmit and receive the data. The maximum range of the module relies on the environment in which it is used. Under ideal conditions the Swarmbee can reach a distance of 1200 meters. It depends on how many obstacles, reflections and interference there is to disturb the signal. An experiment from Nanotron showed that until a range of 150 meters the ranging success rate is about 100\% with a transmission speed of 155 kbps. Experiments we have done ourself show that the antenna on the device does not respond very well inside a building. Test outdoors should still be done, but there is a possibility that an external antenna is needed to reach these distances. The actual speed is also not tested yet, but could be done in the future. Transmitting data between the swarm modules can be configured with a speed of 250 Kbps or 1 Mbps. Tests will show if this will be enough. This module fits all the specifications and is suitable for the use of wireless communication.
+For the wireless communication module the most important function is that it can transmit information over atleast 100 meters. Since the specification states that the swarm must be detected within this range. The speed of the communication is not defined yet, but needs to be fast enough to handle all the messages. We estimated the speed that is necessary to handle all communication. We estimated that the maximum size of a message is 1kBytes. Since the long distance communication had an update frequency of 1Hz, the minimum communication speed that is required is 8kpbs. The Swarmbee LE module will be used for the wireless communication. The Swarmbee LE module will be used for the wireless communication. It uses the ISM band, 2.4 GHz to transmit and receive the data. The maximum range of the module relies on the environment in which it is used. Under ideal conditions the Swarmbee can reach a distance of 1200 meters. It depends on how many obstacles, reflections and interference there is to disturb the signal. An experiment from Nanotron showed that until a range of 150 meters the ranging success rate is about 100\% with a transmission speed of 155 kbps. Experiments we have done ourself show that the antenna on the device does not respond very well inside a building. Test outdoors should still be done, but there is a possibility that an external antenna is needed to reach these distances. The actual speed is also not tested yet, but could be done in the future. Transmitting data between the swarm modules can be configured with a speed of 250 Kbps or 1 Mbps. Tests will show if this will be enough. This module fits all the specifications and is suitable for the use of wireless communication.
 
 \begin{table}[h]
 \centering
@@ -887,7 +900,7 @@ The following research questions for swarming communication were drafted:
     \begin{itemize}
         \item "What software protocol should be used?"
         \item "How do the units communicate within the swarm?"
-        \item "What is de minimal required communication speed?"
+        \item "What is the minimal required communication speed?"
         \item "What hardware is needed to implement the communication?"
     \end{itemize}
     

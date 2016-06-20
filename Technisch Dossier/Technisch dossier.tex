@@ -343,7 +343,37 @@ On line 66 to 78 a continuous while loop has been implemented to transmit the me
 
 \lstinputlisting[firstline=1,lastline=78,label=code:codecomparator,caption=Implementation distance measurement using the Xmega comparator]{./code/comparator.c}
 
+\subsubsection{Demodulating with cross-correlation}
+For our next step to determine an accurate distance measurements we want to implement an technique called "Correlation". Signal processing can be done in many ways, one of them is called cross-correlation which is a measure of similarity of two series as a function of the lag of one relative to the other.
 
+\begin{equation}
+R(\tau)=\int_{-\infty}^{+\infty}x(t) y(t+\tau)dt
+\end{equation}
+\\
+Where:\\
+x(t) and y(t) is a function of time;\\
+$\tau$ is the time delay;\\
+R is the cross correlation, which is a function of the time delay $\tau$\\
+
+With correlation we can determine de distance as follows, consider two functions \textbf{\textit{f}} and \textbf{\textit{g}} which only differ from each other by an unknown shift along the x-axis. Using cross-correlation we can find how much \textbf{\textit{g}} must be shifted along the x-axis to make it perfectly identical to \textbf{\textit{f}}. Essentially the formula slides the function \textbf{\textit{g}} along the x-axis calculating the integral at each position. When the function are identical at each other (match), the value of \textbf{\textit{(f $\times$ g)}} is the highest number. this is because when the peaks of the signal are aligned, they make a very large contribution to the integral which should result in the highest value. 
+
+Doing so also allows us to extract the time delay of the signal $\tau$ see figure \ref{fig:timedelay}, which in our case means the delay between sending the acoustic signal and receiving it. However keep in mind that cross-correlation only works if the sent signal is known, which in our case is a 4 kHz sine wave signal. 
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\textwidth]{timedelay.pdf}
+   \caption{Time delay between \textbf{\textit{f}} (sent) and  \textbf{\textit{g}} (received)}
+   \label{fig:timedelay}
+\end{figure}
+
+As described earlier if we shift the function \textbf{\textit{g}} over the x-axis we can make both signals 100$\%$ identical. Doing so the correlation process will produce several peaks. The peak where both signals are identical should be the highest as shown in figure \ref{fig:correlation}. While shifting the receiving function over the x-axis it is necessary to keep track of the amount of shifts required to reach the highest point. And how many periods shifts (time shifts) required to align both signals, doing so the time delay $\tau$ can be acquired. Multiplying this with the velocity propagation of the speed of sound should give us an distance.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\textwidth]{correlation.pdf}
+   \caption{Auto correlation process of a cycle of a sine wave}
+   \label{fig:correlation}
+\end{figure}
 
 
 \subsection{Acoustic Sensing}

@@ -342,7 +342,7 @@ Measure point & 1       & 2       & 3       & 4       & 5       & 6       & 7   
 \label{measuretime}
 \end{table}
 
-The modulator and the demodulator are connected with a wire. The modulator sends a bit when it starts to send the acoustic signal. This bit interrupts the demodulator which starts a timer. When the reference point in the acoustic signal is detected by the PLL the window comparator sends a binary '1' to the micro-controller which stops the timer. The timer values were then printed in a terminal and are documented in table \ref{measuretime} The measured times are printed in clock pulses with a pre-scaler of 1. The test results are plotted in table \ref{testplotpll}.
+The modulator and the demodulator are connected with a wire. The modulator sends a bit when it starts to send the acoustic signal. This bit interrupts the demodulator which starts a timer. When the reference point in the acoustic signal is detected by the PLL the window comparator sends a binary '1' to the micro-controller which stops the timer. The timer values were then printed in a terminal and are documented in table \ref{measuretime} The measured times are printed in clock pulses with a pre-scaler of 1. The test results are plotted in figure \ref{fig:testplotpll}.
 
 \begin{figure}[H]
    \centering

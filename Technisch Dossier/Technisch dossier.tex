@@ -351,7 +351,7 @@ The modulator and the demodulator are connected with a wire. The modulator sends
    \label{fig:testplotpll}
 \end{figure}
 
-
+\subsubsection{Conclusion demodulating with the PLL}
 At close range the measured times seem the most stable. However some big deviations of around 500.000 clock pulses still exist. This translates in a deviations close to 5 meters, which is unacceptable. 
 The digital/micro-controller side of the demodulator is tested by connecting a frequency generator to it and observing the time deviation. The time deviation was at its maximum 200 clock pulses, which is acceptable. It was observed that, when in lock the VCO-in voltage would be at a constant a stable level of 2,5V. When the frequency jump was made from 4kHz to 4,4kHz the VCO-in voltage would always rise to the same voltage of 2,78V. This means that the loop filter always has to integrate same voltage hop. The transfer function of the filter is given by equation \ref{eq:transferfunction}\cite{plldavid}.
 
@@ -360,7 +360,7 @@ H(p)=\frac{1+ p\tau_2}{\tau_1\tau_c(p^2+p\frac{\tau_2}{\tau1\tau2}+\frac{1}{\tau
 \label{eq:transferfunction}
 \end{equation}
 
-The transfer function shows that delays can only be caused by the time constants $\tau_1,\tau_2,\tau_3$. This eliminates the PLL-loop as the source of the deviation in delays. The comparator is the only possible source left. It was determined that the deviation in time is created by the deviation in rise and fall time of the window comparator. In conclusion it's not the PLL itself but that causes the problems but the analog to digital conversion circuit. The deviation in time observed is far too large to function as an implementation for the demodulator.
+The transfer function shows that delays can only be caused by the time constants $\tau_1,\tau_2,\tau_3$. This eliminates the PLL-loop as the source of the deviation in delays. The comparator is the only possible source left. It was determined that the deviation in time is created by the deviation in rise and fall time of the window comparator. In conclusion it's not the PLL itself but that causes the problems but the analog to digital conversion circuit. The deviation in time observed is far too large to function as an implementation for the demodulator. The choice for not implementing the PLL with the use of an ADC was because, the only reason for implementing the PLL in analog was to enable the use of a low performance platform. Also it was observed that almost every PLL is typically used for very high frequencies up to 100 MHz and even more. Our implementation however comes close to the frequency limitation of the PLL, which could cause instability. And therefore a new method to measure time delay in the sent signal must be developed.
 
 \subsubsection{Demodulating using the comparator of a Microprocessor}
 Its been established that the analog solution does not meet the criteria. The other option is to process the signal digitally, with a microprocessor. The available micro-controller hardware during this project is Xmega based. As stated in section 5.1.1 the signal processing should be frequency based. The AVR application notes describe a straight forward way to measuring frequency using the Xemga's comparator \cite{avrfrequency}. This method is illustrated in figure \ref{fig:freqblockcount}. This method is based on counting the rising edges using the comparator, thus counting the periods. The corresponding frequency can then be derived.  
@@ -392,7 +392,8 @@ Tests were done at different distances, with 10 measurements at every distance, 
    \label{fig:comparatorgraph}
 \end{figure}
 
-The time delay measurement between the sent signal and the received signal gave in some circumstances promising results, however when there is just a small amount environmental noise the comparator of the Xmega picks up these sound waves disrupting the entire measurement process. No stable measurements could be accomplished using this method due to noise signals, passing through the comparators threshold generating miscounts. A more noise insensitive method called cross correlation will be discussed in the next section.
+\subsubsection{Conclusion demodulating using the comparator}
+The time delay measurement between the sent signal and the received signal gave in some circumstances promising results, however when there is just a small amount environmental noise the comparator of the Xmega picks up these sound waves disrupting the entire measurement process. No stable measurements could be accomplished using this method due to noise signals, passing through the comparators threshold generating miscounts. Due to these miscounts the large variations in measured values are generated as seen in the graph shown in figure \ref{fig:comparatorgraph}. Because of these large variations the measurements are unusable for our purpose and a new method has to be chosen. A method that is resistant to noise and is able to determine the time delay in the received signal. A more noise insensitive method called cross-correlation will be discussed in the next section.
 
 
 \subsubsection{Demodulating with cross-correlation}

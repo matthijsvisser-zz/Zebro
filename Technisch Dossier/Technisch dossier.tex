@@ -309,7 +309,7 @@ To solve this problem a system is proposed with three or more acoustic receivers
 \label{trigonometry}
 \end{figure}
 
-\subsection{Demodulation methods}
+\subsection{Signal processing}
 As talked about before the signal will be modulated and demodulated to introduce a reference point in the signal. This reference point is used to  determine the exact time the signal has travelled. Also the incoming signal from the microphone will suffer from noise and interference. Because of this the demodulator should be noise resistant. Also its part of the specification of the swarming module that it should be a robust system. Therefore the use of high clock micro-controllers and complicated software are not preferred.
 
 Project members have experience with frequency demodulation using an analog PLL, and were confident this could be easily tested relatively quick. The PLL can be configured for high noise insensitivity using phase comparator one of the 4046CD chip, this is stated in the PLL designer guide /cite{plldisgn}. In section 9.3 of the research document it was stated that in theory, the time delay created by the PLL should be constant. This is because the delay is created by the RC time of the filter, which is a constant. A constant delay it easily compensated and will not limit the system. The PLL approach will discussed in the next section.
@@ -463,7 +463,6 @@ As described earlier if we shift the function \textbf{\textit{g}} over the x-axi
    \label{fig:correlation}
 \end{figure}
 
-<<<<<<< HEAD
 \subsubsection{Cross-correlation implementation}
 The implementation has been done in two different ways. One of them being implementing it according to the literature where a lot of floating point calculations has to be done. So we have analysed the original cross-correlation method and developed a light-weight simplified version.
 
@@ -480,6 +479,7 @@ R = \frac{\sum\limits_{i}^n [(x(i) - mx) * (y(i-d) - my)]}{\sqrt{\sum\limits_{i}
 \lstinputlisting[firstline=1,lastline=50,label=code:codecorrelation,caption=Implementation Cross-correlation]{./code/crosscorrelation.c}
 
 \subsubsection{Simplified cross-correlation implementation}
+\label{sec:simplecross}
 For the simplified version of correlation where the processing time has been significantly reduced several parts of the formula has been removed. The new formula is listed below in equation \ref{eq:simplecorrelation}. The algorithm based on this formula shifts the sampled signal by one step every time till the highest value of the summation has been acquired see figure \ref{fig:simplecorrelation}. At the point where the summation gives the highest output the signals match the most. When this point has been reached the designed function implemented in c code returns the amount of shifts required in the sample array to reach this value.
 
 \begin{equation}
@@ -535,6 +535,15 @@ In the table shown below in figure \ref{fig:deviationresults} the deviation betw
    \label{fig:deviationresults}
 \end{figure}
 
+In the figure \ref{fig:grafiekcorrelation} a graph is shown with the expected values (actual distance) and the measured distance. 
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\textwidth]{grafiekcorrelation.pdf}
+   \caption{Graph of expected values versus measured values}
+   \label{fig:grafiekcorrelation}
+\end{figure}
+
 However the faulty values measured still needs to be resolved because the values are in some cases very high resulting in large distances. An method to resolve this is to send multiple times and measure this signal multiple times. Doing so the histogram could be created which should display the most common values and the least common values. Choosing the most common value should increase overall stability and reduce faulty measurements.
 
 \begin{figure}[H]
@@ -560,23 +569,52 @@ However the faulty values measured still needs to be resolved because the values
 
 In the figures \ref{fig:histrogram80}, \ref{fig:histrogram90} $\&$ \ref{fig:histrogram100} the histograms of the measurements with some faulty values are displayed. Implementing a method to send multiple signals and also receiving each signal independently, with the use of some filter function that chooses the most common value the output should be stable and non fluctuating. If this has been accomplished a method can be implemented to increase overall accuracy with the use of some sort of analog or digital filter that filters out other frequencies.
 
-\subsubsection{Conclusion cross-correlation}
-In the graph shown in figure \ref{fig:grafiekcorrelation} the expected values are set versus the measured values with the implementation of a "histogram filter" that chooses the most common value of the series of samples. 
+\subsubsection{Filtering cross-correlation}
+As mentioned and showed in the results above, there is a chance that a measurement can be faulty. This could be resolved by implementing some sort of histogram filter. The idea is to receive multiple measurements and determine the most common time delay value. This is done by sending out 10 short acoustic sound signals.
 
-As also seen in the graph the measured results do vary quite a bit relative to the expected values. To overcome this a bandpass filter of some sort might increase accuracy, however at this point this is highly speculative and requires further research in this specific field. Something that could also contribute to accuracy is implementing the full cross-correlation algorithm developed by Paul Bourke instead of the lightweight cross-correlation algorithm developed and implemented by us. This implementation however needs some tweaks to dramatically increase the processing time which was as mentioned earlier up to 5 minutes with a ATXmega256A3U 32MHz microcontroller. Another approach could be to use a more powerful platform like for example a ARM Cortex processor.
-
-Even though the results are not within the specifications (+/- 9$\%$), cross-correlation seems the be the most promising method to distinguish signals and determine the time delay. The results gathered with the implementation of a simplified version of the correlation algorithm seems to be very promising, therefore we think that an implementation of the full cross-correlation algorithm will result in stable and accurate values with some overhead time due to processing, which can be compensated for.
+At the receiving end the software determines the time delay for each acoustic signal and puts this in an array. To filter out the highest values out of the array (which are faulty), the array must first be sorted from highest to lowest value. Afterwards the two top values (highest) and one bottom value (lowest) could be removed and the rest is averaged, this algorithm is shown figure \ref{fig:filter}.
 
 \begin{figure}[H]
    \centering
-   \includegraphics[width=\textwidth]{grafiekcorrelation.pdf}
-   \caption{Graph of expected values versus measured values}
-   \label{fig:grafiekcorrelation}
+   \includegraphics[width=\textwidth]{filter.pdf}
+   \caption{Histogram filter algorithm}
+   \label{fig:filter}
 \end{figure}
 
+This algoritm is implemented in the code 4 shown below. Where the array is sorted using the function called "Quicksort" and where the function called "Filter" removes the top two values and the bottom value and averages the leftover values in the array.
+\newpage
 
-=======
->>>>>>> 4ed3e9577cb22961a15bb9e6c910031f8e772209
+\lstinputlisting[firstline=1,lastline=58,label=code:quicksort,caption=Implementation of histogram filter]{./code/quicksort.c}
+
+\subsubsection{Cross-correlation results with filtering}
+After implementing the filter function a new set of measurements can be taken to see how much improvement has gained from implementing such a filter. Our expectation is to atleast observe some sort of improvement towards accuracy. And also gain some distance in contrast to the previous results where only one pulse has been sent. In the table shown in figure \ref{fig:filterresults}.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\textwidth]{filterresult.pdf}
+   \caption{Results after filtering}
+   \label{fig:filterresults}
+\end{figure}
+
+As observed from the measured results shown in figure \ref{fig:filterresults}, the maximum observed deviation at this moment is +/- 0,08 meters. Whereas before the maximum observed deviation was =/- 0,12 meters, an improvement of 0,04 meters. Also an increase of 50 centimetres in gained distance has been observed whereas before only accurate measurements could be done up to 1 meter. The final results are displayed in a graph shown in figure \ref{fig:filtergraph}.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\textwidth]{filtergraph.pdf}
+   \caption{Graph of results after filtering}
+   \label{fig:filtergraph}
+\end{figure}
+
+\subsubsection{Conclusion cross-correlation}
+In the graph shown in figure \ref{fig:filtergraph} the expected values are set versus the measured values with the implementation of a "histogram filter" that chooses the most common value of the series of samples. 
+
+As also seen in the graph is that the measured results do not vary as much as they did in the graph displayed in figure \ref{fig:grafiekcorrelation}, where the results did vary quite a bit relative to the expected values. 
+
+However there is still a maximum deviation of +/- 0,08 meters observed which must be reduced to enable a localization algorithm where three microphones are used which are spread 10 centimetres apart. To overcome this a bandpass filter of some sort might increase accuracy, however at this point this is highly speculative and requires further research in this specific field. Something that could also contribute to accuracy is implementing the full cross-correlation algorithm developed by Paul Bourke instead of the lightweight cross-correlation algorithm developed and implemented by us. This implementation however needs some tweaks to dramatically increase the processing time which was as mentioned earlier up to 5 minutes with a ATXmega256A3U 32MHz microcontroller. Another approach could be to use a more powerful platform like for example a ARM Cortex processor.
+
+Even though the results are not within the specifications (+/- 9$\%$), cross-correlation seems the be the most promising method to distinguish signals and determine the time delay. The results gathered with the implementation of a simplified version of the correlation algorithm seems to be very promising, therefore we think that an implementation of the full cross-correlation algorithm will result in stable and accurate values with some overhead time due to processing, which can be compensated for.
+
+
 \subsection{Swarm communication network}
 This chapter is a summarizing of chapter 'Swarm communication' in the research document of this project. The is a global research of (wireless) swarm communication networks. This research was done to determine the needed protocol(s), algorithms and the use of hardware for creating swarm networks. This chapter cites the conclusions and recommendations from the research document. Some of the important references are: \cite{combook} \cite{multi-hopwirelessnetworks} \cite{meshnetworking} \cite{position-based}.
 
@@ -805,7 +843,7 @@ Now that specifications of the functional blocks are defined, a implementation f
 
 
 \subsection{Short range localization sensor}
-The short range localization consist of multiple smaller parts: Acoustic actuator/sensor, modulation/demodulation, distance measurement, and angle algorithm. 
+The short range localization consist of multiple smaller parts: Acoustic actuator/sensor, modulation/demodulation, distance measurement, and angle algorithm. The code shown in this section is written for a Xmega256a4u.
 
 \subsubsection{Acoustic actuator sensor}
 As stated earlier a short range localization will be implemented using acoustic wave signals. The sensor will be implemented using microphones and an actuator will be implemented using a speaker. 
@@ -821,14 +859,14 @@ For the distance between the different microphones a length of 10 cm is chosen b
 \label{module}
 \end{figure}
 
-The acoustic signal is send by a speaker facing upward. A metal plate is placed a 3 mm above the speaker, tests during the research phase showed this greatly improved the omnidirectional spread of the signal. The signal that's send it chosen to have a frequency of 4 kHz which has the best omnidirectional and range properties (section 4 of the research document).
+The acoustic signal is send by a speaker facing upward. A metal plate is placed a 3 mm above the speaker, tests during the research phase showed this greatly improved the omnidirectional spread of the signal. The signal that's send it chosen to have a frequency of 3,8 kHz which has the best omnidirectional and range properties (section 4 of the research document).
 
 
-The signal received by the microphone, translates in just a few millivolts. This signal is amplified for a total of 9600 by several stages of amplifiers, so that the signal clips on the supply voltage. This ruins the shape of the signal. However we're only interested in the frequency which will remain the same. After that the signal is bandpass filtered, to get rid of most of the noise. After this the signal is fed into the ADC of the Xmega128a4u. The modulator and demodulator will now be discussed in detail.\\\\
+The signal received by the microphone, translates in just a few millivolts. This signal is amplified 48 times. Then the signal is fed into the ADC of the Xmega256a4u. The sender code and receiver code will now be discussed in detail.\\\\
 
 \subsubsection{Acoustic sender}
-The signal is being generated within a microcontroller and sent to the speaker using a digital to analog converter. This signal is first being amplified to make sure it is loud enough. The block diagram for modulating this signal is shown in figure \ref{fig:modulatorblock}. The signal is set at 3764 Hz, it
-consists of an array using 50 samples per period. The sender will send out a series of 5 "beeps", every beep consists of 1250 samples of the 3764 Hz signal. For every beep the sending  module sends a interrupt signal to the receivers. The mean is taken of the array samples of the five sampled signals. In the next sections the workings of the receiving end will be explained.
+The signal is being generated within a micro-controller and sent to the speaker using a digital to analog converter. This signal is first being amplified to make sure it is loud enough. The block diagram for modulating this signal is shown in figure \ref{fig:modulatorblock}. The signal is set at 3764 Hz, it
+consists of an array using 50 samples per period. The sender will send out a series of 5 "beeps", every beep consists of 1250 samples of the 3764 Hz signal. For every beep the sending  module sends a interrupt signal to the receivers. The mean is taken of the array samples of the five sampled signals. The code for the acoustic sender is shown below.
 
 \begin{figure}[H]
     \centering
@@ -837,36 +875,27 @@ consists of an array using 50 samples per period. The sender will send out a ser
     \label{fig:modulatorblock}
 \end{figure}
 
-\lstinputlisting[firstline=22,lastline=88,label=code:Acoustic sender code]{./code/main_sinegen.c}
+\lstinputlisting[firstline=22,lastline=88,
+label=code:sendercode, 
+caption= Acoustic sender code]
+{./code/mainsinegen.c}
+In the next sections the workings of the receiving end will be explained.
 
-\subsubsection{Demodulator}
-The DAC of the Xmega128a4u is used to create a 4 kHz sine wave signal. 
+\subsubsection{Acoustic receiver}
+The signal send by the acoustic sender is received by the microphone of the receiving modules. As discussed in the research section, a simple version of cross-correlation is used to determine the TOF (time of flight) of the acoustic signal. The receiving micro-controller has a copy of the array that is used to create the signal in the sending micro-controller.
+When the receiver, receives an interrupt from the sender it will start to sample data from the ADC that's connected to the microphone. The sampling time is 50 times per period, this is exactly the same as the sending side. Five individual beeps are sampled. The mean is taken from the five individual samples before the cross-correlation algorithm is performed to determine the distance. For further explanation on the simplified version of cross correlation used see section  \ref{sec:simplecross}. A Block representation is given of the receiving side shown in figure\label{fig:demodulatorblock}.
 
- and then the signal will pause for a pre-defined period and continue for the same pre-defined period of time sent before (10 periods) see figure \ref{fig:Signal}. The pause will be the reference point within the signal. This reference point is to eliminate various uncertainties like the time it takes for the speaker to start resonating and to increase reliability. Because the chosen frequency lies within the speech range, the measurement can be easily disturbed by regular sounds. A reference point within this signal is difficult, maybe even impossible to reproduce in the form of environmental noise.
 
- \begin{figure}[h]
-     \centering
-     \includegraphics[width=1\textwidth]{sinesignal.pdf}
-     \caption{Example sent signal }
-     \label{fig:Signal}
- \end{figure}
-
-De-modulating this signal will be done with the following block diagram see figure \ref{fig:demodulatorblock}. The sound is being captured by a microphone and this signal is being filtered with a bandpass filter to narrow the frequency range to limit the noise. The filtered signal is being amplified with a instrumentation amplifier to eliminate the common DC offset of the microphone. The analog comparator is a feature built in the xmega128a4u microcontroller it detects every rising edges of the signal. Measuring the time between every rising edge translates with a simple formula into a frequency.
-
-By counting every rising edge it is also possible to track every period of the received signal. Which enables us to implement a reference point within the signal using the method mentioned above increasing reliability. 
 
  \begin{figure}[h]
      \centering
-     \includegraphics[width=1\textwidth]{De-modulator.pdf}
-     \caption{Demodulator block diagram }
+     \includegraphics[width=1\textwidth]{Blokschemareceive.pdf}
+     \caption{Block representation of the receiving side}
      \label{fig:demodulatorblock}
  \end{figure}
 
-
-
-\subsubsection{Distance measurement}
 The distance is derived from the time it takes the acoustic signal to travel from module A to module B. 
-Suppose that module A is about to send its signal. Just before it starts sending the acoustic signal, it sends a message over the radio communication, which is almost instant compared to the speed of the sound waves. Module B starts its timer and wait for the signal to arrive. When it arrives it stops it's timer and takes off some pre-defined corrections based on tests done earlier. The distance can now be derived multiplying the speed of sound with the measured time. The state diagram for the distance measurement is shown in \ref{fig:distancemk}.
+Suppose that module A is about to send its signal. Just before it starts sending the acoustic signal, it sends a message over the radio communication, which is almost instant compared to the speed of the sound waves. Module B starts its timer and wait for the signal to arrive. The distance can now be derived multiplying the speed of sound with the measured time. The state diagram for the distance measurement is shown in \ref{fig:distancemk}.
 
 \begin{figure}[H]
     \centering
@@ -875,10 +904,18 @@ Suppose that module A is about to send its signal. Just before it starts sending
     \label{fig:distancemk}
 \end{figure}
 
+This state diagram is translated in C code shown in \ref{code:receivingcode}. The correlation function can be found in the research section.
+
+ \lstinputlisting[firstline=13,lastline=78,
+label=code:receivingcode, 
+caption= Acoustic receiver and correlation code]
+{./code/maincorrelation.c}
 
 
 \subsubsection{Angle measurement and relative location}
-The Swarming module has three microphones placed with known distances between them. The relative angle is derived from the time measured with each microphone, and the distance between the microphones. In section 3.2 there's more information on how this is done. The following algorithm shows pseudo-code how the angle and relative location is derived from the three measured distances.
+The Swarming module has three microphones placed with known distances between them. The relative angle is derived from the time measured with each microphone, and the distance between the microphones. In section 3.2 there's more information on how the algorithms needed. The following algorithm shows pseudo-code how the angle and relative location is derived from the three measured distances.
+No implementation of this pseude-code was achieved during this project. A reliable distance measurement is needed to derive the angle using this method. Small deviations in the distance can cause far bigger deviations in the angle, due to the relatively small distance between the microphones.
+The distance measurement achieved during this project, will still need further tweaking before it can be used for localization.
 \lstinputlisting[firstline=1,lastline=40,label=code:locationalgo,caption=Algorithm to derive the relative location]{./code/Location_algorithm.c}
 
 \subsection{Swarm communication implementation}
@@ -933,6 +970,7 @@ For debugging pin C7 en C8 are reserved. The debugging connecting can be establi
    \caption{main algorithm for updating the swarm population including range requests}
    \label{fig:mainal}
 \end{figure}
+
 
 \subsubsection{Swarm population}
 To update the swarm population all modules need to receive the ID's from other modules in range of the Swarmbee module. This is the first step in the flowchart of the main algorithm shown in figure  \ref{fig:mainal}. The swarmbee automatically assigns a unique ID to all nodes. A list of all nodes and the corresponding ranges can be requested from the swarm by a API broadcast message "*RRN". This broadcast message can be requested at a certain interval which depends on the demand of this information. The broadcast interval can be set via a command; "sbiv 1000", where sbiv stands for "set broadcast interval" and the time is set at 1000ms, or 1 second. When the swarmbee receives a ranging request its response will look somewhat like this:
@@ -1114,9 +1152,12 @@ Additionaly there are a few points of interest to improve the code. These points
 
 
 
-\section{Bibliografie}
+\section{References}
 \bibliography{references}
 \bibliographystyle{IEEEtran}
+
+\section{Appendix}
+
 
 
 

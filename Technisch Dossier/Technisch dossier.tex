@@ -324,7 +324,7 @@ In this experiment a 4046CD PLL is used to demodulate an acoustic signal. Time m
    \label{fig:pllsignal}
 \end{figure}
 
-To test the precision in time a test set-up was build. Two ATXmega128A4U were used, one for the demodulator side and one for the modulator side see figure \ref{fig:testup}. The PLL demodulator is build according to the schematic shown in figure \ref{fig:pplschematic}.
+To test the precision in time a test set-up was build. Two ATXmega128A4U were used, one for the demodulator side and one for the modulator side see figure \ref{fig:testup}. The PLL demodulator is build according to the schematic shown in figure \ref{fig:pllschematic}.
 
  \begin{figure}[H]
    \centering
@@ -866,7 +866,7 @@ The signal received by the microphone, translates in just a few millivolts. This
 
 \subsubsection{Acoustic sender}
 The signal is being generated within a micro-controller and sent to the speaker using a digital to analog converter. This signal is first being amplified to make sure it is loud enough. The block diagram for modulating this signal is shown in figure \ref{fig:modulatorblock}. The signal is set at 3764 Hz, it
-consists of an array using 50 samples per period. The sender will send out a series of 5 "beeps", every beep consists of 1250 samples of the 3764 Hz signal. For every beep the sending  module sends a interrupt signal to the receivers. The mean is taken of the array samples of the five sampled signals. The code for the acoustic sender is shown below.
+consists of an array using 50 samples per period. The sender will send out a series of 10 "beeps", every beep consists of 1250 samples of the 3764 Hz signal. For every beep the sending  module sends a interrupt signal to the receivers. The mean is taken of the array samples of the five sampled signals. The code for the acoustic sender is shown below.
 
 \begin{figure}[H]
     \centering
@@ -883,7 +883,7 @@ In the next sections the workings of the receiving end will be explained.
 
 \subsubsection{Acoustic receiver}
 The signal send by the acoustic sender is received by the microphone of the receiving modules. As discussed in the research section, a simple version of cross-correlation is used to determine the TOF (time of flight) of the acoustic signal. The receiving micro-controller has a copy of the array that is used to create the signal in the sending micro-controller.
-When the receiver, receives an interrupt from the sender it will start to sample data from the ADC that's connected to the microphone. The sampling time is 50 times per period, this is exactly the same as the sending side. Five individual beeps are sampled. The mean is taken from the five individual samples before the cross-correlation algorithm is performed to determine the distance. For further explanation on the simplified version of cross correlation used see section  \ref{sec:simplecross}. A Block representation is given of the receiving side shown in figure\label{fig:demodulatorblock}.
+When the receiver, receives an interrupt from the sender it will start to sample data from the ADC that's connected to the microphone. The sampling time is 50 times per period, this is exactly the same as the sending side. Ten individual beeps are sampled. The mean is taken from the five individual samples before the cross-correlation algorithm is performed to determine the distance. For further explanation on the simplified version of cross correlation used see section  \ref{sec:simplecross}. A Block representation is given of the receiving side shown in figure\label{fig:demodulatorblock}.
 
 
 

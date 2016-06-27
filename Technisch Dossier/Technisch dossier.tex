@@ -315,13 +315,30 @@ As talked about before the signal will be modulated and demodulated to introduce
 Project members have experience with frequency demodulation using an analog PLL, and were confident this could be easily tested relatively quick. The PLL can be configured for high noise insensitivity using phase comparator one of the 4046CD chip, this is stated in the PLL designer guide /cite{plldisgn}. In section 9.3 of the research document it was stated that in theory, the time delay created by the PLL should be constant. This is because the delay is created by the RC time of the filter, which is a constant. A constant delay it easily compensated and will not limit the system. The PLL approach will discussed in the next section.
 
 \subsubsection{Analog Phase locked loop}
-In this experiment a 4046CD PLL is used to demodulate an acoustic signal. Time measurements are done to analyse the behaviour of the PLL, and test its potential to be used for this project. A window comparator translates the VCO-in voltage into binary code. The comparator was used instead of the ADC of the microprocessor to reduce overhead created by the sampling of the ADC. The timer on the micro-controller is now triggered by a binary '1' created by the comparator.
-To test the precision in time a test set-up was build. Two Xmega128a4u were used, one for the demodulator side and one for the modulator side see figure \ref{fig:testup} . During tests the PLL was able to lock on the acoustic signal from a maximum distance of 4 meters which is well within the specification of 3 meters.  The PLL was also able to demodulate the FSK signal at this range. So now the reference point can be identified by the demodulator.
+In this experiment a 4046CD PLL is used to demodulate an acoustic signal. Time measurements are done to analyse the behaviour of the PLL, and test its potential to be used for this project. A window comparator translates the VCO-in voltage into binary code. The comparator was used instead of the ADC of the microprocessor to reduce overhead created by the sampling of the ADC. The timer on the micro-controller is now triggered by a binary '1' created by the comparator see figure \ref{fig:pllsignal}.
 
 \begin{figure}[H]
    \centering
-   \includegraphics[width=\textwidth]{testopstelling.jpg}
-   \caption{Test set-up, the right breadboard is the modulator with a speaker, the left breadboard is the demodulator with an microphone and the PLL}
+   \includegraphics[width=\textwidth]{pllfsk.pdf}
+   \caption{Example receiving signal PLL}
+   \label{fig:pllsignal}
+\end{figure}
+
+To test the precision in time a test set-up was build. Two ATXmega128A4U were used, one for the demodulator side and one for the modulator side see figure \ref{fig:testup}. The PLL demodulator is build according to the schematic shown in figure \ref{fig:pplschematic}.
+
+ \begin{figure}[H]
+   \centering
+   \includegraphics[width=\textwidth]{pllschema.pdf}
+   \caption{PLL demodulator schematic}
+   \label{fig:pllschematic}
+\end{figure}
+
+During tests the PLL was able to lock on the acoustic signal from a maximum distance of 4 meters which is well within the specification of 3 meters.  The PLL was also able to demodulate the FSK signal at this range. So now the reference point can be identified by the demodulator.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\textwidth]{testopstellingpll.pdf}
+   \caption{Test set-up demodulating with the PLL}
    \label{fig:testup}
 \end{figure}
 
@@ -372,18 +389,33 @@ Its been established that the analog solution does not meet the criteria. The ot
    \label{fig:freqblockcount}
 \end{figure}
 
+In the code below the measurement implementation using the comparator of the Xmega is shown. Where on line 6 to 14 an interrupt service routine is used to start the measurement and set all timers to 0. This happens when the sending unit starts sending the acoustic signal. The idea is to send a signal of 4 kHz and after a predefined amount of periods the signal stops (blank space). This blank space acts as the reference point within the signal see figure \ref{fig:acsignal}.
 
-In the code below the measurement implementation using the comparator of the Xmega is shown. Where on line 6 to 14 an interrupt service routine is used to start the measurement and set all timers to 0. This happens when the sending unit starts sending the acoustic signal.
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\textwidth]{acsignal.pdf}
+   \caption{Example modulated signal}
+   \label{fig:acsignal}
+\end{figure}
 
 
 On line 22 to 38 the interrupt service routine of the comparator is used to detect every rising edge that the Xmega micro controller detects. In this interrupt the time between every edge that is detected is also measured, translating into a frequency.
 
 On line 66 to 78 a continuous while loop has been implemented to transmit the measured frequency and the total time from the point the measurement has started till the point the measurement has stopped. The if statement checks if the frequency is of a value way below the 4 kHz and if the start-measurement flag has been set to 1, the measure value has to be equal or more than 1000 to make sure that atleast 1000 equal repeated periods have been detected.
-\\\\
+\newpage
 
 \lstinputlisting[firstline=1,lastline=78,label=code:codecomparator,caption=Implementation distance measurement using the Xmega comparator]{./code/comparator.c}
 
-Tests were done at different distances, with 10 measurements at every distance, these measurements are plotted with the expected values in figure \ref{fig:comparatorgraph}. 
+Tests were done at different distances, with 10 measurements at every distance, for the test set-up that has been built see figure\ref{fig:acsetup}.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\textwidth]{actestsetup.pdf}
+   \caption{Comparator test set-up}
+   \label{fig:acsetup}
+\end{figure}
+
+The measurements are plotted in a graph with the expected values are shown in figure \ref{fig:comparatorgraph}. 
 
 \begin{figure}[H]
    \centering
@@ -431,6 +463,7 @@ As described earlier if we shift the function \textbf{\textit{g}} over the x-axi
    \label{fig:correlation}
 \end{figure}
 
+<<<<<<< HEAD
 \subsubsection{Cross-correlation implementation}
 The implementation has been done in two different ways. One of them being implementing it according to the literature where a lot of floating point calculations has to be done. So we have analysed the original cross-correlation method and developed a light-weight simplified version.
 
@@ -542,6 +575,8 @@ Even though the results are not within the specifications (+/- 9$\%$), cross-cor
 \end{figure}
 
 
+=======
+>>>>>>> 4ed3e9577cb22961a15bb9e6c910031f8e772209
 \subsection{Swarm communication network}
 This chapter is a summarizing of chapter 'Swarm communication' in the research document of this project. The is a global research of (wireless) swarm communication networks. This research was done to determine the needed protocol(s), algorithms and the use of hardware for creating swarm networks. This chapter cites the conclusions and recommendations from the research document. Some of the important references are: \cite{combook} \cite{multi-hopwirelessnetworks} \cite{meshnetworking} \cite{position-based}.
 

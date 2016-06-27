@@ -463,7 +463,6 @@ As described earlier if we shift the function \textbf{\textit{g}} over the x-axi
    \label{fig:correlation}
 \end{figure}
 
-<<<<<<< HEAD
 \subsubsection{Cross-correlation implementation}
 The implementation has been done in two different ways. One of them being implementing it according to the literature where a lot of floating point calculations has to be done. So we have analysed the original cross-correlation method and developed a light-weight simplified version.
 
@@ -536,6 +535,15 @@ In the table shown below in figure \ref{fig:deviationresults} the deviation betw
    \label{fig:deviationresults}
 \end{figure}
 
+In the figure \ref{fig:grafiekcorrelation} a graph is shown with the expected values (actual distance) and the measured distance. 
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\textwidth]{grafiekcorrelation.pdf}
+   \caption{Graph of expected values versus measured values}
+   \label{fig:grafiekcorrelation}
+\end{figure}
+
 However the faulty values measured still needs to be resolved because the values are in some cases very high resulting in large distances. An method to resolve this is to send multiple times and measure this signal multiple times. Doing so the histogram could be created which should display the most common values and the least common values. Choosing the most common value should increase overall stability and reduce faulty measurements.
 
 \begin{figure}[H]
@@ -561,23 +569,52 @@ However the faulty values measured still needs to be resolved because the values
 
 In the figures \ref{fig:histrogram80}, \ref{fig:histrogram90} $\&$ \ref{fig:histrogram100} the histograms of the measurements with some faulty values are displayed. Implementing a method to send multiple signals and also receiving each signal independently, with the use of some filter function that chooses the most common value the output should be stable and non fluctuating. If this has been accomplished a method can be implemented to increase overall accuracy with the use of some sort of analog or digital filter that filters out other frequencies.
 
-\subsubsection{Conclusion cross-correlation}
-In the graph shown in figure \ref{fig:grafiekcorrelation} the expected values are set versus the measured values with the implementation of a "histogram filter" that chooses the most common value of the series of samples. 
+\subsubsection{Filtering cross-correlation}
+As mentioned and showed in the results above, there is a chance that a measurement can be faulty. This could be resolved by implementing some sort of histogram filter. The idea is to receive multiple measurements and determine the most common time delay value. This is done by sending out 10 short acoustic sound signals.
 
-As also seen in the graph the measured results do vary quite a bit relative to the expected values. To overcome this a bandpass filter of some sort might increase accuracy, however at this point this is highly speculative and requires further research in this specific field. Something that could also contribute to accuracy is implementing the full cross-correlation algorithm developed by Paul Bourke instead of the lightweight cross-correlation algorithm developed and implemented by us. This implementation however needs some tweaks to dramatically increase the processing time which was as mentioned earlier up to 5 minutes with a ATXmega256A3U 32MHz microcontroller. Another approach could be to use a more powerful platform like for example a ARM Cortex processor.
-
-Even though the results are not within the specifications (+/- 9$\%$), cross-correlation seems the be the most promising method to distinguish signals and determine the time delay. The results gathered with the implementation of a simplified version of the correlation algorithm seems to be very promising, therefore we think that an implementation of the full cross-correlation algorithm will result in stable and accurate values with some overhead time due to processing, which can be compensated for.
+At the receiving end the software determines the time delay for each acoustic signal and puts this in an array. To filter out the highest values out of the array (which are faulty), the array must first be sorted from highest to lowest value. Afterwards the two top values (highest) and one bottom value (lowest) could be removed and the rest is averaged, this algorithm is shown figure \ref{fig:filter}.
 
 \begin{figure}[H]
    \centering
-   \includegraphics[width=\textwidth]{grafiekcorrelation.pdf}
-   \caption{Graph of expected values versus measured values}
-   \label{fig:grafiekcorrelation}
+   \includegraphics[width=\textwidth]{filter.pdf}
+   \caption{Histogram filter algorithm}
+   \label{fig:filter}
 \end{figure}
 
+This algoritm is implemented in the code 4 shown below. Where the array is sorted using the function called "Quicksort" and where the function called "Filter" removes the top two values and the bottom value and averages the leftover values in the array.
+\newpage
 
-=======
->>>>>>> 4ed3e9577cb22961a15bb9e6c910031f8e772209
+\lstinputlisting[firstline=1,lastline=58,label=code:quicksort,caption=Implementation of histogram filter]{./code/quicksort.c}
+
+\subsubsection{Cross-correlation results with filtering}
+After implementing the filter function a new set of measurements can be taken to see how much improvement has gained from implementing such a filter. Our expectation is to atleast observe some sort of improvement towards accuracy. And also gain some distance in contrast to the previous results where only one pulse has been sent. In the table shown in figure \ref{fig:filterresults}.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\textwidth]{filterresult.pdf}
+   \caption{Results after filtering}
+   \label{fig:filterresults}
+\end{figure}
+
+As observed from the measured results shown in figure \ref{fig:filterresults}, the maximum observed deviation at this moment is +/- 0,08 meters. Whereas before the maximum observed deviation was =/- 0,12 meters, an improvement of 0,04 meters. Also an increase of 50 centimetres in gained distance has been observed whereas before only accurate measurements could be done up to 1 meter. The final results are displayed in a graph shown in figure \ref{fig:filtergraph}.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\textwidth]{filtergraph.pdf}
+   \caption{Graph of results after filtering}
+   \label{fig:filtergraph}
+\end{figure}
+
+\subsubsection{Conclusion cross-correlation}
+In the graph shown in figure \ref{fig:filtergraph} the expected values are set versus the measured values with the implementation of a "histogram filter" that chooses the most common value of the series of samples. 
+
+As also seen in the graph is that the measured results do not vary as much as they did in the graph displayed in figure \ref{fig:grafiekcorrelation}, where the results did vary quite a bit relative to the expected values. 
+
+However there is still a maximum deviation of +/- 0,08 meters observed which must be reduced to enable a localization algorithm where three microphones are used which are spread 10 centimetres apart. To overcome this a bandpass filter of some sort might increase accuracy, however at this point this is highly speculative and requires further research in this specific field. Something that could also contribute to accuracy is implementing the full cross-correlation algorithm developed by Paul Bourke instead of the lightweight cross-correlation algorithm developed and implemented by us. This implementation however needs some tweaks to dramatically increase the processing time which was as mentioned earlier up to 5 minutes with a ATXmega256A3U 32MHz microcontroller. Another approach could be to use a more powerful platform like for example a ARM Cortex processor.
+
+Even though the results are not within the specifications (+/- 9$\%$), cross-correlation seems the be the most promising method to distinguish signals and determine the time delay. The results gathered with the implementation of a simplified version of the correlation algorithm seems to be very promising, therefore we think that an implementation of the full cross-correlation algorithm will result in stable and accurate values with some overhead time due to processing, which can be compensated for.
+
+
 \subsection{Swarm communication network}
 This chapter is a summarizing of chapter 'Swarm communication' in the research document of this project. The is a global research of (wireless) swarm communication networks. This research was done to determine the needed protocol(s), algorithms and the use of hardware for creating swarm networks. This chapter cites the conclusions and recommendations from the research document. Some of the important references are: \cite{combook} \cite{multi-hopwirelessnetworks} \cite{meshnetworking} \cite{position-based}.
 

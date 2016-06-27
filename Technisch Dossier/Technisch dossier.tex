@@ -790,8 +790,24 @@ The acoustic signal is send by a speaker facing upward. A metal plate is placed 
 
 
 The signal received by the microphone, translates in just a few millivolts. This signal is amplified for a total of 9600 by several stages of amplifiers, so that the signal clips on the supply voltage. This ruins the shape of the signal. However we're only interested in the frequency which will remain the same. After that the signal is bandpass filtered, to get rid of most of the noise. After this the signal is fed into the ADC of the Xmega128a4u. The modulator and demodulator will now be discussed in detail.\\\\
+
+\subsubsection{Acoustic sender}
+The signal is being generated within a microcontroller and sent to the speaker using a digital to analog converter. This signal is first being amplified to make sure it is loud enough. The block diagram for modulating this signal is shown in figure \ref{fig:modulatorblock}. The signal is set at 3764 Hz, it
+consists of an array using 50 samples per period. The sender will send out a series of 5 "beeps", every beep consists of 1250 samples of the 3764 Hz signal. For every beep the sending  module sends a interrupt signal to the receivers. The mean is taken of the array samples of the five sampled signals. In the next sections the workings of the receiving end will be explained.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{Modulator.pdf}
+    \caption{Modulator block diagram}
+    \label{fig:modulatorblock}
+\end{figure}
+
+\lstinputlisting[firstline=22,lastline=88,label=code:Acoustic sender code]{./code/main_sinegen.c}
+
 \subsubsection{Demodulator}
-The DAC of the Xmega128a4u is used to create a 4 kHz sine wave signal. The signal will be sent out for a pre-defined period of time (for example 10 periods) and then the signal will pause for a pre-defined period and continue for the same pre-defined period of time sent before (10 periods) see figure \ref{fig:Signal}. The pause will be the reference point within the signal. This reference point is to eliminate various uncertainties like the time it takes for the speaker to start resonating and to increase reliability. Because the chosen frequency lies within the speech range, the measurement can be easily disturbed by regular sounds. A reference point within this signal is difficult, maybe even impossible to reproduce in the form of environmental noise.
+The DAC of the Xmega128a4u is used to create a 4 kHz sine wave signal. 
+
+ and then the signal will pause for a pre-defined period and continue for the same pre-defined period of time sent before (10 periods) see figure \ref{fig:Signal}. The pause will be the reference point within the signal. This reference point is to eliminate various uncertainties like the time it takes for the speaker to start resonating and to increase reliability. Because the chosen frequency lies within the speech range, the measurement can be easily disturbed by regular sounds. A reference point within this signal is difficult, maybe even impossible to reproduce in the form of environmental noise.
 
  \begin{figure}[h]
      \centering
@@ -810,16 +826,6 @@ By counting every rising edge it is also possible to track every period of the r
      \caption{Demodulator block diagram }
      \label{fig:demodulatorblock}
  \end{figure}
-
-\subsubsection{Modulator}
-The signal shown in figure \ref{fig:Signal} needs to be modulated to then be sent through a speaker. The signal is being generated within a microcontroller and sent to the speaker through a digital to analog converter. This signal is first being amplified to make sure it is loud enough. The block diagram for modulating this signal is shown in figure \ref{fig:modulatorblock}. The “blank” spaces in the signal is done by stop sending for period equal to the pre-defined time for a blank.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.65\textwidth]{Modulator.pdf}
-    \caption{Modulator block diagram }
-    \label{fig:modulatorblock}
-\end{figure}
 
 
 

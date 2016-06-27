@@ -396,11 +396,14 @@ Tests were done at different distances, with 10 measurements at every distance, 
 The time delay measurement between the sent signal and the received signal gave in some circumstances promising results, however when there is just a small amount environmental noise the comparator of the Xmega picks up these sound waves disrupting the entire measurement process. No stable measurements could be accomplished using this method due to noise signals, passing through the comparators threshold generating miscounts. Due to these miscounts the large variations in measured values are generated as seen in the graph shown in figure \ref{fig:comparatorgraph}. Because of these large variations the measurements are unusable for our purpose and a new method has to be chosen. A method that is resistant to noise and is able to determine the time delay in the received signal. A more noise insensitive method called cross-correlation will be discussed in the next section.
 
 
-\subsubsection{Demodulating with cross-correlation}
-For our next step to determine an accurate distance measurements we want to implement an technique called "Correlation". Signal processing can be done in many ways, one of them is called cross-correlation which is a measure of similarity of two series as a function of the lag of one relative to the other.
+\subsubsection{Cross-correlation}
+In the previous section it was observed that digitally processing the signal showed potential. However the previous approach, suffered heavily from noise interference. Because the signal that is received is pre-defined and known a "light" version of a technique called cross correlation can be implemented. Cross correlation looks at the correlating points in the two signal arrays, the known signal and the received signal. Cross correlation has great noise insensitivity because, the noise in the received signal is uncorrelated to the signal that's already known \cite{crosscorrelation1}. 
+ 
+
 
 \begin{equation}
 R(\tau)=\int_{-\infty}^{+\infty}x(t) y(t+\tau)dt
+\label{eq:Cross-correlation}
 \end{equation}
 \\
 Where:\\
@@ -408,9 +411,9 @@ x(t) and y(t) is a function of time;\\
 $\tau$ is the time delay;\\
 R is the cross correlation, which is a function of the time delay $\tau$\\
 
-With correlation we can determine the distance as follows, consider two functions \textbf{\textit{f}} and \textbf{\textit{g}} which only differ from each other by an unknown shift along the x-axis. Using cross-correlation we can find how much \textbf{\textit{g}} must be shifted along the x-axis to make it perfectly identical to \textbf{\textit{f}}. Essentially the formula slides the function \textbf{\textit{g}} along the x-axis calculating the integral at each position. When the function are identical at each other (match), the value of \textbf{\textit{(f $\times$ g)}} is the highest number. this is because when the peaks of the signal are aligned, they make a very large contribution to the integral which should result in the highest value. 
+Using correlation we can determine the distance as follows, consider two functions \textbf{\textit{f}} and \textbf{\textit{g}} which only differ from each other by an unknown shift along the x-axis. Using cross-correlation we can find how much \textbf{\textit{g}} must be shifted along the x-axis to make it perfectly identical to \textbf{\textit{f}}. Essentially the formula slides the function \textbf{\textit{g}} along the x-axis calculating the integral at each position. When the function are identical at each other (match), the value of \textbf{\textit{(f $\times$ g)}} is the highest number. this is because when the peaks of the signal are aligned, they make a very large contribution to the integral which should result in the highest value. 
 
-Doing so also allows us to extract the time delay of the signal $\tau$ see figure \ref{fig:timedelay}, which in our case means the delay between sending the acoustic signal and receiving it. However keep in mind that cross-correlation only works if the sent signal is known, which in our case is a 4 kHz sine wave signal. 
+Doing so also allows us to extract the time delay of the signal $\tau$ see figure \ref{fig:timedelay}, which in our case means the delay between sending the acoustic signal and receiving it.
 
 \begin{figure}[H]
    \centering
@@ -419,7 +422,7 @@ Doing so also allows us to extract the time delay of the signal $\tau$ see figur
    \label{fig:timedelay}
 \end{figure}
 
-As described earlier if we shift the function \textbf{\textit{g}} over the x-axis we can make both signals 100$\%$ identical. Doing so the correlation process will produce several peaks. The peak where both signals are identical should be the highest as shown in figure \ref{fig:correlation}. While shifting the receiving function over the x-axis it is necessary to keep track of the amount of shifts required to reach the highest point. And how many periods shifts (time shifts) required to align both signals, doing so the time delay $\tau$ can be acquired. Multiplying this with the velocity propagation of the speed of sound should give us an distance.
+As described earlier if we shift the function \textbf{\textit{g}} over the x-axis to find the point where the two signals correlate the most. Doing so the correlation process will produce several peaks. The peak where both signals correlate the most, should be the highest as shown in figure \ref{fig:correlation}. While shifting the receiving function over the x-axis it is necessary to keep track of the amount of shifts required to reach the highest point. And how many periods shifts (time shifts) required to align both signals, doing so the time delay $\tau$ can be acquired. Multiplying this with the velocity propagation of the speed of sound should give us an distance.
 
 \begin{figure}[H]
    \centering
@@ -428,6 +431,115 @@ As described earlier if we shift the function \textbf{\textit{g}} over the x-axi
    \label{fig:correlation}
 \end{figure}
 
+\subsubsection{Cross-correlation implementation}
+The implementation has been done in two different ways. One of them being implementing it according to the literature where a lot of floating point calculations has to be done. So we have analysed the original cross-correlation method and developed a light-weight simplified version.
+
+This simplified has to however compromise on accuracy, but gains processing speed. Where the original cross-correlation takes up to 5 minutes in an ATXmega256A3U 32MHz Microcontroller the simplified version takes up to max 2 seconds. This increase in processing time is very crucial because when several robots move around in a swarm and it takes up to 5 minutes to generate a distance, the distance is already outdated long before it will ever be useful.
+
+In the original cross-correlation algorithm and source code, the accuracy comes from denominator which ensures that the amplitude of the received signal has no influence on the total measurement overall. For the original cross-correlation see equation \ref{eq:correlation-formula}. The implementation of the software is shown in code 2.
+
+\begin{equation}
+R = \frac{\sum\limits_{i}^n [(x(i) - mx) * (y(i-d) - my)]}{\sqrt{\sum\limits_{i}^n (x(i) - mx)^2} * \sqrt{\sum\limits_{i}^n (y(i-d) - my)^2}}
+\label{eq:correlation-formula}
+\end{equation}
+\\
+
+\lstinputlisting[firstline=1,lastline=50,label=code:codecorrelation,caption=Implementation Cross-correlation]{./code/crosscorrelation.c}
+
+\subsubsection{Simplified cross-correlation implementation}
+For the simplified version of correlation where the processing time has been significantly reduced several parts of the formula has been removed. The new formula is listed below in equation \ref{eq:simplecorrelation}. The algorithm based on this formula shifts the sampled signal by one step every time till the highest value of the summation has been acquired see figure \ref{fig:simplecorrelation}. At the point where the summation gives the highest output the signals match the most. When this point has been reached the designed function implemented in c code returns the amount of shifts required in the sample array to reach this value.
+
+\begin{equation}
+R = \sum\limits_{i}^n [x(i) * y(i-d)]
+\label{eq:simplecorrelation}
+\end{equation}
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\textwidth]{simplecorrelation.pdf}
+   \caption{Algorithm simple correlation}
+   \label{fig:simplecorrelation}
+\end{figure}
+
+The implementation of the source code in c is listed in below see code 3. This is a c file of the function that shifts the sampled array to align it with the reference signal. At the point where the sampled signal and the reference signal match the most the value of the time shift will be returned. And the distance can be calculated with a simple formula.
+\\
+\lstinputlisting[firstline=1,lastline=42,label=code:correlation,caption=Implementation Simplified version of cross-correlation]{./code/correlation.c}
+
+\subsubsection{Cross-correlation results}
+After implementing the algorithm mentioned above, several tests can be performed. With the analog to digital converter of the ATXmega256A3u the received signal from the microphone will be sampled with a sample frequency of 5\si{\micro} seconds. This means every shift that is required in the sampled array equals a delay of 5\si{\micro} seconds. With this in mind, the results we expect to see are listed in the table shown in figure \ref{fig:expectedresults}. Where the first row shows the distance, the second row shows the amount of travel time required for the distance shown in row one and the last row shows the expected shifts required. We do however expect to see some deviation in the measured results relative to the expected results due to overhead time in the processing process.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=0.45\textwidth]{expectedcorrelation.pdf}
+   \caption{Expected results from the correlation algorithm}
+   \label{fig:expectedresults}
+\end{figure}
+
+For the several tests that has been done the test set-up shown in figure \ref{fig:testopstelling} has been used. Where two microcontrollers, one ATXmega128A4U is used for sending the acoustic signal through the speaker and a ATXmega256A3U was used for receiving the signal with a microphone.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\textwidth]{testopstelling.pdf}
+   \caption{Test set-up for cross-correlation}
+   \label{fig:testopstelling}
+\end{figure}
+
+In the table shown in figure \ref{fig:measuredresults} the measured results are displayed using the simplified version of cross-correlation. Per distance there are a total of seven measurements done to check for consistency in the values presented. As seen in the results at 80, 90 $\&$ 100 cm there are several faulty values measured. However most of the values measured are correct with a certain overhead time and correction.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\textwidth]{measuredcorrelation.pdf}
+   \caption{Measured results from the correlation algorithm}
+   \label{fig:measuredresults}
+\end{figure}
+
+In the table shown below in figure \ref{fig:deviationresults} the deviation between the expected results and the measured results are shown. As seen at close range the deviation is quite large however the further we get the more precise the measurement seems to be.   
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=0.22\textwidth]{deviationcorrelation.pdf}
+   \caption{Deviation between measured and expected results}
+   \label{fig:deviationresults}
+\end{figure}
+
+However the faulty values measured still needs to be resolved because the values are in some cases very high resulting in large distances. An method to resolve this is to send multiple times and measure this signal multiple times. Doing so the histogram could be created which should display the most common values and the least common values. Choosing the most common value should increase overall stability and reduce faulty measurements.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=0.82\textwidth]{histogram80.pdf}
+   \caption{Histogram 80 cm measurement}
+   \label{fig:histrogram80}
+\end{figure}
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=0.82\textwidth]{histogram90.pdf}
+   \caption{Histogram 90 cm measurement}
+   \label{fig:histrogram90}
+\end{figure}
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=0.82\textwidth]{histogram100.pdf}
+   \caption{Histogram 100 cm measurement}
+   \label{fig:histrogram100}
+\end{figure}
+
+In the figures \ref{fig:histrogram80}, \ref{fig:histrogram90} $\&$ \ref{fig:histrogram100} the histograms of the measurements with some faulty values are displayed. Implementing a method to send multiple signals and also receiving each signal independently, with the use of some filter function that chooses the most common value the output should be stable and non fluctuating. If this has been accomplished a method can be implemented to increase overall accuracy with the use of some sort of analog or digital filter that filters out other frequencies.
+
+\subsubsection{Conclusion cross-correlation}
+In the graph shown in figure \ref{fig:grafiekcorrelation} the expected values are set versus the measured values with the implementation of a "histogram filter" that chooses the most common value of the series of samples. 
+
+As also seen in the graph the measured results do vary quite a bit relative to the expected values. To overcome this a bandpass filter of some sort might increase accuracy, however at this point this is highly speculative and requires further research in this specific field. Something that could also contribute to accuracy is implementing the full cross-correlation algorithm developed by Paul Bourke instead of the lightweight cross-correlation algorithm developed and implemented by us. This implementation however needs some tweaks to dramatically increase the processing time which was as mentioned earlier up to 5 minutes with a ATXmega256A3U 32MHz microcontroller. Another approach could be to use a more powerful platform like for example a ARM Cortex processor.
+
+Even though the results are not within the specifications (+/- 9$\%$), cross-correlation seems the be the most promising method to distinguish signals and determine the time delay. The results gathered with the implementation of a simplified version of the correlation algorithm seems to be very promising, therefore we think that an implementation of the full cross-correlation algorithm will result in stable and accurate values with some overhead time due to processing, which can be compensated for.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\textwidth]{grafiekcorrelation.pdf}
+   \caption{Graph of expected values versus measured values}
+   \label{fig:grafiekcorrelation}
+\end{figure}
 
 
 \subsection{Swarm communication network}
@@ -678,8 +790,24 @@ The acoustic signal is send by a speaker facing upward. A metal plate is placed 
 
 
 The signal received by the microphone, translates in just a few millivolts. This signal is amplified for a total of 9600 by several stages of amplifiers, so that the signal clips on the supply voltage. This ruins the shape of the signal. However we're only interested in the frequency which will remain the same. After that the signal is bandpass filtered, to get rid of most of the noise. After this the signal is fed into the ADC of the Xmega128a4u. The modulator and demodulator will now be discussed in detail.\\\\
+
+\subsubsection{Acoustic sender}
+The signal is being generated within a microcontroller and sent to the speaker using a digital to analog converter. This signal is first being amplified to make sure it is loud enough. The block diagram for modulating this signal is shown in figure \ref{fig:modulatorblock}. The signal is set at 3764 Hz, it
+consists of an array using 50 samples per period. The sender will send out a series of 5 "beeps", every beep consists of 1250 samples of the 3764 Hz signal. For every beep the sending  module sends a interrupt signal to the receivers. The mean is taken of the array samples of the five sampled signals. In the next sections the workings of the receiving end will be explained.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{Modulator.pdf}
+    \caption{Modulator block diagram}
+    \label{fig:modulatorblock}
+\end{figure}
+
+\lstinputlisting[firstline=22,lastline=88,label=code:Acoustic sender code]{./code/main_sinegen.c}
+
 \subsubsection{Demodulator}
-The DAC of the Xmega128a4u is used to create a 4 kHz sine wave signal. The signal will be sent out for a pre-defined period of time (for example 10 periods) and then the signal will pause for a pre-defined period and continue for the same pre-defined period of time sent before (10 periods) see figure \ref{fig:Signal}. The pause will be the reference point within the signal. This reference point is to eliminate various uncertainties like the time it takes for the speaker to start resonating and to increase reliability. Because the chosen frequency lies within the speech range, the measurement can be easily disturbed by regular sounds. A reference point within this signal is difficult, maybe even impossible to reproduce in the form of environmental noise.
+The DAC of the Xmega128a4u is used to create a 4 kHz sine wave signal. 
+
+ and then the signal will pause for a pre-defined period and continue for the same pre-defined period of time sent before (10 periods) see figure \ref{fig:Signal}. The pause will be the reference point within the signal. This reference point is to eliminate various uncertainties like the time it takes for the speaker to start resonating and to increase reliability. Because the chosen frequency lies within the speech range, the measurement can be easily disturbed by regular sounds. A reference point within this signal is difficult, maybe even impossible to reproduce in the form of environmental noise.
 
  \begin{figure}[h]
      \centering
@@ -698,16 +826,6 @@ By counting every rising edge it is also possible to track every period of the r
      \caption{Demodulator block diagram }
      \label{fig:demodulatorblock}
  \end{figure}
-
-\subsubsection{Modulator}
-The signal shown in figure \ref{fig:Signal} needs to be modulated to then be sent through a speaker. The signal is being generated within a microcontroller and sent to the speaker through a digital to analog converter. This signal is first being amplified to make sure it is loud enough. The block diagram for modulating this signal is shown in figure \ref{fig:modulatorblock}. The “blank” spaces in the signal is done by stop sending for period equal to the pre-defined time for a blank.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.65\textwidth]{Modulator.pdf}
-    \caption{Modulator block diagram }
-    \label{fig:modulatorblock}
-\end{figure}
 
 
 

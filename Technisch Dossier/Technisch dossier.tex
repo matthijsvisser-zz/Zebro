@@ -1021,14 +1021,14 @@ When the swarm module is in sending mode it will send out a sound signal and ret
 \lstinputlisting[firstline=1,lastline=21,label=code:receiver,caption=]{./code/receiver.c}
 
 The communication module uses two UART connection. One for the communication with the swarmbee module and one for debug purposes. Two functions have been made to keep those data channels separated from eachother.
-
+F
 The validatemessage compares the received message with a defined type of message length. The type of messsage is defined by another function, "DetermineCommandType". This function separates the first characters of the message (the command characters) from the rest. Based on the first separated command characters it executes the intented function.
-\lstinputlisting[firstline=24,lastline=44,label=code:validatemessage,caption=Validates the integrity of the received message.]{./code/transceive.c}
-\lstinputlisting[firstline=141,lastline=177,label=code:determinemessage,caption=Determines the meaning of the message.]{./code/transceive.c}
+\lstinputlisting[firstline=26,lastline=46,label=code:validatemessage,caption=Validates the integrity of the received message.]{./code/transceive.c}
+\lstinputlisting[firstline=157,lastline=193,label=code:determinemessage,caption=Determines the meaning of the message.]{./code/transceive.c}
 
 
 The translateMessage function receives byte for byte from the swarmbee modules and forms the intended messages.
-\lstinputlisting[firstline=187,lastline=203,label=code:determinemessage,caption=Translates the received message. Converts characters to a single string]{./code/transceive.c}
+\lstinputlisting[firstline=197,lastline=219,label=code:determinemessage,caption=Translates the received message. Converts characters to a single string]{./code/transceive.c}
 
 
 
@@ -1057,26 +1057,142 @@ Not every function writen is used in the final code for the swarmbee. For future
 
 The following is the implementation of the insert and append function. In the final code only the insert function is implemented. This is done to create a first in first out buffer, this is explained later with the pop functions.
 
-\lstinputlisting[firstline=64,lastline=74,label=code:appendlist,caption=Inserts a data array row to the end of the list]{./code/list.c}
+\lstinputlisting[firstline=89,lastline=99,label=code:appendlist,caption=Inserts a data array row to the end of the list]{./code/list.c}
 
-\lstinputlisting[firstline=87,lastline=99,label=code:insertlist,caption=Inserts a data array row at the beginning of the list]{./code/list.c}
+\lstinputlisting[firstline=125,lastline=142,label=code:insertlist,caption=Inserts a data array row at the beginning of the list]{./code/list.c}
 
 The code for the pop functions can be found in the following three code snippets. The pop by number is implemented because of the chronologic order. It retrieves the total amount of rows in the list and begins to pop at the last and finishes at the first row.
 
-\lstinputlisting[firstline=113,lastline=127,label=code:poplist,caption=Reads a data array row at the beginning of the list and removes it afterwards]{./code/list.c}
-\lstinputlisting[firstline=141,lastline=165,label=code:poplistbynumber,caption=Reads a data array row at the given index number and removes it afterwards]{./code/list.c}
-\lstinputlisting[firstline=178,lastline=200,label=code:poplistbyvalue,caption=Reads a data array row with the given first value of the current row and removes it afterwards]{./code/list.c}
-\lstinputlisting[firstline=209,lastline=218,label=code:sizeoflist,caption=Amount of modules in the list]{./code/list.c}
+\lstinputlisting[firstline=156,lastline=171,label=code:poplist,caption=Reads a data array row at the beginning of the list and removes it afterwards]{./code/list.c}
+\lstinputlisting[firstline=209,lastline=233,label=code:poplistbynumber,caption=Reads a data array row at the given index number and removes it afterwards]{./code/list.c}
+\lstinputlisting[firstline=246,lastline=267,label=code:poplistbyvalue,caption=Reads a data array row with the given first value of the current row and removes it afterwards]{./code/list.c}
+\lstinputlisting[firstline=279,lastline=299,label=code:viewlistbyvalue,caption=Reads a data array row with the given first value of the current row]{./code/list.c}
+\lstinputlisting[firstline=308,lastline=317,label=code:sizeoflist,caption=Amount of modules in the list]{./code/list.c}
 
 
 An example of the debug interface output. There is not data (displayed with x's) in the this example. Each 'Data[]' represents an value for example, the first one is the node ID.
 \lstinputlisting[firstline=1,lastline=7,label=code:populationlist,caption=Example of the population list with x's at the place of swarm data.]{./code/populationlist.text}
 
+\subsubsection{Communication test plan}
+Testing is a critical part of a project. It proofs whether a product suits the specifications that where made in an earlier stage. If it does not fit the specifications, the results needs to be documented well and can be given to a next project group. So that they will know this solution is not the right one and needs modification to fit the specifications. In this document the test plan and results of the Swarmbee will be discussed. The main tasks of the Swarmbee module are to determine the distance between multiple Swarmbee's, and to send and receive data from swarm module to swarm module. First of all the specifications of the Swarmbee will be shown again, then we will discuss our test plan, followed by the results and conclusion. 
+Figure \ref{measuringarrangement} shows the measurement arrangement.
 
+
+In an earlier stage of this project, specifications where made for the long distance measurement and the data speed between the swarm modules. These where as following:
+
+\begin{table}[h]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|}
+\hline
+                     & \textbf{Close range (0 - 3 m)} & \textbf{Long range (3 - 25 m)} \\ \hline
+Dead zone distance    & 0,015 meters                   & 2 meters                      \\ \hline
+Deviation (distance) & +/- 9\%                         & +/- 1 meter                   \\ \hline
+Angle Resolution     & 45\%                            & -                             \\ \hline
+Update frequency     & 40 Hz                           & 1 Hz                           \\ \hline
+\end{tabular}%
+}
+\caption{Swarming localization specifications}
+\label{smrange}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Wireless communication module}
+\label{wcm}
+\begin{tabular}{|p{1,5cm}|p{9,5cm}|}
+\hline
+Module   & Wireless communication module                                       \\ \hline
+Input    & 5 VDC\\ 
+        & Swarm data\\
+        & RF signal                                              \\ \hline
+Outputs  & RF signal                                           \\ 
+& Swarm data \\ \hline
+Function & Processes information to and from other swarm modules. Transmission speed is not defined yet. The transmission range must be around 100 meters or more. \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+From these specifications we chose the Swarmbee module that had the following specification:
+\begin{table}[h]
+\centering
+\caption{Swarmbee LE module} 
+\label{SwarmbeeLE}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|ll|}
+\hline
+\multicolumn{1}{|l|}{\textbf{Parameter}}                                                                                                 & \textbf{Value}                                                                                                                 \\ \hline
+\multicolumn{1}{|l|}{Frequency range}                                                                                                    & ISM band 2.4 GHz (2.4 - 2.4835 GHz)                                                                                            \\ \hline
+\multicolumn{1}{|l|}{Modulation}                                                                                                         & Chirp Spread Spectrum (CSS)                                                                                                    \\ \hline
+\multicolumn{1}{|l|}{Transmission modes}                                                                                                 & \begin{tabular}[c]{@{}l@{}}80 MHz, 1 Mbps or 250 Kbps\\ (80/1 or 80/4 mode)\end{tabular}                                       \\ \hline
+\multicolumn{1}{|l|}{TOA capture accuracy}                                                                                               & \textless 1 ns (better than 30 cm)                                                                                             \\ \hline
+\multicolumn{1}{|l|}{Typical air time per ranging cycle}                                                                                 & 1.8 ms                                                                                                                         \\ \hline
+\multicolumn{1}{|l|}{RF output power}                                                                                                    & configurable - 22 t0 16 dBm                                                                                                    \\ \hline
+\multicolumn{1}{|l|}{RF sensitivity}                                                                                                     & \begin{tabular}[c]{@{}l@{}}-89 dBm typ. @80/1 mode\\ -95 dBm typ. @80/4 mode\end{tabular}                                      \\ \hline
+\multicolumn{1}{|l|}{RF interface}                                                                                                       & 50 Ohm RF port (for external antenna)                                                                                          \\ \hline
+\multicolumn{1}{|l|}{Host interface (UART)}                                                                                              & 500bps $\sim$ 2 Mbps                                                                                                           \\ \hline
+\multicolumn{1}{|l|}{Power supply}                                                                                                       & 3 - 5.5 V                                                                                                                      \\ \hline
+\multicolumn{1}{|l|}{Max. supply voltage ripple}                                                                                         & 20 mVpp                                                                                                                        \\ \hline
+\multicolumn{1}{|l|}{Active power consumption*}                                                                                          & 120 mA during transmission, 60 mA during receive in 80/1 mode                                                                  \\ \hline
+\multicolumn{1}{|l|}{Power consumption in sleep mode*}                                                                                   & 5.5 mA (transceiver disabled, all peripherals on)                                                                              \\ \hline
+\multicolumn{1}{|l|}{Power consumption in snooze mode*}                                                                                  & 4.5 \si{micro}A (transceiver disabled, all peripherals off, wake-up by timer)                                                           \\ \hline
+\multicolumn{1}{|l|}{Power consumption in nap mode**}                                                                                    & \begin{tabular}[c]{@{}l@{}}4.5 $\sim$ 600 \si{micro}A (transceiver disabled, all peripherals off, wake-up by \\ interrupt)\end{tabular} \\ \hline
+\multicolumn{1}{|l|}{Power consumption in deep-sleep mode*}                                                                              & \textless 1 \si{micro}A (device completely disabled)                                                                                    \\ \hline
+\multicolumn{1}{|l|}{Operating temperature range}                                                                                        & -30 - 85 $^{\circ}$C                                                                                                                    \\ \hline
+\multicolumn{1}{|l|}{Dimensions}                                                                                                         & 40 mm x 24 mm x 3.5 mm                                                                                                         \\ \hline
+\multicolumn{1}{|l|}{Weight}                                                                                                             & 7 g                                                                                                                            \\ \hline
+\begin{tabular}[c]{@{}l@{}}*Power consumption in all modes is \\ measured at 20$^{\circ}$C, 3.3 V.\end{tabular}                                   &                                                                                                                                \\ \hline
+\begin{tabular}[c]{@{}l@{}}**Power consumption in nap mode \\ depends  on interrupt sources (GPIO \\ pins or MEMS or both).\end{tabular} &                                                                                                                                \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+
+For testing the long distance measurement two different situations where tested. One test in doors, and another outdoors. We measure the distances relative to node 1, which is connected to a computer. From the computer we can see the measured distance from node 2 or 3 to node 1. We measure the following distances in order: 3 meter (minimal distance), 5 meter, 10 meter, and from here every 10 meter until 60 meters. Further then this distance can not be measured since the building is not long enough to measure the distance in a straight line. Outdoors we do the same thing only here we measure until a 100 meters. Every distances is measured three times per node. So we have 6 measurement points per distance outdoor and 6 measurement points indoor. These measurements will be written down in Excel and will be analysed. In figure \ref{measuringarrangement} is a simplification of how the measurement was done.
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=\textwidth]{measuringarrangement}
+  \caption{Arrangement of the swarmbee measurement for 3 to 100 meters.}
+  \label{measuringarrangement}
+\end{figure}
+
+\subsubsection{Test results}
+Take note that the long-range distance measurements are received less frequent as the distance increases. The maximum distance in an average room is about 60-65 meters, the connection between the swarmbee\'s is instable or lost when this range is passed. As shown in figure \ref{swarmbeemeasurement}, some values indicate a distance of 0.0 meters. This means that the swarmbee was not able to calculate a relative distance despite the connection was established. If there is a connection with or without a distance calculation, the connection is "J". Without a distance calculation the connection is 'N'.
+
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=\textwidth]{swarmbeemeasurement}
+  \caption{Table of the swarmbee measurement for 3 to 100 meters. Values of zero are incomplete measurements of the swarmbee module. J or N indicate if there is a connection between the swarmbee's.}
+  \label{swarmbeemeasurement}
+\end{figure}
+
+
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=\textwidth]{swarmbeegraph}
+  \caption{Graph of the swarmbee measurement for 3 to 100 meters.}
+  \label{swarmbeegraph}
+\end{figure}
+
+The results indoor are a bit disappointing. The deviations are on most measurement a lot larger then 1 meter that was specified. Even though the specifications of the Swarmbee state that the capture accuracy is better than 30 cm. The test results show that this statement is not true for the indoor distance measurement. Also the distance measurement should be updated more then a few times  per second. We specified one time per second is acceptable, but most of the time it takes about 20-30 seconds for node 1 to recognize and then it could take up to a minute to send a distance measurement result. The further away the module the longer it takes to refresh the distance but if the node sends a measurement it tends to be more accurate then closer measurements. Objects or people moving in the area between the measurement influenced the connection a lot. The measured distance deviated 5 meters with object passing trough. Outdoors there was less of an obstruction and the measurements were a lot more accurate. Outside most of the measurements where within the limits of a deviation of 1 meter. But again not within 30 cm as is stated in the specifications of the Swarmbee. Outdoors the measurement was more stable, even when people where passing trough. The only downside was that the longer the distance the longer the node send his measured distances. When we tested the 100 meter, the measurement could take up to 1 to 2 minutes. This time the test used only three swarm modules and one of them used as a relative location. It would be interesting to know how a larger swarm will affect the update frequency. From this we can say that in some specific situations this module can fit some of our specifications, but there was no situation in which all of our specifications are met. This does not say that the specifications can not be reached with this module. There is a possibility to use an external antenna. We advise to use an external antenna and to redo this test to see if the measurements improve. 
+
+
+
+When a ranging request of 5 nodes has filled the dynamic array, the populationlist will look as follows:
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=\textwidth]{populationlist.png}
+  \caption{Putty log of the filled population list}
+  \label{list}
+\end{figure}
 
 \subsubsection{Wireless communication}
 
-For the wireless communication module the most important function is that it can transmit information over atleast 100 meters. Since the specification states that the swarm must be detected within this range. The speed of the communication is not defined yet, but needs to be fast enough to handle all the messages. We estimated the speed that is necessary to handle all communication. We estimated that the maximum size of a message is 1kBytes. Since the long distance communication had an update frequency of 1Hz, the minimum communication speed that is required is 8kpbs. The Swarmbee LE module will be used for the wireless communication. The Swarmbee LE module will be used for the wireless communication. It uses the ISM band, 2.4 GHz to transmit and receive the data. The maximum range of the module relies on the environment in which it is used. Under ideal conditions the Swarmbee can reach a distance of 1200 meters. It depends on how many obstacles, reflections and interference there is to disturb the signal. An experiment from Nanotron showed that until a range of 150 meters the ranging success rate is about 100\% with a transmission speed of 155 kbps. Experiments we have done ourself show that the antenna on the device does not respond very well inside a building. Test outdoors should still be done, but there is a possibility that an external antenna is needed to reach these distances. The actual speed is also not tested yet, but could be done in the future. Transmitting data between the swarm modules can be configured with a speed of 250 Kbps or 1 Mbps. Tests will show if this will be enough. This module fits all the specifications and is suitable for the use of wireless communication.
+For the wireless communication module the most important function is that it can transmit information over atleast 100 meters. Since the specification states that the swarm must be detected within this range. The speed of the communication is not defined yet, but needs to be fast enough to handle all the messages. We estimated the speed that is necessary to handle all communication. We estimated that the maximum size of a message is 1kB. Since the long distance communication had an update frequency of 1Hz, the minimum communication speed that is required is 8kpbs. The Swarmbee LE module will be used for the wireless communication. The Swarmbee LE module will be used for the wireless communication. It uses the ISM band, 2.4 GHz to transmit and receive the data. The maximum range of the module relies on the environment in which it is used. Under ideal conditions the Swarmbee can reach a distance of 1200 meters. It depends on how many obstacles, reflections and interference there is to disturb the signal. An experiment from Nanotron showed that until a range of 150 meters the ranging success rate is about 100\% with a transmission speed of 155 kbps. Experiments we have done ourself show that the antenna on the device does not respond very well inside a building. Test outdoors should still be done, but there is a possibility that an external antenna is needed to reach these distances. The actual speed is also not tested yet, but could be done in the future. Transmitting data between the swarm modules can be configured with a speed of 250 Kbps or 1 Mbps. Tests will show if this will be enough. This module fits all the specifications and is suitable for the use of wireless communication.
 
 \begin{table}[h]
 \centering

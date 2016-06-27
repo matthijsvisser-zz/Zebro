@@ -1,3 +1,10 @@
+/**************************************************
+ * Demodulator using the Xmega Comparator
+ * For Distance Measurement
+ * Created: 14-6-2016
+ * Author: Zwermen 2
+**************************************************/
+
 #include "main.h"
 
 int measure2 = 0;

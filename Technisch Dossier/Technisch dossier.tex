@@ -194,7 +194,7 @@ As previously discussed the problem is now divided in two sub-problems, that tog
 
 
 \subsubsection{Swarming module}
-Distributed coordination is one of the swarming criteria. To achieve this, some form of (relative) localization is needed. This should keep units from moving to close or to far from each other. And could also be used to accomplish certain goals like;  mapping, assembly of structures or inspections \cite{networkedRS}. Communication is needed to share information about the environment and every units position. Requirements here are that the communication should not be depended on one host and should be scalable. This is so communication is not cut off when one of the units breaks down. The scale-ability is important so that units can be added or removed from the swarm \cite{multidomaincom}. Because this project is part of a running program the modules made should be modular so they can be used on future projects. Summed up, the swarming module has the following characteristics.
+Distributed coordination is one of the swarming criteria. To achieve this, some form of (relative) localization is needed. This should keep units from moving to close or to far from each other. And could also be used to accomplish certain goals like;  mapping, assembly of structures or inspections. Communication is needed to share information about the environment and every units position. Requirements here are that the communication should not be depended on one host and should be scalable. This is so communication is not cut off when one of the units breaks down. The scale-ability is important so that units can be added or removed from the swarm. Because this project is part of a running program the modules made should be modular so they can be used on future projects. Summed up, the swarming module has the following characteristics.
 
 \begin{itemize}
 \item (Relative) Localization
@@ -376,7 +376,7 @@ The digital/micro-controller side of the demodulator is tested by connecting a f
 H(p)=\frac{1+ p\tau_2}{\tau_1\tau_c(p^2+p\frac{\tau_2}{\tau1\tau2}+\frac{1}{\tau_1\tau_c})}
 \label{eq:transferfunction}
 \end{equation}
-
+\\\\
 The transfer function shows that delays can only be caused by the time constants $\tau_1,\tau_2,\tau_3$. This eliminates the PLL-loop as the source of the deviation in delays. The comparator is the only possible source left. It was determined that the deviation in time is created by the deviation in rise and fall time of the window comparator. In conclusion it's not the PLL itself but that causes the problems but the analog to digital conversion circuit. The deviation in time observed is far too large to function as an implementation for the demodulator. The choice for not implementing the PLL with the use of an ADC was because, the only reason for implementing the PLL in analog was to enable the use of a low performance platform. Also it was observed that almost every PLL is typically used for very high frequencies up to 100 MHz and even more. Our implementation however comes close to the frequency limitation of the PLL, which could cause instability. And therefore a new method to measure time delay in the sent signal must be developed.
 
 \subsubsection{Demodulating using the comparator of a Microprocessor}
@@ -865,14 +865,13 @@ For the distance between the different microphones a length of 10 cm is chosen b
 \label{module}
 \end{figure}
 
-The acoustic signal is send by a speaker facing upward. A metal plate is placed a 3 mm above the speaker, tests during the research phase showed this greatly improved the omnidirectional spread of the signal. The signal that's send it chosen to have a frequency of 3,8 kHz which has the best omnidirectional and range properties (section 4 of the research document).
+The acoustic signal is send by a speaker facing upward. A metal plate is placed a 3 mm above the speaker, tests during the research phase showed this greatly improved the omnidirectional spread of the signal. The signal that's send it chosen to have a frequency of 4 kHz which has the best omnidirectional and range properties (section 4 of the research document).
 
 
-The signal received by the microphone, translates in just a few millivolts. This signal is amplified 48 times. Then the signal is fed into the ADC of the Xmega256a4u. The sender code and receiver code will now be discussed in detail.\\\\
+The signal received by the microphone, translates in just a few millivolts. This signal is amplified 48 times. Then the signal is fed into the ADC of the ATXmega256A4U. The sender code and receiver code will now be discussed in detail.\\\\
 
 \subsubsection{Acoustic sender}
-The signal is being generated within a micro-controller and sent to the speaker using a digital to analog converter. This signal is first being amplified to make sure it is loud enough. The block diagram for modulating this signal is shown in figure \ref{fig:modulatorblock}. The signal is set at 3764 Hz, it
-consists of an array using 50 samples per period. The sender will send out a series of 10 "beeps", every beep consists of 1250 samples of the 3764 Hz signal. For every beep the sending  module sends a interrupt signal to the receivers. The mean is taken of the array samples of the five sampled signals. The code for the acoustic sender is shown below.
+The signal is being generated within a micro-controller and sent to the speaker using a digital to analog converter. This signal is first being amplified to make sure it is loud enough. The block diagram for modulating this signal is shown in figure \ref{fig:modulatorblock}. The signal is set at 4 kHz, it consists of an array using 50 samples per period. The sender will send out a series of 10 "beeps", every beep consists of 1250 samples of the 4 kHz signal. For every beep the sending  module sends a interrupt signal to the receivers. The mean is taken of the array samples of the five sampled signals. The code for the acoustic sender is shown below.
 
 \begin{figure}[H]
     \centering
@@ -909,7 +908,8 @@ Suppose that module A is about to send its signal. Just before it starts sending
 \end{figure}
 
 This state diagram is translated in C code shown in \ref{code:receivingcode}. The correlation function can be found in the research section.
-\\\\
+\newpage
+
  \lstinputlisting[firstline=1,lastline=78,
 label=code:receivingcode, 
 caption= Acoustic receiver and correlation code]
@@ -920,16 +920,14 @@ caption= Acoustic receiver and correlation code]
 The Swarming module has three microphones placed with known distances between them. The relative angle is derived from the time measured with each microphone, and the distance between the microphones. In section 3.2 there's more information on how the algorithms needed. The following algorithm shows pseudo-code how the angle and relative location is derived from the three measured distances.
 No implementation of this pseude-code was achieved during this project. A reliable distance measurement is needed to derive the angle using this method. Small deviations in the distance can cause far bigger deviations in the angle, due to the relatively small distance between the microphones.
 The distance measurement achieved during this project, will still need further tweaking before it can be used for localization.
-\\\\
+\newpage
+
 \lstinputlisting[firstline=1,lastline=40,label=code:locationalgo,caption=Algorithm to derive the relative location]{./code/Location_algorithm.c}
 
 \subsection{Swarm communication implementation}
 During the research, we came across some plug and play wireless swarm communication implementations. One of these implementations is the SwarmBEE LE module from Nanotron. The SwarmBEE LE module meets the given network criteria and most of the recommendations. The module uses a radio frequency 2,4 GHz signal as a communication channel. The module is not only a communication module, but can also be used to determine relative distances to each swarming module. It also has a API with predefined functions which can be used to set up the wireless network.
 
-
-
 \subsubsection{Central operating unit}
-
 In Table \ref{cou} the basic specifications of the AtXmega128A4U are shown. This is the microcontroller used in as the central operating unit. The microcontroller from Atmel complies with all the specifications. There are also newer micro controllers available, but are not yet implemented for this project, since the older versions can handle the workload and work fine. There are two $I^2$C connections available on the microcontroller which are needed to connect the module to the robot. Also the multiple ADC and DAC connections can come in handy if any sensors or actuators need to be added to the module. Overall the AtXmega128A4U fits all the specification that are required, and there is room to expand the functionality when it is necessary. An overview of all the specification can be found on the website of Atmel.
 
 
@@ -998,12 +996,15 @@ Now that the node knows its own id the population list can be filled with inform
 Where the ID and the longrange can be received from the swarmbee module, the x and y coordinates are from the acoustic sensing algorithm and the status is set by the main algorithm.
 
 The following code describes how this function will be executed.
+\\\\
 \lstinputlisting[firstline=1,lastline=41,label=code:fillpop,caption=]{./code/fillpop.c}
 
+\vspace{5mm}
 This function will be executed when the received message is a ranging request notification, because this is the message that will be the argument of this function. At line 16 a while loop starts filling: srcid, destid and distance with the corresponding information from the ranging request notification. A comma indicates that a new value starts. At line 34 and 37 the received id's are compared to its own id so that the right id will be set with the range. The id's and longranges are now filled in the population list.  
 
 \subsubsection{Acoustic sensing send/ receive}
 After all node ID's are known the first swarm unit in queue will get the mutual exclusion to be the only sender in the acoustic ranging process, it will enter the "send acoustic"-process, figure \ref{fig:sendre}.1. since only one member can be the sending module the rest of the swarm will enter the "process receive" algorithm, figure \ref{fig:sendre}.2. When a node is done sending it will set a mark and send a broadcast to the rest of swarm. The status bit in the frame (\ref{fig:frame}) will be set as one, now all members know that this ID is done. The "order"-function(pseudocode) will keep checking who is the lowest in queue. When all id's status bits are marked the complete algorithm is completed.
+\newpage
 
 \lstinputlisting[firstline=1,lastline=10,label=code:order,caption=]{./code/order.c}
 
@@ -1149,9 +1150,24 @@ The progress of this project is not as far as we had hoped for, and there are ma
 We still recommend using acoustic signals to determine the distance. We found that analog solutions cause to many deviations in time to create a usable implementation. Digital signal processing seems the best way to deal with the problem. The properties of the signal that was to be received are already known. Because of this we propose the use of convolution (discussed in chapter 5.3). Convolution allows for noise-heavy signals to be detected and used. 
 
 
-There are a few points of interest to improve the code. These points might make the code quicker and more reliable. Two problems that were encountered with the current micro-controller, that is used for this project, are its limited memory and processing power. One method to overcome these obstacles is by adding up the values read from the ADC, this means not every read value needs its own space in the array. With the current ten measurements of 1250 samples each that would mean saving up to 16.875 bytes when using 16-bit integers in said array. Since the total data memory of the ATXMega128A3U is only 16KB this solution would save a lot of memory in the micro-controller. Using the previous solution also means the correlation-algorithm will get an average outcome from the ten measurements. A second point of interest to make the measurement more reliable while not slowing down the measuring process too much, is by using Paul Bourke's cross-correlation algorithm. But instead of using floating point calculations, which requires a lot of processing power, we recommend using fixed point calculations. The micro-controller can handle these calculations much better than floating point calculations, improving the speed drastically. Using this method it is assumed that the measurement will be more reliable. 
+There are a few points of interest to improve the code. These points might make the code quicker and more reliable. Two problems that were encountered with the current micro-controller, that is used for this project, are its limited memory and processing power. One method to overcome these obstacles is by adding up the values read from the ADC, this means not every read value needs its own space in the array. With the current ten measurements of 1250 samples each that would mean saving up to 16.875 bytes when using 16-bit integers in said array. Since the total data memory of the ATXMega128A3U is only 16KB this solution would save a lot of memory in the micro-controller. Using the previous solution also means the correlation-algorithm will get an average outcome from the ten measurements. A second point of interest to make the measurement more reliable while not slowing down the measuring process too much, is by using Paul Bourke's cross-correlation algorithm. But instead of using floating point calculations, which requires a lot of processing power, we recommend using fixed point calculations see figure \ref{fig:fixedpoint}. The micro-controller can handle these calculations much better than floating point calculations, improving the speed drastically. Using this method it is assumed that the measurement will be more reliable.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\textwidth]{fixedpoint.pdf}
+   \caption{Fixed point example}
+   \label{fig:fixedpoint}
+\end{figure}
+ 
 A determination has to be made what kind of precision is needed from the distance measurement to implement a angle measurement with a resolution of 45$\deg$.
-We recommend using a simulation program like Mathlab to run the full algorithm using stored values from the ADC, to determine if the specifications can be met using this algorithm. Once this is proven the algorithm can be ported to the micro-controller. Another way to overcome the problem of the limited amount of memory is by connecting extra external memory, like an SD-card for example. The current micro-controller used has an external slot to connect an SD-card, if this can be configured the amount of data will not be a problem any more. The only thing that should be taken into account is that reading and writing to the SD-card might not be fast enough for all the variables used. When correlation does not meet the specifications the recommendation is trying to implement 'code 1' with a frequency based approach, but instead of using the analog comparator using the ADC this might make it less susceptible to noise.
+We recommend using a simulation program like Mathlab to run the full algorithm using stored values from the ADC, to determine if the specifications can be met using this algorithm. Once this is proven the algorithm can be ported to the micro-controller. Another way to overcome the problem of the limited amount of memory is by connecting extra external memory, like an SD-card for example. The current micro-controller used has an external slot to connect an SD-card, if this can be configured the amount of data will not be a problem any more. The only thing that should be taken into account is that reading and writing to the SD-card might not be fast enough for all the variables used. When correlation does not meet the specifications the recommendation is trying to implement 'code 1' with a frequency based approach, recognizing a reference point within a signal see figure \ref{fig:adcdemod}. But instead of using the analog comparator using the ADC this might make it less susceptible to noise.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\textwidth]{adcdemod.pdf}
+   \caption{Distance measurement using a ADC}
+   \label{fig:adcdemod}
+\end{figure}
 
 \newpage
 

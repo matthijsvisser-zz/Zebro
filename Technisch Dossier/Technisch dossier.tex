@@ -324,7 +324,7 @@ In this experiment a 4046CD PLL is used to demodulate an acoustic signal. Time m
    \label{fig:pllsignal}
 \end{figure}
 
-To test the precision in time a test set-up was build. Two ATXmega128A4U were used, one for the demodulator side and one for the modulator side see figure \ref{fig:testup}. The PLL demodulator is build according to the schematic shown in figure \ref{fig:pplschematic}.
+To test the precision in time a test set-up was build. Two ATXmega128A4U were used, one for the demodulator side and one for the modulator side see figure \ref{fig:testup}. The PLL demodulator is build according to the schematic shown in figure \ref{fig:pllschematic}.
 
  \begin{figure}[H]
    \centering
@@ -515,6 +515,15 @@ For the several tests that has been done the test set-up shown in figure \ref{fi
    \includegraphics[width=\textwidth]{testopstelling.pdf}
    \caption{Test set-up for cross-correlation}
    \label{fig:testopstelling}
+\end{figure}
+
+The test set-up is connected according to the following schematic see figure \ref{fig:schemacorrelatie}. Where two different microcontrollers the Xmega128A4U and the Xmega256A3U are utilized. The various connections to the microphone and speaker are shown in the schematic. This enables others to reassemble the test set-up.
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=\textwidth]{correlatieschema.pdf}
+   \caption{Test set-up for cross-correlation}
+   \label{fig:schemacorrelatie}
 \end{figure}
 
 In the table shown in figure \ref{fig:measuredresults} the measured results are displayed using the simplified version of cross-correlation. Per distance there are a total of seven measurements done to check for consistency in the values presented. As seen in the results at 80, 90 $\&$ 100 cm there are several faulty values measured. However most of the values measured are correct with a certain overhead time and correction.
@@ -781,9 +790,9 @@ The main purpose is the demodulator is to identify the reference point. And more
 \begin{tabular}{|p{1,5cm}|p{9,5cm}|}
 \hline
 Module   & Demodulator                                   \\ \hline
-Input    & FSK Signal                                             \\ \hline
-Outputs  & Reference point                                         \\ \hline
-Function & Demodulation, Reference point detection \\ \hline
+Input    & 4 kHz signal                                             \\ \hline
+Outputs  & Time delay                                         \\ \hline
+Function & Demodulation, Time delay determination \\ \hline
 Features & Noise insensitive, precision (time), Quick demodulation  \\ \hline
 \end{tabular}
 \end{table}
@@ -835,9 +844,6 @@ Functions  & All the communication comes together and controls the inputs and ou
 \end{tabular}
 \end{table}
 
-
-
-
 \section{Design}
 Now that specifications of the functional blocks are defined, a implementation for these blocks will be found, using the information from the research phase. Just like section Functional specifications every block will be discussed independently. How all of the functional blocks fit together will be discussed in the section for the central processing unit.
 
@@ -875,7 +881,7 @@ consists of an array using 50 samples per period. The sender will send out a ser
     \label{fig:modulatorblock}
 \end{figure}
 
-\lstinputlisting[firstline=22,lastline=88,
+\lstinputlisting[firstline=1,lastline=88,
 label=code:sendercode, 
 caption= Acoustic sender code]
 {./code/mainsinegen.c}
@@ -884,8 +890,6 @@ In the next sections the workings of the receiving end will be explained.
 \subsubsection{Acoustic receiver}
 The signal send by the acoustic sender is received by the microphone of the receiving modules. As discussed in the research section, a simple version of cross-correlation is used to determine the TOF (time of flight) of the acoustic signal. The receiving micro-controller has a copy of the array that is used to create the signal in the sending micro-controller.
 When the receiver, receives an interrupt from the sender it will start to sample data from the ADC that's connected to the microphone. The sampling time is 50 times per period, this is exactly the same as the sending side. Five individual beeps are sampled. The mean is taken from the five individual samples before the cross-correlation algorithm is performed to determine the distance. For further explanation on the simplified version of cross correlation used see section  \ref{sec:simplecross}. A Block representation is given of the receiving side shown in figure\label{fig:demodulatorblock}.
-
-
 
  \begin{figure}[h]
      \centering
@@ -905,8 +909,8 @@ Suppose that module A is about to send its signal. Just before it starts sending
 \end{figure}
 
 This state diagram is translated in C code shown in \ref{code:receivingcode}. The correlation function can be found in the research section.
-
- \lstinputlisting[firstline=13,lastline=78,
+\\\\
+ \lstinputlisting[firstline=1,lastline=78,
 label=code:receivingcode, 
 caption= Acoustic receiver and correlation code]
 {./code/maincorrelation.c}
@@ -916,6 +920,7 @@ caption= Acoustic receiver and correlation code]
 The Swarming module has three microphones placed with known distances between them. The relative angle is derived from the time measured with each microphone, and the distance between the microphones. In section 3.2 there's more information on how the algorithms needed. The following algorithm shows pseudo-code how the angle and relative location is derived from the three measured distances.
 No implementation of this pseude-code was achieved during this project. A reliable distance measurement is needed to derive the angle using this method. Small deviations in the distance can cause far bigger deviations in the angle, due to the relatively small distance between the microphones.
 The distance measurement achieved during this project, will still need further tweaking before it can be used for localization.
+\\\\
 \lstinputlisting[firstline=1,lastline=40,label=code:locationalgo,caption=Algorithm to derive the relative location]{./code/Location_algorithm.c}
 
 \subsection{Swarm communication implementation}
